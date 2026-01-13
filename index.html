@@ -38,6 +38,26 @@
             (n.className += t + "touch");
       })(window, document);
     </script>
+
+    // Apollo.io Tracking Script
+    <script>
+      function initApollo() {
+        var n = Math.random().toString(36).substring(7),
+          o = document.createElement("script");
+        (o.src =
+          "https://assets.apollo.io/micro/website-tracker/tracker.iife.js?nocache=" +
+          n),
+          (o.async = !0),
+          (o.defer = !0),
+          (o.onload = function () {
+            window.trackingFunctions.onLoad({
+              appId: "682f281424e6360015a48cfa",
+            });
+          }),
+          document.head.appendChild(o);
+      }
+      initApollo();
+    </script>
     <link href="/images/oemmart.ico" rel="shortcut icon" />
     <link href="/images/oemmart.ico" rel="apple-touch-icon" />
     <style>
@@ -1503,7 +1523,9 @@
                   </li>
                 </ul>
                 <div class="button-group margin-top_xsmall">
-                  <a href="/contact.html" class="button w-inline-block">Contact Us</a>
+                  <a href="/contact.html" class="button w-inline-block"
+                    >Contact Us</a
+                  >
                 </div>
               </div>
             </div>
@@ -1778,7 +1800,9 @@
               >
             </li>
             <li>
-              <a href="/about-2.html" class="footer_link on-inverse w-inline-block"
+              <a
+                href="/about-2.html"
+                class="footer_link on-inverse w-inline-block"
                 ><div>About</div></a
               >
             </li>
@@ -1788,7 +1812,9 @@
               >
             </li>
             <li>
-              <a href="/contact.html" class="footer_link on-inverse w-inline-block"
+              <a
+                href="/contact.html"
+                class="footer_link on-inverse w-inline-block"
                 ><div>Contact</div></a
               >
             </li>
