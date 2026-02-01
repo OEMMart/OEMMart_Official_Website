@@ -4,9 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="assets/oemmart.png" />
-    <title>Support - OEMMart | We're Here to Help</title>
+    <title>About OEMMart - Empowering OEMs with AI Solutions</title>
     <meta
-      content="Have questions or need assistance? Our team is ready to support you. Reach out to us anytime."
+      content="Discover how OEMMart transforms the OEM landscape by providing intelligent document management solutions that enhance decision-making and operational efficiency."
       name="description"
     />
     <style>
@@ -236,15 +236,17 @@
       }
 
       /* Hero Section */
-      .hero-support {
+      .hero-about {
         margin-top: 120px;
-        padding: 4rem 2rem 2rem;
-        text-align: center;
+        padding: 4rem 2rem;
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
         position: relative;
         overflow: hidden;
       }
 
-      .hero-support::before {
+      .hero-about::before {
         content: "";
         position: absolute;
         top: -20%;
@@ -277,106 +279,55 @@
         width: 100%;
       }
 
-      .hero-support h1 {
-        font-size: 3rem;
-        font-weight: 700;
-        color: var(--color-text);
-        margin-bottom: 1rem;
+      .hero-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
       }
 
-      .hero-support p {
-        font-size: 1.2rem;
+      .hero-text h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: var(--color-text);
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero-text p {
+        font-size: 1.25rem;
         color: var(--color-text-secondary);
-        max-width: 700px;
-        margin: 0 auto 3rem;
+        margin-bottom: 2rem;
         line-height: 1.8;
       }
 
-      /* Contact Cards Section */
-      .contact-cards-section {
-        padding: 4rem 2rem;
-        background: transparent;
+      .hero-image {
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
       }
 
-      .contact-cards {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 3rem;
-        max-width: 1000px;
-        margin: 0 auto;
+      .hero-image img {
+        width: 100%;
+        height: auto;
+        display: block;
       }
 
-      .contact-card {
-        background: var(--glass-bg);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid var(--glass-border);
-        border-radius: 20px;
-        padding: 3rem;
-        transition: all 0.3s ease;
-      }
-
-      .contact-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(79, 70, 229, 0.15);
-      }
-
-      .contact-icon {
-        width: 70px;
-        height: 70px;
-        background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        margin-bottom: 1.5rem;
-      }
-
-      .contact-card h2 {
-        font-size: 1.75rem;
-        color: var(--color-text);
-        margin-bottom: 1rem;
-        font-weight: 700;
-      }
-
-      .contact-card p {
-        color: var(--color-text-secondary);
-        font-size: 1.1rem;
-        margin-bottom: 1.5rem;
-        line-height: 1.7;
-      }
-
-      .contact-button {
-        background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
-        color: white;
-        padding: 1rem 2rem;
-        border: none;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 1rem;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-block;
-        transition: all 0.3s;
-        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
-      }
-
-      .contact-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(79, 70, 229, 0.35);
-      }
-
-      .contact-info-text {
-        color: var(--color-text-secondary);
-        font-size: 0.9rem;
-        margin-top: 1rem;
-      }
-
-      /* Demo Section */
-      .demo-cta-section {
+      /* Mission Section */
+      .mission-section {
         padding: 6rem 2rem;
         background: white;
+        position: relative;
+      }
+
+      .mission-content {
+        max-width: 900px;
+        margin: 0 auto;
         text-align: center;
       }
 
@@ -389,42 +340,89 @@
         margin-bottom: 1rem;
       }
 
-      .demo-cta-section h2 {
-        font-size: 2.5rem;
+      .mission-content h2 {
+        font-size: 2.75rem;
         font-weight: 700;
-        margin-bottom: 1rem;
-        background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: var(--color-text);
+        margin-bottom: 2rem;
       }
 
-      .demo-cta-section p {
+      .mission-content p {
         font-size: 1.15rem;
         color: var(--color-text-secondary);
-        max-width: 600px;
-        margin: 0 auto 2.5rem;
         line-height: 1.8;
+        margin-bottom: 1.5rem;
       }
 
-      .demo-button {
+      /* Values Section */
+      .values-section {
+        padding: 6rem 2rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #eff3ff 100%);
+      }
+
+      .values-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        margin-top: 3rem;
+      }
+
+      .value-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 2.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .value-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(79, 70, 229, 0.15);
+      }
+
+      .value-icon {
+        width: 60px;
+        height: 60px;
         background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
-        color: white;
-        padding: 1.1rem 3rem;
-        border: none;
         border-radius: 12px;
-        font-size: 1rem;
-        font-weight: 700;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-block;
-        transition: all 0.3s;
-        box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
       }
 
-      .demo-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4);
+      .value-card h3 {
+        font-size: 1.5rem;
+        color: var(--color-text);
+        margin-bottom: 1rem;
+      }
+
+      .value-card p {
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+      }
+
+      /* Tags */
+      .tag-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+        justify-content: center;
+      }
+
+      .tag {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        padding: 0.5rem 1.25rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        color: var(--color-primary);
+        font-weight: 500;
       }
 
       /* Footer */
@@ -487,12 +485,25 @@
 
       /* Responsive */
       @media (max-width: 1024px) {
-        .nav-links {
-          display: none;
+        .hero-content {
+          grid-template-columns: 1fr;
+          gap: 2rem;
         }
 
-        .contact-cards {
+        .hero-text h1 {
+          font-size: 2.5rem;
+        }
+
+        .values-grid {
           grid-template-columns: 1fr;
+        }
+
+        .footer-content {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .nav-links {
+          display: none;
         }
       }
 
@@ -502,19 +513,15 @@
           padding: 0.75rem 1.5rem;
         }
 
-        .hero-support h1 {
+        .hero-text h1 {
           font-size: 2rem;
         }
 
-        .hero-support p {
+        .hero-text p {
           font-size: 1.1rem;
         }
 
-        .contact-card {
-          padding: 2rem 1.5rem;
-        }
-
-        .demo-cta-section h2 {
+        .mission-content h2 {
           font-size: 2rem;
         }
 
@@ -543,7 +550,7 @@
               <span class="dropdown-arrow">▼</span>
             </a>
             <div class="dropdown-menu">
-              <a href="about.html">About</a>
+              <a href="about.html" class="active">About</a>
               <a href="#blog">Blog</a>
               <a href="contact.html">Contact</a>
             </div>
@@ -554,59 +561,192 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-support">
+    <section class="hero-about">
       <div class="container">
-        <h1>We're here to help</h1>
-        <p>
-          Have questions or need assistance? Our team is ready to support you.
-          Reach out to us anytime.
-        </p>
-      </div>
-    </section>
-
-    <!-- Contact Cards Section -->
-    <section class="contact-cards-section">
-      <div class="container">
-        <div class="contact-cards">
-          <!-- Call Us Card -->
-          <div class="contact-card">
-            <div class="contact-icon">📞</div>
-            <h2>Call us</h2>
-            <p>Speak directly with our support team</p>
-            <a href="tel:+14158880899" class="contact-button">
-              +1 415-888-0899
-            </a>
-            <p class="contact-info-text">
-              Monday - Friday: 9:00 AM - 6:00 PM EST
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1>Smarter decisions.<br />Less document chaos.</h1>
+            <p>
+              Transforming how OEMs access and analyze complex documentation
+              with AI-powered insights for every team.
             </p>
+            <p
+              style="
+                font-size: 1.1rem;
+                color: var(--color-text-secondary);
+                margin-bottom: 1rem;
+                line-height: 1.7;
+              "
+            >
+              We empower manufacturers to win more bids, streamline procurement
+              decisions, and deliver exceptional after-sales support through
+              intelligent document analysis that turns hours of manual work into
+              seconds of automated insights.
+            </p>
+            <div class="button-group" style="margin-top: 2rem">
+              <a href="#Mission" class="cta-btn" style="display: inline-block"
+                >Our Mission</a
+              >
+            </div>
           </div>
-
-          <!-- Email Us Card -->
-          <div class="contact-card">
-            <div class="contact-icon">📧</div>
-            <h2>Email us</h2>
-            <p>Send us a message anytime</p>
-            <a href="mailto:support@oemmart.com" class="contact-button">
-              support@oemmart.com
-            </a>
-            <p class="contact-info-text">
-              We typically respond within 24 hours
-            </p>
+          <div class="hero-image">
+            <img src="assets/ai-table.png" alt="OEMMart AI Platform" />
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Demo CTA Section -->
-    <section class="demo-cta-section">
+    <!-- Mission Section -->
+    <section id="Mission" class="mission-section">
       <div class="container">
-        <div class="eyebrow">Need immediate assistance?</div>
-        <h2>Request a demo</h2>
-        <p>
-          See how OEMMart can transform your OEM documentation workflow.
-          Schedule a personalized demo with our team.
-        </p>
-        <a href="contact.html" class="demo-button">Schedule demo</a>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+          "
+        >
+          <!-- Left Column - Image -->
+          <div style="position: relative">
+            <div
+              style="
+                border-radius: 24px;
+                overflow: hidden;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+                position: relative;
+              "
+            >
+              <img
+                width="100%"
+                height="auto"
+                alt="image of content management strategy session"
+                src="assets/meeting-table-p-800.png"
+                loading="lazy"
+                style="display: block; width: 100%; height: auto"
+              />
+            </div>
+            <div
+              style="
+                position: absolute;
+                bottom: -20px;
+                right: -20px;
+                width: 150px;
+                height: 150px;
+                background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+                border-radius: 50%;
+                opacity: 0.1;
+                z-index: -1;
+              "
+            ></div>
+          </div>
+
+          <!-- Right Column - Content -->
+          <div>
+            <div class="eyebrow" style="text-align: left">
+              Our story and values
+            </div>
+            <h2
+              style="
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: var(--color-text);
+                margin-bottom: 1.5rem;
+                line-height: 1.2;
+                text-align: left;
+              "
+            >
+              Transforming OEM decision-making
+            </h2>
+            <p
+              style="
+                font-size: 1.05rem;
+                color: var(--color-text-secondary);
+                line-height: 1.8;
+                margin-bottom: 1rem;
+                text-align: left;
+              "
+            >
+              Our mission is to become the most trusted partner for OEMs
+              worldwide. Through our
+              <strong style="color: var(--color-primary)"
+                >AI-powered OEM collaboration platform</strong
+              >, we help manufacturers win more bids, streamline procurement,
+              and deliver exceptional after-sales support by turning
+              overwhelming documentation into real-time insights that drive
+              action across every stage of the customer journey.
+            </p>
+            <p
+              style="
+                font-size: 1.05rem;
+                color: var(--color-text-secondary);
+                line-height: 1.8;
+                margin-bottom: 2rem;
+                text-align: left;
+              "
+            >
+              We were tired of spending countless hours processing massive
+              documents manually and kept asking ourselves: there must be a
+              better way. Out of that frustration came our solution, designed to
+              cut through complexity, surface the details that matter most, and
+              make working with big documents faster, smarter, and far less
+              painful.
+            </p>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap">
+              <div class="tag">AI innovation</div>
+              <div class="tag">Document intelligence</div>
+              <div class="tag">OEM solutions</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <style>
+      @media (max-width: 1024px) {
+        #Mission .container > div {
+          grid-template-columns: 1fr !important;
+          gap: 2rem !important;
+        }
+        #Mission h2 {
+          font-size: 2rem !important;
+        }
+      }
+    </style>
+
+    <!-- Values Section -->
+    <section class="values-section">
+      <div class="container">
+        <div class="mission-content">
+          <div class="eyebrow">Our Values</div>
+          <h2>What drives us forward</h2>
+        </div>
+        <div class="values-grid">
+          <div class="value-card">
+            <div class="value-icon">🚀</div>
+            <h3>Innovation First</h3>
+            <p>
+              We continuously push the boundaries of AI technology to deliver
+              cutting-edge solutions that transform how OEMs work.
+            </p>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">🎯</div>
+            <h3>Customer Success</h3>
+            <p>
+              Your success is our success. We're committed to delivering
+              measurable results and exceptional support.
+            </p>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">🔒</div>
+            <h3>Trust & Security</h3>
+            <p>
+              We prioritize data security and privacy, ensuring your sensitive
+              information is always protected.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
 
