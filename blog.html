@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/oemmart.png" />
+    <title>OEMMart Blog - Insights for Original Equipment Manufacturers</title>
+    <meta
+      content="Discover expert insights, articles, and tips relevant to OEMs. Learn how OEMMart's AI technologies transform document handling for better business outcomes."
+      name="description"
+    />
+    <style>
+      :root {
+        --color-primary: #4f46e5;
+        --color-primary-light: #6365f1c8;
+        --color-accent: #06b6d4;
+        --color-bg: #f8fafc;
+        --color-bg-secondary: #ffffff;
+        --color-text: #0f172a;
+        --color-text-secondary: #64748b;
+        --color-border: rgba(148, 163, 184, 0.2);
+        --glass-bg: rgba(255, 255, 255, 0.85);
+        --glass-border: rgba(255, 255, 255, 0.5);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+        max-width: 100vw;
+      }
+
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          "Helvetica Neue",
+          Arial,
+          sans-serif;
+        background: linear-gradient(
+          135deg,
+          #f8fafc 0%,
+          #eff3ff 50%,
+          #f0fdff 100%
+        );
+        color: var(--color-text);
+        line-height: 1.6;
+        overflow-x: hidden;
+        width: 100%;
+        max-width: 100vw;
+        position: relative;
+      }
+
+      /* Navigation */
+      nav {
+        position: fixed;
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 4rem);
+        max-width: 1200px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        z-index: 1000;
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 1rem 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+      }
+
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        transition: transform 0.3s ease;
+      }
+
+      .logo:hover {
+        transform: scale(1.05);
+      }
+
+      .logo img {
+        height: 50px;
+        width: auto;
+        display: block;
+        object-fit: contain;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+        align-items: center;
+      }
+
+      .nav-links li {
+        position: relative;
+      }
+
+      .nav-links a {
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--color-primary);
+        transition: width 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--color-primary);
+        transform: translateY(-1px);
+      }
+
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      .nav-links a.active {
+        color: var(--color-primary);
+      }
+
+      .nav-links a.active::after {
+        width: 100%;
+      }
+
+      .dropdown {
+        position: relative;
+      }
+
+      .dropdown > a {
+        cursor: pointer;
+      }
+
+      .dropdown-arrow {
+        font-size: 0.7rem;
+        transition: transform 0.3s ease;
+        display: inline-block;
+      }
+
+      .dropdown:hover .dropdown-arrow {
+        transform: rotate(180deg);
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        top: calc(100% + 1rem);
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 0.5rem;
+        min-width: 180px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(-50%) translateY(-10px);
+        transition: all 0.3s ease;
+        z-index: 1000;
+      }
+
+      .dropdown:hover .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .dropdown-menu a {
+        display: block;
+        padding: 0.75rem 1rem;
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        font-size: 0.95rem;
+      }
+
+      .dropdown-menu a::after {
+        display: none;
+      }
+
+      .dropdown-menu a:hover {
+        background: white;
+        color: var(--color-primary);
+        transform: translateX(4px);
+      }
+
+      .cta-btn {
+        background: var(--color-primary);
+        color: white;
+        padding: 0.65rem 1.5rem;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+      }
+
+      .cta-btn:hover {
+        background: var(--color-primary-light);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3);
+      }
+
+      /* Hero Section */
+      .hero-blog {
+        margin-top: 120px;
+        padding: 4rem 2rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-blog::before {
+        content: "";
+        position: absolute;
+        top: -20%;
+        right: -10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(
+          circle,
+          rgba(79, 70, 229, 0.15) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-30px);
+        }
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      .hero-content-blog {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+      }
+
+      .hero-image {
+        width: 100%;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      }
+
+      .hero-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .hero-text h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--color-text);
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+      }
+
+      .hero-text p {
+        font-size: 1.2rem;
+        color: var(--color-text-secondary);
+        margin-bottom: 2rem;
+        line-height: 1.8;
+      }
+
+      .tag-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .tag-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        font-size: 0.9rem;
+        color: var(--color-text-secondary);
+      }
+
+      .tag-icon {
+        width: 20px;
+        height: 20px;
+        color: var(--color-primary);
+      }
+
+      .eyebrow {
+        color: var(--color-primary);
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+      }
+
+      /* Blog Section */
+      .blog-section {
+        padding: 6rem 2rem;
+        background: var(--color-bg-secondary);
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+      }
+
+      .section-header h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--color-text);
+        margin-bottom: 1rem;
+      }
+
+      .section-header p {
+        font-size: 1.1rem;
+        color: var(--color-text-secondary);
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      /* Tabs */
+      .tabs-container {
+        margin-bottom: 3rem;
+      }
+
+      .tabs-nav {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 3rem;
+        border-bottom: 2px solid var(--color-border);
+        padding-bottom: 0;
+      }
+
+      .tab-button {
+        padding: 1rem 2rem;
+        background: none;
+        border: none;
+        color: var(--color-text-secondary);
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        border-bottom: 3px solid transparent;
+      }
+
+      .tab-button:hover {
+        color: var(--color-primary);
+      }
+
+      .tab-button.active {
+        color: var(--color-primary);
+        border-bottom: 3px solid var(--color-primary);
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+      }
+
+      .blog-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
+
+      .blog-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .blog-card-content {
+        padding: 2rem;
+      }
+
+      .blog-tag {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+        color: white;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .blog-card h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--color-text);
+        margin-bottom: 1rem;
+        line-height: 1.3;
+      }
+
+      .blog-card p {
+        color: var(--color-text-secondary);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+
+      .blog-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+      }
+
+      /* Footer */
+      footer {
+        background: linear-gradient(
+          180deg,
+          rgba(248, 250, 252, 0.8) 0%,
+          rgba(241, 245, 249, 0.9) 100%
+        );
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-top: 1px solid var(--color-border);
+        padding: 3rem 2rem 2rem;
+        color: var(--color-text-secondary);
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .footer-section h4 {
+        color: var(--color-text);
+        margin-bottom: 1rem;
+        font-weight: 700;
+        font-size: 1rem;
+      }
+
+      .footer-section p {
+        color: var(--color-text-secondary);
+        line-height: 1.8;
+      }
+
+      .footer-section ul {
+        list-style: none;
+      }
+
+      .footer-section ul li {
+        margin-bottom: 0.65rem;
+      }
+
+      .footer-section ul li a {
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        transition: color 0.3s;
+        font-size: 1rem;
+      }
+
+      .footer-section ul li a:hover {
+        color: var(--color-primary);
+      }
+
+      .footer-bottom {
+        text-align: center;
+        border-top: 1px solid var(--color-border);
+        padding-top: 2rem;
+        margin-top: 2rem;
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .hero-content-blog {
+          grid-template-columns: 1fr;
+          gap: 3rem;
+        }
+
+        .hero-text h1 {
+          font-size: 2.5rem;
+        }
+
+        .blog-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .footer-content {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        nav {
+          width: calc(100% - 2rem);
+          padding: 1rem;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .hero-blog {
+          margin-top: 100px;
+          padding: 3rem 1rem;
+        }
+
+        .hero-text h1 {
+          font-size: 2rem;
+        }
+
+        .hero-text p {
+          font-size: 1rem;
+        }
+
+        .section-header h2 {
+          font-size: 2rem;
+        }
+
+        .blog-section {
+          padding: 4rem 1rem;
+        }
+
+        .footer-content {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        .tabs-nav {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .tab-button {
+          width: 100%;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav>
+      <div class="nav-container">
+        <a href="index.html" class="logo">
+          <img src="assets/oemmart.bkp.png" alt="OEMMart Logo" />
+        </a>
+        <ul class="nav-links">
+          <li><a href="index.html#features">Features</a></li>
+          <li><a href="index.html#Ollie">Ollie AI</a></li>
+          <li><a href="index.html#how">How It Works</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+          <li class="dropdown">
+            <a href="#resources">
+              Resources
+              <span class="dropdown-arrow">▼</span>
+            </a>
+            <div class="dropdown-menu">
+              <a href="about.html">About</a>
+              <a href="blog.html" class="active">Blog</a>
+              <a href="contact.html">Contact</a>
+            </div>
+          </li>
+        </ul>
+        <button onclick="location.href = 'contact.html'" class="cta-btn">
+          Join the Waitlist
+        </button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-blog">
+      <div class="container">
+        <div class="hero-content-blog">
+          <div class="hero-image">
+            <img
+              src="assets/meeting-table-p-800.png"
+              alt="Construction meetings showcasing OEM collaboration"
+              loading="lazy"
+            />
+          </div>
+          <div class="hero-text">
+            <h1>Insights for OEMs, powered by AI</h1>
+            <p>
+              Explore articles on document intelligence, bid analysis, and
+              digital transformation for OEMs. Stay informed with the latest
+              trends and strategies.
+            </p>
+            <div class="tag-group">
+              <div class="tag-item">
+                <svg class="tag-icon" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M4 12C8.41828 12 12 8.41828 12 4C12 8.41828 15.5817 12 20 12C15.5817 12 12 15.5817 12 20C12 15.5817 8.41828 12 4 12Z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <span>AI document analysis</span>
+              </div>
+              <div class="tag-item">
+                <svg class="tag-icon" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M9.24998 18.7103C6.60958 17.6271 4.75 15.0307 4.75 12C4.75 8.96938 6.60958 6.37304 9.24997 5.28979"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M14.75 5.28979C17.3904 6.37303 19.25 8.96938 19.25 12.0001C19.25 15.0307 17.3904 17.6271 14.75 18.7103"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M4 19.2501L8.99998 19.2501C9.13805 19.2501 9.24998 19.1381 9.24998 19.0001L9.24997 14"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M20 4.75L15 4.75003C14.8619 4.75003 14.75 4.86196 14.75 5.00003L14.75 10.0001"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <span>Bid intelligence</span>
+              </div>
+              <div class="tag-item">
+                <svg class="tag-icon" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M17.3654 5.32894C17.8831 5.54543 18.3534 5.86273 18.7495 6.26274C19.146 6.6625 19.4604 7.13723 19.675 7.65978C19.8895 8.18233 20 8.74246 20 9.30814C20 9.87384 19.8895 10.4339 19.675 10.9565C19.4604 11.4791 19.146 11.9538 18.7495 12.3535L12.0001 19L5.2496 12.3535C4.44951 11.5457 4 10.4501 4 9.3076C4 8.16516 4.44951 7.0695 5.2496 6.26166C6.04975 5.45384 7.13498 5 8.26647 5C9.39804 5 10.4833 5.45384 11.2833 6.26166L12.016 6.99843L12.7158 6.26274C13.112 5.86273 13.5823 5.54543 14.0999 5.32894C14.6176 5.11246 15.1724 5.00103 15.7327 5.00103C16.2929 5.00103 16.8478 5.11246 17.3654 5.32894Z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <span>OEM best practices</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blog Posts Section -->
+    <section class="blog-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="eyebrow">Insights & updates</div>
+          <h2>Smarter decisions start here</h2>
+          <p>
+            Explore the latest articles and industry news to help your team work
+            more efficiently with complex documentation.
+          </p>
+        </div>
+
+        <div class="tabs-container">
+          <div class="tabs-nav">
+            <button
+              class="tab-button active"
+              onclick="openTab(event, 'oem-insights')"
+            >
+              OEM Insights
+            </button>
+            <button class="tab-button" onclick="openTab(event, 'ai-insights')">
+              AI Insights
+            </button>
+          </div>
+
+          <!-- OEM Insights Tab -->
+          <div id="oem-insights" class="tab-content active">
+            <div class="blog-grid">
+              <a href="#" class="blog-card">
+                <div class="blog-card-content">
+                  <div class="blog-tag">Tender Review</div>
+                  <h3>OEM trends to watch</h3>
+                  <p>
+                    Stay ahead with the latest trends shaping the future of
+                    original equipment manufacturing.
+                  </p>
+                  <div class="blog-meta">
+                    <span>May 2024</span>
+                  </div>
+                </div>
+              </a>
+
+              <a href="#" class="blog-card">
+                <div class="blog-card-content">
+                  <div class="blog-tag">Support Tools</div>
+                  <h3>Improving after-sales support</h3>
+                  <p>
+                    Explore strategies for leveraging AI to enhance customer
+                    support and service documentation.
+                  </p>
+                  <div class="blog-meta">
+                    <span>February 2024</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- AI Insights Tab -->
+          <div id="ai-insights" class="tab-content">
+            <div class="blog-grid">
+              <a href="#" class="blog-card">
+                <div class="blog-card-content">
+                  <div class="blog-tag">AI Integration</div>
+                  <h3>How AI transforms bid analysis</h3>
+                  <p>
+                    Discover how advanced AI streamlines the review of large
+                    tender documents for OEM teams.
+                  </p>
+                  <div class="blog-meta">
+                    <span>April 2024</span>
+                  </div>
+                </div>
+              </a>
+
+              <a href="#" class="blog-card">
+                <div class="blog-card-content">
+                  <div class="blog-tag">AI Integration</div>
+                  <h3>Integrating AI into workflows</h3>
+                  <p>
+                    Tips for seamlessly adding AI tools to your existing
+                    documentation processes.
+                  </p>
+                  <div class="blog-meta">
+                    <span>February 2024</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>OEMMart</h4>
+          <p>
+            Empowering government contractors with AI-powered tender matching
+            and contract analysis.
+          </p>
+        </div>
+
+        <div class="footer-section">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#pricing">Pricing</a></li>
+            <li><a href="index.html#how">How It Works</a></li>
+            <li><a href="#">Security</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h4>Legal</h4>
+          <ul>
+            <li class="margin-bottom_none">
+              <a
+                href="https://cdn.prod.website-files.com/68a4b5b19d871138a5b8d1d3/68adf8dbf9257704587f4d8f_Privacy-Policy-V3-1-.pdf"
+                target="_blank"
+                class="nav_dropdown-link w-inline-block"
+                ><div class="button_label">Privacy Policy</div></a
+              >
+            </li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="support.html">Support</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>
+          &copy; 2026 OEMMart. All rights reserved. | Helping government
+          contractors find and win more contracts.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      function openTab(evt, tabName) {
+        // Hide all tab content
+        var tabContents = document.getElementsByClassName("tab-content");
+        for (var i = 0; i < tabContents.length; i++) {
+          tabContents[i].classList.remove("active");
+        }
+
+        // Remove active class from all buttons
+        var tabButtons = document.getElementsByClassName("tab-button");
+        for (var i = 0; i < tabButtons.length; i++) {
+          tabButtons[i].classList.remove("active");
+        }
+
+        // Show the current tab and add active class to button
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+      }
+    </script>
+  </body>
+</html>
