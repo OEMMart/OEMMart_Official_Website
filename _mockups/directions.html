@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OEMMart Landing 方向对比 A/B/C</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ed3f2e; --red-deep:#d4441e; --navy:#27276e;
+  --navy-900:#0f1a3e; --navy-800:#152250; --navy-700:#1a2b6d; --navy-100:#dce3f7; --navy-50:#f0f3fc;
+  --bg:#f8f9fd; --card:#ffffff; --ink:#0f1729; --muted:#5b667d; --soft:#94a3b8; --line:#e2e8f0;
+  --ease:cubic-bezier(0.22,1,0.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg)}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+/* ===== 切换器（评审工具，非设计的一部分） ===== */
+.switcher{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:999;display:flex;gap:4px;background:#111827;padding:5px;border-radius:999px;box-shadow:0 8px 32px rgba(15,23,41,.35)}
+.switcher button{border:0;background:transparent;color:#9ca3af;font:600 13px/1 'Inter';padding:10px 18px;border-radius:999px;cursor:pointer;transition:all .2s}
+.switcher button.on{background:#fff;color:#111827}
+.note{background:#111827;color:#d1d5db;font-size:13px;line-height:1.7;padding:14px 24px}
+.note b{color:#fff}
+.note .tag{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:11px;padding:2px 8px;border-radius:4px;margin-right:10px;vertical-align:1px}
+.dir{display:none}
+.dir.on{display:block}
+
+/* ================= 方向 A：Enterprise Trust ================= */
+.a{background:var(--bg);color:var(--ink)}
+.a .nav{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:0 32px;height:72px}
+.a .nav img{height:34px}
+.a .nav .links{display:flex;gap:32px;font-size:15px;font-weight:500;color:var(--muted)}
+.a .nav .links a:hover{color:var(--ink)}
+.a .btn{display:inline-block;background:var(--red);color:#fff;font-weight:600;font-size:15px;padding:12px 24px;border-radius:8px;transition:transform .15s var(--ease), background .2s}
+.a .btn:hover{background:var(--red-deep)}
+.a .btn:active{transform:translateY(1px)}
+.a .btn.ghost{background:transparent;color:var(--navy);border:1.5px solid var(--navy-100)}
+.a .btn.ghost:hover{border-color:var(--navy);background:var(--navy-50)}
+.a .hero{max-width:1200px;margin:0 auto;padding:64px 32px 80px;display:grid;grid-template-columns:5fr 6fr;gap:56px;align-items:center}
+.a .hero h1{font-size:clamp(38px,4.6vw,58px);font-weight:800;letter-spacing:-.03em;line-height:1.05;color:var(--navy-900)}
+.a .hero h1 em{font-style:normal;color:var(--red)}
+.a .hero p{margin:22px 0 30px;font-size:18px;line-height:1.65;color:var(--muted);max-width:44ch}
+.a .hero .ctas{display:flex;gap:14px}
+.a .shot{border-radius:12px;overflow:hidden;border:1px solid var(--line);box-shadow:0 24px 64px rgba(39,39,110,.16)}
+.a .shot .bar{height:34px;background:#f1f5f9;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;padding:0 14px}
+.a .shot .bar i{width:10px;height:10px;border-radius:50%;background:#d7dee9}
+.a .strip{background:var(--navy-900);color:#fff;padding:40px 32px}
+.a .strip .in{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;align-items:center}
+.a .strip .kaeser{font-size:16px;line-height:1.55;color:#c7d0e8;border-right:1px solid rgba(255,255,255,.14);padding-right:40px}
+.a .strip .kaeser b{color:#fff;display:block;font-size:19px;margin-bottom:4px}
+.a .strip .num{font-size:32px;font-weight:800;letter-spacing:-.02em}
+.a .strip .num small{display:block;font-size:13px;font-weight:500;color:#8fa0c9;margin-top:4px;letter-spacing:0}
+.a .sec{max-width:1200px;margin:0 auto;padding:96px 32px}
+.a .sec h2{font-size:clamp(30px,3.4vw,42px);font-weight:800;letter-spacing:-.02em;color:var(--navy-900);max-width:22ch}
+.a .sec .lede{margin-top:14px;font-size:17px;color:var(--muted);max-width:58ch;line-height:1.65}
+.a .how{display:grid;grid-template-columns:5fr 6fr;gap:64px;align-items:center;margin-top:56px}
+.a .steps{display:flex;flex-direction:column}
+.a .step{display:flex;gap:20px;padding:26px 0;border-top:1px solid var(--line)}
+.a .step:last-child{border-bottom:1px solid var(--line)}
+.a .step .n{font-family:'IBM Plex Mono';font-size:14px;font-weight:600;color:var(--red);padding-top:3px}
+.a .step h3{font-size:19px;font-weight:700;color:var(--navy-900)}
+.a .step p{margin-top:6px;font-size:15px;line-height:1.6;color:var(--muted)}
+.a .bento{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:230px 230px;gap:16px;margin-top:56px}
+.a .cell{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px;display:flex;flex-direction:column;justify-content:flex-end}
+.a .cell.tall{grid-row:span 2;justify-content:flex-start;padding-top:32px}
+.a .cell.big{grid-column:1;grid-row:span 2;background:var(--navy-900);color:#fff;border:0;padding:0;overflow:hidden;position:relative;justify-content:flex-start}
+.a .cell.big .txt{padding:32px 32px 20px}
+.a .cell.big img{width:88%;margin-left:12%;border-radius:10px 0 0 0;border:1px solid rgba(255,255,255,.15);border-right:0;border-bottom:0}
+.a .cell.tint{background:var(--navy-50);border-color:var(--navy-100)}
+.a .cell h3{font-size:18px;font-weight:700}
+.a .cell.big h3{font-size:22px}
+.a .cell p{margin-top:8px;font-size:14.5px;line-height:1.55;color:var(--muted)}
+.a .cell.big p{color:#b9c4e2;max-width:52ch}
+.a .fs{font-family:'IBM Plex Mono';font-size:44px;font-weight:600;color:var(--red);margin-bottom:auto}
+.a .price{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.a .price .in{max-width:1200px;margin:0 auto;padding:96px 32px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px;align-items:start}
+.a .price h2{font-size:34px;font-weight:800;letter-spacing:-.02em;color:var(--navy-900)}
+.a .price .plan{border:1.5px solid var(--line);border-radius:14px;padding:32px}
+.a .price .plan.hot{border-color:var(--navy);box-shadow:0 12px 40px rgba(39,39,110,.10)}
+.a .price .amt{font-size:40px;font-weight:800;color:var(--navy-900);margin:14px 0 2px}
+.a .price .amt small{font-size:15px;font-weight:500;color:var(--soft)}
+.a .price .plan p{font-size:14.5px;color:var(--muted);line-height:1.6;margin-top:10px}
+.a .price ul{list-style:none;margin:18px 0 24px;font-size:14.5px;color:var(--ink)}
+.a .price li{padding:7px 0 7px 26px;position:relative}
+.a .price li::before{content:"";position:absolute;left:0;top:12px;width:14px;height:8px;border-left:2.5px solid var(--red);border-bottom:2.5px solid var(--red);transform:rotate(-45deg)}
+.a .cta{background:var(--navy-900);color:#fff;text-align:center;padding:110px 32px}
+.a .cta h2{font-size:clamp(32px,4vw,48px);font-weight:800;letter-spacing:-.02em}
+.a .cta p{margin:16px auto 32px;color:#b9c4e2;font-size:17px;max-width:48ch;line-height:1.6}
+.a .foot{max-width:1200px;margin:0 auto;padding:36px 32px;display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--soft)}
+
+/* ================= 方向 B：Intelligence Terminal ================= */
+.b{background:var(--navy-900);color:#eef1f9}
+.b .nav{display:flex;align-items:center;justify-content:space-between;max-width:1240px;margin:0 auto;padding:0 32px;height:70px;border-bottom:1px solid rgba(255,255,255,.08)}
+.b .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:.01em}
+.b .logo span{color:var(--red)}
+.b .nav .links{display:flex;gap:30px;font-size:14.5px;color:#9aa8cd}
+.b .nav .links a:hover{color:#fff}
+.b .btn{display:inline-block;background:var(--red);color:#fff;font-weight:600;font-size:15px;padding:12px 24px;border-radius:6px}
+.b .btn:hover{background:var(--red-deep)}
+.b .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.25);color:#eef1f9}
+.b .btn.ghost:hover{border-color:#fff}
+.b .hero{max-width:1240px;margin:0 auto;padding:88px 32px 72px;display:grid;grid-template-columns:6fr 5fr;gap:64px;align-items:center}
+.b .hero h1{font-size:clamp(42px,5.2vw,68px);font-weight:800;letter-spacing:-.03em;line-height:1.02}
+.b .hero h1 .r{color:var(--red)}
+.b .hero p{margin:24px 0 32px;font-size:17.5px;line-height:1.7;color:#9aa8cd;max-width:46ch}
+.b .feed{background:var(--navy-800);border:1px solid rgba(255,255,255,.10);border-radius:12px;overflow:hidden}
+.b .feed .head{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.08);font-family:'IBM Plex Mono';font-size:12.5px;color:#8fa0c9;display:flex;justify-content:space-between}
+.b .row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.06)}
+.b .row:last-child{border-bottom:0}
+.b .row .t{font-size:14px;line-height:1.45;color:#dce3f7;max-width:34ch}
+.b .row .t small{display:block;font-family:'IBM Plex Mono';font-size:11.5px;color:#8fa0c9;margin-top:4px}
+.b .score{font-family:'IBM Plex Mono';font-size:20px;font-weight:600;padding:6px 12px;border-radius:6px;flex-shrink:0}
+.b .s1{color:#7ef0bc;background:rgba(16,185,129,.12)}
+.b .s2{color:#fcd34d;background:rgba(245,158,11,.10)}
+.b .s3{color:#8fa0c9;background:rgba(148,163,184,.10)}
+.b .ticker{border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);padding:22px 0;overflow:hidden;white-space:nowrap}
+.b .ticker .in{display:inline-block;font-family:'IBM Plex Mono';font-size:13.5px;color:#8fa0c9;animation:tick 36s linear infinite;padding-left:100%}
+@keyframes tick{to{transform:translateX(-100%)}}
+.b .ticker b{color:#eef1f9;font-weight:600}
+.b .sec{max-width:1240px;margin:0 auto;padding:104px 32px}
+.b .sec h2{font-size:clamp(30px,3.6vw,44px);font-weight:800;letter-spacing:-.02em;max-width:24ch}
+.b .sec .lede{margin-top:14px;font-size:16.5px;color:#9aa8cd;max-width:60ch;line-height:1.7}
+.b .shotwrap{margin-top:56px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.12);box-shadow:0 32px 80px rgba(0,0,0,.45)}
+.b .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.b .panel{background:var(--navy-800);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:30px}
+.b .panel h3{font-size:19px;font-weight:700}
+.b .panel p{margin-top:10px;font-size:14.5px;line-height:1.65;color:#9aa8cd}
+.b .panel .mono{font-size:12.5px;color:var(--red);margin-bottom:14px;display:block}
+.b .kae{max-width:1240px;margin:0 auto;padding:0 32px 104px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.b .kae .box{background:linear-gradient(135deg,var(--navy-800),var(--navy-700));border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:44px}
+.b .kae .box .wordmark{font-size:26px;font-weight:800;letter-spacing:.14em;color:#fff}
+.b .kae .box p{margin-top:16px;font-size:15px;line-height:1.7;color:#b9c4e2}
+.b .kae h2{font-size:clamp(28px,3.2vw,40px);font-weight:800;letter-spacing:-.02em;line-height:1.15}
+.b .kae .facts{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.b .kae .f .n{font-family:'IBM Plex Mono';font-size:26px;font-weight:600;color:var(--red)}
+.b .kae .f small{display:block;font-size:13px;color:#8fa0c9;margin-top:4px;line-height:1.5}
+.b .cta{text-align:center;padding:120px 32px;border-top:1px solid rgba(255,255,255,.08)}
+.b .cta h2{font-size:clamp(34px,4.4vw,54px);font-weight:800;letter-spacing:-.03em}
+.b .cta p{margin:18px auto 34px;color:#9aa8cd;font-size:17px;max-width:44ch;line-height:1.7}
+.b .foot{max-width:1240px;margin:0 auto;padding:34px 32px;display:flex;justify-content:space-between;font-size:13.5px;color:#8fa0c9;border-top:1px solid rgba(255,255,255,.08)}
+
+/* ================= 方向 C：Editorial Clarity ================= */
+.c{background:#fcfcfa;color:#111420}
+.c .nav{display:flex;align-items:center;justify-content:space-between;max-width:1280px;margin:0 auto;padding:0 40px;height:76px}
+.c .nav img{height:32px}
+.c .nav .links{display:flex;gap:36px;font-size:15px;font-weight:500;color:#565d6d}
+.c .btn{display:inline-block;background:#111420;color:#fff;font-weight:600;font-size:15px;padding:13px 26px;border-radius:999px}
+.c .btn:hover{background:var(--navy)}
+.c .btn.red{background:var(--red)}
+.c .btn.red:hover{background:var(--red-deep)}
+.c .hero{max-width:1280px;margin:0 auto;padding:96px 40px 72px;text-align:center}
+.c .hero h1{font-size:clamp(48px,7vw,96px);font-weight:900;letter-spacing:-.045em;line-height:.98}
+.c .hero h1 .strike{position:relative;white-space:nowrap}
+.c .hero h1 .strike::after{content:"";position:absolute;left:-2%;right:-2%;top:52%;height:.09em;background:var(--red);transform:rotate(-2deg)}
+.c .hero p{margin:32px auto 40px;font-size:20px;line-height:1.6;color:#565d6d;max-width:34ch}
+.c .hero .ctas{display:flex;gap:14px;justify-content:center}
+.c .full{max-width:1120px;margin:0 auto;padding:0 40px 40px}
+.c .full .frame{border-radius:16px;overflow:hidden;border:1px solid #e4e4de;box-shadow:0 40px 100px rgba(17,20,32,.14)}
+.c .facts{max-width:1120px;margin:0 auto;padding:40px 40px 104px;display:flex;justify-content:center;gap:64px;flex-wrap:wrap;text-align:center}
+.c .facts .f{font-size:15px;color:#565d6d}
+.c .facts .f b{display:block;font-size:26px;font-weight:800;color:#111420;letter-spacing:-.02em;margin-bottom:4px}
+.c .band{background:#111420;color:#fcfcfa;padding:112px 40px}
+.c .band .in{max-width:1120px;margin:0 auto}
+.c .band h2{font-size:clamp(34px,4.6vw,60px);font-weight:900;letter-spacing:-.035em;line-height:1.05;max-width:20ch}
+.c .band h2 em{font-style:italic;color:var(--red);line-height:1.1;padding-bottom:4px}
+.c .band .grid{margin-top:64px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-left:1px solid rgba(255,255,255,.14)}
+.c .band .g{padding:8px 36px 8px 28px;border-right:1px solid rgba(255,255,255,.14)}
+.c .band .g h3{font-size:18px;font-weight:700}
+.c .band .g p{margin-top:10px;font-size:14.5px;line-height:1.7;color:#a3a9b8}
+.c .kae{max-width:1120px;margin:0 auto;padding:104px 40px;text-align:center}
+.c .kae .line{font-size:clamp(24px,3vw,36px);font-weight:700;letter-spacing:-.02em;line-height:1.35;max-width:26ch;margin:0 auto}
+.c .kae .line em{font-style:normal;color:var(--red)}
+.c .kae .who{margin-top:24px;font-size:15px;color:#565d6d}
+.c .pricing{border-top:1px solid #e4e4de;background:#fff}
+.c .pricing .in{max-width:1120px;margin:0 auto;padding:104px 40px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.c .pricing h2{font-size:clamp(32px,4vw,52px);font-weight:900;letter-spacing:-.035em;line-height:1.05}
+.c .pricing .sub{margin-top:18px;font-size:16.5px;color:#565d6d;line-height:1.65;max-width:38ch}
+.c .pricing .tiers{display:flex;flex-direction:column;gap:0;border-top:1px solid #e4e4de}
+.c .tier{display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding:28px 4px;border-bottom:1px solid #e4e4de}
+.c .tier h3{font-size:19px;font-weight:700}
+.c .tier p{font-size:14px;color:#565d6d;margin-top:4px}
+.c .tier .amt{font-size:30px;font-weight:800;letter-spacing:-.02em;white-space:nowrap}
+.c .tier .amt small{font-size:14px;font-weight:500;color:#9aa0ad}
+.c .cta{padding:120px 40px;text-align:center}
+.c .cta h2{font-size:clamp(40px,6vw,80px);font-weight:900;letter-spacing:-.04em;line-height:1}
+.c .cta p{margin:24px auto 36px;font-size:18px;color:#565d6d;max-width:36ch;line-height:1.6}
+.c .foot{max-width:1280px;margin:0 auto;padding:36px 40px;display:flex;justify-content:space-between;font-size:14px;color:#9aa0ad;border-top:1px solid #e4e4de}
+
+@media (max-width:900px){
+  .a .hero,.a .how,.b .hero,.b .kae,.c .pricing .in{grid-template-columns:1fr}
+  .a .strip .in{grid-template-columns:1fr 1fr}
+  .a .strip .kaeser{border:0;padding:0;grid-column:span 2}
+  .a .bento{grid-template-columns:1fr;grid-auto-rows:auto}
+  .a .cell.big{grid-column:span 1;grid-row:span 1}
+  .a .cell.tall{grid-row:span 1}
+  .a .bento{grid-template-rows:auto}
+  .a .price .in{grid-template-columns:1fr}
+  .b .duo{grid-template-columns:1fr}
+  .c .band .grid{grid-template-columns:1fr;border-left:0}
+  .c .band .g{border-right:0;border-top:1px solid rgba(255,255,255,.14);padding:24px 4px}
+  .a .nav .links,.b .nav .links,.c .nav .links{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .b .ticker .in{animation:none;padding-left:0}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ 方向 A ============ -->
+<div class="dir a on" id="dirA">
+<div class="note"><span class="tag">方向 A</span><b>Enterprise Trust 藏青权威</b>：浅底 + 藏青主导，红色只做唯一 CTA 强调色。最接近成熟 B2B SaaS 的信任感（对标 Samsara/Procore 气质），采购决策人最不会反感的方向。转化导向最强，风险最低，个性中等。</div>
+
+<nav class="nav">
+  <img src="../images/oemmart-20logo-20no-20inc.png" alt="OEMMart">
+  <div class="links"><a href="#">Product</a><a href="#">How it works</a><a href="#">Pricing</a><a href="#">About</a></div>
+  <a class="btn" href="#">Book a demo</a>
+</nav>
+
+<header class="hero">
+  <div>
+    <h1>Win the government bids you're <em>built</em> for.</h1>
+    <p>Ollie reads every public tender in the U.S. and Canada and flags the ones your products can win.</p>
+    <div class="ctas"><a class="btn" href="#">Book a demo</a><a class="btn ghost" href="#">See how it works</a></div>
+  </div>
+  <div class="shot">
+    <div class="bar"><i></i><i></i><i></i></div>
+    <img src="../images/screenshot-202025-08-27-20at-2011.48.41-e2-80-afam-p-1080.png" alt="OEMMart cited document Q&A">
+  </div>
+</header>
+
+<section class="strip">
+  <div class="in">
+    <div class="kaeser"><b>Kaeser Compressors USA</b>runs OEMMart to screen federal and state tenders across the country.</div>
+    <div class="num">SAM.gov<small>plus 20+ state portals</small></div>
+    <div class="num">2 provinces<small>Alberta and Ontario</small></div>
+    <div class="num">Every morning<small>matched bids in your inbox</small></div>
+  </div>
+</section>
+
+<section class="sec">
+  <h2>From 100-page RFP to bid decision in minutes</h2>
+  <p class="lede">Your team stops skimming portals and PDFs. Ollie does the reading, you make the call.</p>
+  <div class="how">
+    <div class="steps">
+      <div class="step"><span class="n">01</span><div><h3>Ollie watches every portal</h3><p>Federal, state and provincial tenders are collected and read the moment they publish.</p></div></div>
+      <div class="step"><span class="n">02</span><div><h3>FitScore ranks what fits you</h3><p>Each bid is scored against your product catalogue. High scores land in your morning email.</p></div></div>
+      <div class="step"><span class="n">03</span><div><h3>Ask, verify, draft</h3><p>Chat with any document, get answers with page-level citations, and generate a first-draft response.</p></div></div>
+    </div>
+    <div class="shot">
+      <div class="bar"><i></i><i></i><i></i></div>
+      <img src="../images/screenshot-202025-08-27-20at-2011.52.20-e2-80-afam-p-1080.png" alt="Preloaded custom questions running on tender documents">
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:0">
+  <h2>Built for teams that answer RFPs for a living</h2>
+  <div class="bento">
+    <div class="cell big">
+      <div class="txt"><h3>Answers with citations, not guesses</h3><p>Every answer links back to the exact page of the tender document, so your compliance team can verify in one click.</p></div>
+      <img src="../images/screenshot-202025-08-27-20at-2011.48.41-e2-80-afam-p-1080.png" alt="Cited answers">
+    </div>
+    <div class="cell tint tall"><div class="fs">87</div><h3>FitScore</h3><p>One number that tells you whether a bid is worth your team's week.</p></div>
+    <div class="cell"><h3>Preloaded questions</h3><p>Save your standard qualification questions once. Run them on every new tender automatically.</p></div>
+    <div class="cell"><h3>First-draft responses</h3><p>Generate a structured draft response from the tender itself. Your experts edit instead of starting blank.</p></div>
+  </div>
+</section>
+
+<section class="price">
+  <div class="in">
+    <div>
+      <h2>Pricing that pays for itself with one win</h2>
+      <p class="lede" style="margin-top:14px;font-size:16px;color:var(--muted);line-height:1.65">No credits, no seats math to start. Pick your coverage and go.</p>
+    </div>
+    <div class="plan">
+      <h3>Regional</h3>
+      <div class="amt">$300<small>/month</small></div>
+      <p>One state or province, full product access.</p>
+      <ul><li>Daily matched-bid email</li><li>FitScore on every tender</li><li>Cited document Q&amp;A</li></ul>
+      <a class="btn ghost" href="#">Book a demo</a>
+    </div>
+    <div class="plan hot">
+      <h3>National</h3>
+      <div class="amt">$1,000<small>/month</small></div>
+      <p>Full U.S. and Canada coverage. What Kaeser runs.</p>
+      <ul><li>Everything in Regional</li><li>All portals, all regions</li><li>AI first-draft responses</li><li>Priority support</li></ul>
+      <a class="btn" href="#">Book a demo</a>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <h2>Your next contract is already published.</h2>
+  <p>Somewhere in today's tenders there is a bid your products were built for. Ollie will find it by tomorrow morning.</p>
+  <a class="btn" href="#">Book a demo</a>
+</section>
+
+<footer class="foot"><span>OEMMart Inc. Toronto, Canada</span><span>Privacy · Terms · Contact</span></footer>
+</div>
+
+<!-- ============ 方向 B ============ -->
+<div class="dir b" id="dirB">
+<div class="note"><span class="tag">方向 B</span><b>Intelligence Terminal 深夜情报台</b>：整页深藏青，等宽字体数据感，FitScore 实时流是主视觉。气质对标 Bloomberg Terminal / Linear，和 GovWin 等老牌竞品的"企业软件感"差异最大，最能体现 "demand intelligence" 定位。个性最强，但对保守采购人群稍显激进。</div>
+
+<nav class="nav">
+  <div class="logo">OEM<span>MART</span></div>
+  <div class="links"><a href="#">Product</a><a href="#">Coverage</a><a href="#">Pricing</a><a href="#">About</a></div>
+  <a class="btn" href="#">Book a demo</a>
+</nav>
+
+<header class="hero">
+  <div>
+    <h1>Every tender. <span class="r">Read. Scored. Drafted.</span></h1>
+    <p>OEMMart watches SAM.gov, 20+ states and 2 Canadian provinces, then tells you which bids fit your catalogue.</p>
+    <div class="ctas" style="display:flex;gap:14px"><a class="btn" href="#">Book a demo</a><a class="btn ghost" href="#">View live coverage</a></div>
+  </div>
+  <div class="feed">
+    <div class="head"><span>THIS MORNING'S MATCHES</span><span>FITSCORE</span></div>
+    <div class="row"><div class="t">Rotary screw air compressors, wastewater plant retrofit<small>State of Ohio · closes in 21 days</small></div><span class="score s1">92</span></div>
+    <div class="row"><div class="t">Compressed air system, naval yard maintenance contract<small>SAM.gov · closes in 34 days</small></div><span class="score s1">88</span></div>
+    <div class="row"><div class="t">HVAC and air treatment equipment, school district<small>Province of Ontario · closes in 12 days</small></div><span class="score s2">61</span></div>
+    <div class="row"><div class="t">General industrial equipment, standing offer renewal<small>State of Texas · closes in 40 days</small></div><span class="score s3">34</span></div>
+  </div>
+</header>
+
+<div class="ticker"><div class="in"><b>Coverage:</b> SAM.gov federal &nbsp;·&nbsp; 20+ U.S. state portals &nbsp;·&nbsp; Alberta &nbsp;·&nbsp; Ontario &nbsp;·&nbsp; private aggregators &nbsp;·&nbsp; new tenders read every morning before your first coffee &nbsp;·&nbsp; <b>Coverage:</b> SAM.gov federal &nbsp;·&nbsp; 20+ U.S. state portals &nbsp;·&nbsp; Alberta &nbsp;·&nbsp; Ontario &nbsp;·&nbsp; private aggregators</div></div>
+
+<section class="sec">
+  <h2>Your bid desk, minus the reading</h2>
+  <p class="lede">Ollie answers questions straight from the tender documents, with page-level citations your compliance team can verify.</p>
+  <div class="shotwrap"><img src="../images/screenshot-202025-08-27-20at-2011.48.41-e2-80-afam-p-1080.png" alt="Cited answers from tender documents"></div>
+  <div class="duo">
+    <div class="panel"><span class="mono">PRELOADED Q&amp;A</span><h3>Your qualification checklist, automated</h3><p>Save the five questions your team always asks. Every new tender arrives with them already answered.</p></div>
+    <div class="panel"><span class="mono">AI FIRST DRAFT</span><h3>Start from page 12, not page zero</h3><p>Generate a structured draft response from the tender itself. Experts refine, nobody starts blank.</p></div>
+  </div>
+</section>
+
+<section class="kae">
+  <div class="box">
+    <div class="wordmark">KAESER</div>
+    <p>Kaeser Compressors USA runs OEMMart nationwide to screen federal and state tenders for compressed air systems.</p>
+  </div>
+  <div>
+    <h2>Built with a manufacturer, not for a demo</h2>
+    <div class="facts">
+      <div class="f"><div class="n">2025</div><small>paying customer since</small></div>
+      <div class="f"><div class="n">50</div><small>states screened daily</small></div>
+      <div class="f"><div class="n">5</div><small>qualification questions preloaded per tender</small></div>
+      <div class="f"><div class="n">1</div><small>morning email replaces portal patrol</small></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <h2>The incumbents match keywords.<br>Ollie reads.</h2>
+  <p>See the difference on your own product line in a 30-minute demo.</p>
+  <a class="btn" href="#">Book a demo</a>
+</section>
+
+<footer class="foot"><span>OEMMart Inc. Toronto, Canada</span><span>Privacy · Terms · Contact</span></footer>
+</div>
+
+<!-- ============ 方向 C ============ -->
+<div class="dir c" id="dirC">
+<div class="note"><span class="tag">方向 C</span><b>Editorial Clarity 大字宣言</b>：接近海报的巨型排版，把"一句话让客户看明白"推到极致，首屏只有一句话和一张真实产品图。信息最少、姿态最自信，适合品牌想显得"新物种"。风险是内容纵深浅，需要靠 demo 承接细节。</div>
+
+<nav class="nav">
+  <img src="../images/oemmart-20logo-20no-20inc.png" alt="OEMMart">
+  <div class="links"><a href="#">Product</a><a href="#">Pricing</a><a href="#">About</a></div>
+  <a class="btn red" href="#">Book a demo</a>
+</nav>
+
+<header class="hero">
+  <h1><span class="strike">Stop reading</span><br>100-page RFPs.</h1>
+  <p>Ollie reads them for you, scores the fit, and drafts your response. You just decide to bid.</p>
+  <div class="ctas"><a class="btn red" href="#">Book a demo</a><a class="btn" href="#">See it work</a></div>
+</header>
+
+<div class="full">
+  <div class="frame"><img src="../images/screenshot-202025-08-27-20at-2011.52.20-e2-80-afam-p-1080.png" alt="OEMMart running preloaded questions on tender documents"></div>
+</div>
+
+<div class="facts">
+  <div class="f"><b>SAM.gov + 20 states</b>U.S. coverage</div>
+  <div class="f"><b>AB + ON</b>Canadian coverage</div>
+  <div class="f"><b>Every morning</b>matched bids, scored</div>
+  <div class="f"><b>Page-level</b>citations on every answer</div>
+</div>
+
+<section class="band">
+  <div class="in">
+    <h2>Three things Ollie does <em>while you sleep.</em></h2>
+    <div class="grid">
+      <div class="g"><h3>Reads every new tender</h3><p>Federal, state and provincial portals, checked and read overnight. Nothing slips past because nobody had time.</p></div>
+      <div class="g"><h3>Scores the fit</h3><p>FitScore compares each tender against your product catalogue and ranks what is worth your attention.</p></div>
+      <div class="g"><h3>Preps your answers</h3><p>Your standard qualification questions arrive pre-answered, with citations, before you open the document.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="kae">
+  <div class="line">Kaeser Compressors USA screens tenders across <em>all 50 states</em> with OEMMart.</div>
+  <div class="who">Paying customer since 2025. Name and logo used with permission.</div>
+</section>
+
+<section class="pricing">
+  <div class="in">
+    <div>
+      <h2>One price. No credit math.</h2>
+      <p class="sub">Coverage-based pricing. Start regional, go national when the wins stack up.</p>
+    </div>
+    <div class="tiers">
+      <div class="tier"><div><h3>Regional</h3><p>One state or province</p></div><div class="amt">$300<small>/mo</small></div></div>
+      <div class="tier"><div><h3>National</h3><p>Full U.S. and Canada coverage</p></div><div class="amt">$1,000<small>/mo</small></div></div>
+      <div class="tier"><div><h3>Enterprise</h3><p>Teams, integrations, onboarding</p></div><div class="amt">Let's talk</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <h2>Bid on the right things.</h2>
+  <p>A 30-minute demo on your own product line. No slides.</p>
+  <a class="btn red" href="#">Book a demo</a>
+</section>
+
+<footer class="foot"><span>OEMMart Inc. Toronto, Canada</span><span>Privacy · Terms · Contact</span></footer>
+</div>
+
+<div class="switcher">
+  <button class="on" data-d="dirA">方向 A · 权威</button>
+  <button data-d="dirB">方向 B · 情报台</button>
+  <button data-d="dirC">方向 C · 宣言</button>
+</div>
+
+<script>
+document.querySelectorAll('.switcher button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.switcher button').forEach(b=>b.classList.remove('on'));
+    document.querySelectorAll('.dir').forEach(d=>d.classList.remove('on'));
+    btn.classList.add('on');
+    document.getElementById(btn.dataset.d).classList.add('on');
+    window.scrollTo(0,0);
+  });
+});
+</script>
+</body>
+</html>

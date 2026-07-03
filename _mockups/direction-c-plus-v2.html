@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OEMMart 方向 C+ v2 · Visual-First</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ed3f2e; --red-deep:#d4441e; --navy:#27276e;
+  --navy-900:#0f1a3e; --navy-800:#152250;
+  --paper:#fcfcfa; --ink:#111420; --muted:#565d6d; --soft:#9aa0ad; --line:#e4e4de;
+  --nav-ink:#eef1f9; --nav-bg:rgba(15,26,62,.4);
+  --spring:cubic-bezier(0.32,0.72,0,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--paper);overflow-x:hidden}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+.note{position:fixed;left:16px;bottom:16px;z-index:80;max-width:400px;background:#111827;color:#d1d5db;font-size:12.5px;line-height:1.7;padding:12px 16px;border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,.4);opacity:.94}
+.note b{color:#fff}
+.note .tag{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:11px;padding:2px 8px;border-radius:4px;margin-right:8px}
+.note a{color:#93c5fd;text-decoration:underline}
+
+/* ===== 漂浮胶囊导航 ===== */
+.nav{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:28px;padding:9px 9px 9px 24px;border-radius:999px;color:var(--nav-ink);background:var(--nav-bg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 32px rgba(15,26,62,.25);transition:background .4s,border-color .4s}
+body.lit .nav{--nav-ink:#111420;--nav-bg:rgba(252,252,250,.72);border-color:rgba(17,20,32,.08);box-shadow:0 8px 32px rgba(17,20,32,.10)}
+.nav .logoimg{height:28px;width:auto;display:block;transition:filter .4s}
+body:not(.lit):not(.static) .nav .logoimg{filter:brightness(0) invert(1)}
+.nav .links{display:flex;gap:24px;font-size:14px;font-weight:500;color:var(--nav-ink);opacity:.85}
+.nav .links a{transition:opacity .3s}
+.nav .links a:hover{opacity:.6}
+
+/* ===== 按钮：胶囊 + 内嵌圆箭头 ===== */
+.btn{display:inline-flex;align-items:center;gap:12px;font-weight:600;font-size:15px;padding:8px 8px 8px 22px;border-radius:999px;cursor:pointer;border:0;transition:transform .5s var(--spring),background .4s var(--spring)}
+.btn:active{transform:scale(.97)}
+.btn .ic{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;transition:transform .5s var(--spring)}
+.btn:hover .ic{transform:translate(2px,-1px) scale(1.06)}
+.btn.red{background:var(--red);color:#fff}
+.btn.red:hover{background:var(--red-deep)}
+.btn.red .ic{background:rgba(255,255,255,.18)}
+.btn.dark{background:var(--ink);color:#fff}
+.btn.dark:hover{background:var(--navy)}
+.btn.dark .ic{background:rgba(255,255,255,.12)}
+.btn.plain{padding:8px 22px}
+
+/* ===== 变身舞台 ===== */
+.stage{position:relative;min-height:100dvh;background:var(--navy-900);overflow:hidden}
+.stage .light{position:absolute;inset:0;background:var(--paper);opacity:0;pointer-events:none}
+.docf{position:absolute;will-change:transform}
+.doc{width:210px;background:#fff;border-radius:10px;padding:14px 14px 12px;box-shadow:0 18px 50px rgba(0,0,0,.42);position:relative;will-change:transform,opacity}
+.doc .fn{font-family:'IBM Plex Mono';font-size:10.5px;font-weight:600;color:#334;line-height:1.4;word-break:break-all;border-bottom:1px solid #e8e8e2;padding-bottom:8px;margin-bottom:9px}
+.doc .tx{height:64px;background:repeating-linear-gradient(#0000 0 3px,#d7d7cf 3px 5px,#0000 5px 8px)}
+.doc .tx.short{height:38px}
+.doc .meta{margin-top:9px;font-family:'IBM Plex Mono';font-size:10px;color:#8a8f9c;display:flex;justify-content:space-between}
+.doc .due{position:absolute;top:-10px;right:-14px;background:var(--red);color:#fff;font-family:'IBM Plex Mono';font-size:10px;font-weight:600;padding:5px 9px;border-radius:4px;transform:rotate(6deg);box-shadow:0 6px 16px rgba(237,63,46,.4)}
+.doc.sigdoc{border-left:3px solid var(--red)}
+.doc.sigdoc .fn{color:var(--red-deep);letter-spacing:.08em}
+@media (prefers-reduced-motion: no-preference){
+  .docf{animation:drift 6s ease-in-out infinite alternate}
+  .docf:nth-child(odd){animation-duration:7.5s;animation-delay:-2s}
+  @keyframes drift{from{transform:translateY(-7px)}to{transform:translateY(7px)}}
+  .doc .due{animation:throb 2.4s ease-in-out infinite}
+  @keyframes throb{0%,100%{transform:rotate(6deg) scale(1)}50%{transform:rotate(6deg) scale(1.08)}}
+}
+.orb{position:absolute;left:50%;top:44%;width:150px;height:150px;transform:translate(-50%,-50%) scale(.4);opacity:0;border-radius:50%;background:radial-gradient(circle at 32% 28%,#ff7a5e,var(--red) 42%,var(--navy) 100%);box-shadow:0 0 90px rgba(237,63,46,.45), inset 0 2px 18px rgba(255,255,255,.35);will-change:transform,opacity}
+.copy{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px}
+.copy.before{color:#eef1f9;z-index:3}
+.copy.before h1{font-size:clamp(34px,5vw,64px);font-weight:900;letter-spacing:-.04em;line-height:1.02;max-width:16ch;text-shadow:0 4px 40px rgba(15,26,62,.8)}
+.copy.before p{margin-top:22px;font-size:18px;line-height:1.6;color:#b9c4e2;max-width:44ch;text-shadow:0 2px 20px rgba(15,26,62,.9)}
+.copy.after{z-index:4;visibility:hidden}
+.copy.after .mark{height:40px;margin:0 auto 28px}
+.copy.after h1{font-size:clamp(40px,6.4vw,88px);font-weight:900;letter-spacing:-.045em;line-height:.98;color:var(--ink)}
+.copy.after h1 em{font-style:normal;color:var(--red)}
+.copy.after p{margin:26px auto 34px;font-size:19px;line-height:1.6;color:var(--muted);max-width:38ch}
+.copy.after .ctas{display:flex;gap:14px;justify-content:center}
+.copy.after > *{will-change:transform,opacity}
+
+/* ===== 双层镶嵌容器 ===== */
+.shell{background:rgba(17,20,32,.045);border:1px solid rgba(17,20,32,.07);padding:9px;border-radius:26px}
+.shell>.core{border-radius:18px;overflow:hidden;background:#fff;box-shadow:inset 0 1px 1px rgba(255,255,255,.5)}
+
+/* ===== Before/After 滑块 ===== */
+.sec{max-width:1160px;margin:0 auto;padding:130px 40px}
+.kick{font-family:'IBM Plex Mono';font-size:12px;font-weight:600;letter-spacing:.18em;color:var(--red);margin-bottom:18px}
+.sec h2{font-size:clamp(36px,5.4vw,72px);font-weight:900;letter-spacing:-.04em;line-height:1;max-width:20ch}
+.cmp-wrap{margin-top:52px}
+.cmp{position:relative;border-radius:18px;overflow:hidden;user-select:none;touch-action:pan-y;cursor:ew-resize}
+.cmp .side{padding:44px 48px;min-height:440px}
+.cmp .side.b4{background:#e9eaee;padding-right:48%}
+.cmp .side.af{position:absolute;inset:0;background:var(--paper);clip-path:inset(0 0 0 var(--x,55%));display:flex;justify-content:flex-end}
+.cmp .afin{width:44%;min-width:340px;padding:44px 48px 44px 0;display:flex;flex-direction:column;align-items:flex-start}
+.cmp .side.af{padding:0}
+.cmp .label{display:inline-block;font-family:'IBM Plex Mono';font-size:11.5px;font-weight:600;letter-spacing:.08em;padding:6px 12px;border-radius:5px;margin-bottom:26px}
+.cmp .b4 .label{background:#d3d5db;color:#4a4f5c}
+.cmp .af .label{background:var(--red);color:#fff}
+.cmp h3{font-size:21px;font-weight:800;letter-spacing:-.02em;margin-bottom:20px}
+.cmp .b4 h3{color:#4a4f5c;max-width:20ch}
+.portal{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;background:#f2f3f5;border:1px solid #dcdee4;border-radius:8px;margin-bottom:9px;font-size:14.5px;color:#4a4f5c;max-width:480px;width:100%}
+.portal b{font-weight:600}
+.portal span{font-family:'IBM Plex Mono';font-size:12px;color:#8a8f9c}
+.mail{width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 12px 36px rgba(17,20,32,.08)}
+.mail .mh{padding:16px 20px;border-bottom:1px solid var(--line);font-size:14px}
+.mail .mh b{display:block;font-size:15px}
+.mail .mh span{color:var(--soft);font-size:12.5px;font-family:'IBM Plex Mono'}
+.match{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 20px;border-bottom:1px solid #f0f0ec}
+.match:last-child{border-bottom:0}
+.match .t{font-size:14px;line-height:1.45}
+.match .t small{display:block;font-family:'IBM Plex Mono';font-size:11px;color:var(--soft);margin-top:3px}
+.match .sc{font-family:'IBM Plex Mono';font-size:17px;font-weight:600;padding:5px 11px;border-radius:6px;flex-shrink:0}
+.sc.hi{color:#0a7d52;background:#e2f6ec}
+.sc.mid{color:#9a6a05;background:#fdf3d8}
+.handle{position:absolute;top:0;bottom:0;left:var(--x,55%);width:3px;background:var(--red);z-index:5;pointer-events:none}
+.handle::after{content:"◂ ▸";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--red);color:#fff;font-size:13px;letter-spacing:2px;padding:10px 13px;border-radius:999px;white-space:nowrap;box-shadow:0 8px 24px rgba(237,63,46,.45)}
+
+/* ===== Ollie 机器（深夜流水线） ===== */
+.machine{background:var(--navy-900);color:#eef1f9;padding:150px 0 130px;overflow:hidden;position:relative}
+.machine h2{text-align:center;font-size:clamp(40px,6.4vw,92px);font-weight:900;letter-spacing:-.045em;line-height:1}
+.machine h2 em{font-style:italic;color:var(--red);padding-bottom:6px;line-height:1.1}
+.pipe{position:relative;max-width:1240px;margin:90px auto 0;height:300px}
+.pipe .rail{position:absolute;left:4%;right:4%;top:50%;height:1px;background:linear-gradient(90deg,#0000,rgba(255,255,255,.22) 12%,rgba(255,255,255,.22) 88%,#0000)}
+.pipe .core-orb{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:130px;height:130px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#ff7a5e,var(--red) 42%,var(--navy) 100%);box-shadow:0 0 70px rgba(237,63,46,.5),inset 0 2px 16px rgba(255,255,255,.35);z-index:3}
+.pipe .ring{position:absolute;left:50%;top:50%;width:130px;height:130px;border-radius:50%;border:1px solid rgba(237,63,46,.6);transform:translate(-50%,-50%);z-index:2}
+.minidoc{position:absolute;top:50%;left:6%;width:74px;padding:8px;background:#fff;border-radius:6px;box-shadow:0 10px 26px rgba(0,0,0,.4);opacity:0;z-index:2}
+.minidoc .l{height:4px;background:#d7d7cf;border-radius:2px;margin-bottom:4px}
+.minidoc .l:nth-child(2){width:70%}
+.minidoc .l:last-child{width:45%;margin-bottom:0}
+.outchip{position:absolute;top:50%;left:56%;opacity:0;z-index:2;font-family:'IBM Plex Mono';font-weight:600;white-space:nowrap;border-radius:8px;padding:10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.outchip.score{background:#123c2d;color:#7ef0bc;font-size:20px}
+.outchip.cite{background:#fff;color:var(--ink);font-size:11.5px}
+.outchip.draft{background:var(--navy);color:#dce3f7;font-size:11.5px}
+@media (prefers-reduced-motion: no-preference){
+  .pipe .core-orb{animation:breathe 3.2s ease-in-out infinite}
+  @keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.05)}}
+  .pipe .ring{animation:ripple 3.2s var(--spring) infinite}
+  @keyframes ripple{from{transform:translate(-50%,-50%) scale(1);opacity:.7}to{transform:translate(-50%,-50%) scale(2.4);opacity:0}}
+  .minidoc{animation:flowin 7.2s cubic-bezier(.45,0,.55,1) infinite}
+  .minidoc.d2{animation-delay:2.4s;top:38%}
+  .minidoc.d3{animation-delay:4.8s;top:60%}
+  @keyframes flowin{
+    0%{opacity:0;transform:translate(0,-50%) scale(1)}
+    8%{opacity:1}
+    46%{opacity:1;transform:translate(calc(44vw - 120px),-50%) scale(.72) rotate(4deg)}
+    54%{opacity:0;transform:translate(calc(44vw - 60px),-50%) scale(.1) rotate(30deg)}
+    100%{opacity:0;transform:translate(calc(44vw - 60px),-50%) scale(.1)}
+  }
+  .outchip{animation:flowout 7.2s cubic-bezier(.45,0,.55,1) infinite}
+  .outchip.score{animation-delay:1.2s}
+  .outchip.cite{animation-delay:3.6s;top:36%}
+  .outchip.draft{animation-delay:6s;top:62%}
+  @keyframes flowout{
+    0%{opacity:0;transform:translate(0,-50%) scale(.4)}
+    7%{opacity:1;transform:translate(30px,-50%) scale(1.05)}
+    11%{transform:translate(44px,-50%) scale(1)}
+    46%{opacity:1;transform:translate(min(30vw,340px),-50%) scale(1)}
+    58%{opacity:0;transform:translate(min(34vw,380px),-50%) scale(.92)}
+    100%{opacity:0}
+  }
+}
+@media (prefers-reduced-motion: reduce){
+  .minidoc{opacity:1;left:10%}
+  .minidoc.d2{left:16%;top:38%}
+  .minidoc.d3{left:22%;top:60%}
+  .outchip{opacity:1;left:auto;right:18%}
+  .outchip.cite{right:8%;top:36%}
+  .outchip.draft{right:12%;top:62%}
+}
+.pipe-labels{max-width:1240px;margin:26px auto 0;display:flex;justify-content:space-between;padding:0 8%;font-family:'IBM Plex Mono';font-size:12.5px;font-weight:600;letter-spacing:.22em;color:#8fa0c9}
+.pipe-labels .mid{color:var(--red)}
+
+/* ===== AI 初稿：自己写字的标书纸 ===== */
+.draftsec{padding:150px 0 140px}
+.draftsec .head{text-align:center;margin-bottom:60px;padding:0 24px}
+.draftsec h2{font-size:clamp(34px,5vw,68px);font-weight:900;letter-spacing:-.04em;line-height:1.02}
+.draftsec h2 em{font-style:italic;color:var(--red);padding-bottom:5px;line-height:1.1}
+.sheetwrap{max-width:820px;margin:0 auto;padding:0 32px;position:relative}
+.sheet{background:#fff;border-radius:16px;box-shadow:0 34px 90px rgba(17,20,32,.13);padding:58px 64px;min-height:540px;font-size:15.5px;line-height:1.85;color:#2a2f3a}
+.sheet .dt{font-weight:800;font-size:21px;letter-spacing:-.015em;color:var(--ink)}
+.sheet .dm{font-family:'IBM Plex Mono';font-size:11.5px;color:var(--soft);margin:8px 0 34px;padding-bottom:18px;border-bottom:1px solid #eeeee8}
+.sheet .para{margin-bottom:20px}
+.sheet .para b{color:var(--ink)}
+.tok{background:#fde4dd;color:#b83a1a;border-radius:4px;padding:1px 6px;font-weight:600;white-space:nowrap}
+.sheet .w{opacity:0}
+.sheet .w.on{opacity:1}
+body.static .sheet .w{opacity:1}
+.caret{display:inline-block;width:2.5px;height:1.05em;background:var(--red);vertical-align:-2px;margin-left:2px}
+@media (prefers-reduced-motion: no-preference){.caret{animation:blink 1s steps(1) infinite}}
+@keyframes blink{50%{opacity:0}}
+.sidechip{position:absolute;font-family:'IBM Plex Mono';font-size:11.5px;font-weight:600;background:#fff;border:1px solid var(--line);border-left:3px solid var(--red);border-radius:8px;padding:9px 13px;box-shadow:0 12px 32px rgba(17,20,32,.12);color:var(--ink);z-index:5}
+.sidechip.c1{right:-14px;top:24%}
+.sidechip.c2{left:-18px;top:56%}
+.dsub{margin-top:16px;font-size:17px;color:var(--muted)}
+.para{transition:background .5s var(--spring),box-shadow .5s var(--spring)}
+.para.sel{background:#fff5f3;box-shadow:inset 3px 0 0 var(--red);padding:12px 16px;border-radius:8px;margin-left:-16px;margin-right:-16px}
+.bubble{position:absolute;right:-26px;bottom:11%;max-width:290px;background:var(--ink);color:#fff;font-size:13.5px;line-height:1.55;padding:13px 16px;border-radius:14px 14px 4px 14px;box-shadow:0 18px 44px rgba(17,20,32,.35);opacity:0;transform:translateY(16px) scale(.92);transition:opacity .6s var(--spring),transform .6s var(--spring);z-index:6}
+.bubble.on{opacity:1;transform:none}
+.bubble .who{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:.14em;color:#9aa0ad;margin-bottom:6px}
+.rvtag{font-family:'IBM Plex Mono';font-size:10.5px;font-weight:600;letter-spacing:.08em;color:#0a7d52;background:#e2f6ec;border-radius:4px;padding:2px 8px;margin-left:6px;white-space:nowrap}
+
+/* ===== Signal：雷达情报站 + 匹配飞轮 ===== */
+.signal{background:var(--navy-900);color:#eef1f9;padding:150px 0;overflow:hidden}
+.signal .in{max-width:1160px;margin:0 auto;padding:0 40px}
+.signal .kick{color:var(--red)}
+.signal h2{font-size:clamp(38px,5.6vw,80px);font-weight:900;letter-spacing:-.04em;line-height:1}
+.signal h2 em{font-style:italic;color:var(--red);padding-bottom:5px;line-height:1.1}
+.signal .sub{margin-top:16px;font-size:17px;color:#9aa8cd;max-width:40ch;line-height:1.6}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* 三栏合成流水线：RAW SIGNALS → YOUR CONTEXT → YOUR MOVE */
+.sigflow{margin-top:76px;display:grid;grid-template-columns:4fr auto 3fr auto 5fr;gap:22px;align-items:center}
+.clab{font-family:'IBM Plex Mono';font-size:11.5px;font-weight:600;letter-spacing:.2em;color:#8fa0c9;margin-bottom:16px}
+.clab.hotlab{color:var(--red)}
+.arrow{color:#5f6d96;font-size:24px;padding-top:26px}
+.rawlist{display:flex;flex-direction:column;gap:9px}
+.rawchip{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:11px 14px;transition:border-color .5s var(--spring),background .5s var(--spring),transform .5s var(--spring),color .5s}
+.rawchip .s{font-family:'IBM Plex Mono';font-size:10px;font-weight:600;letter-spacing:.1em;color:#5f6d96;display:flex;justify-content:space-between}
+.rawchip .h{font-size:12.5px;color:#9aa8cd;margin-top:4px;line-height:1.4}
+.rawchip.hot{border-color:rgba(237,63,46,.65);background:rgba(237,63,46,.10);transform:translateX(10px)}
+.rawchip.hot .h{color:#fff}
+.rawchip.hot .s{color:#ff8d7c}
+.lenscard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);padding:9px;border-radius:22px;transition:transform .5s var(--spring),box-shadow .5s var(--spring)}
+.lenscard.pulse{transform:scale(1.04);box-shadow:0 0 60px rgba(237,63,46,.35)}
+.lensin{background:var(--navy-800);border-radius:15px;padding:24px 22px;text-align:center}
+.lensin .lorb{width:44px;height:44px;border-radius:50%;margin:0 auto 16px;background:radial-gradient(circle at 32% 28%,#ff7a5e,var(--red) 42%,var(--navy) 100%);box-shadow:0 0 30px rgba(237,63,46,.5)}
+.lrow{font-family:'IBM Plex Mono';font-size:11.5px;color:#9aa8cd;padding:9px 0;border-top:1px solid rgba(255,255,255,.08);text-align:left}
+.lrow:first-of-type{border-top:0}
+.insight{background:linear-gradient(150deg,#3b2020,#152250 62%);border:1px solid rgba(237,63,46,.45);border-radius:16px;padding:28px 30px;box-shadow:0 26px 64px rgba(0,0,0,.45);transition:transform .55s var(--spring),opacity .55s var(--spring)}
+.insight.swap{opacity:0;transform:translateY(16px)}
+.ihl{font-size:20px;font-weight:800;line-height:1.3;letter-spacing:-.015em}
+.ibody{margin-top:11px;font-size:14px;color:#c9d2ea;line-height:1.65}
+.ichips{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px}
+.ichip{font-family:'IBM Plex Mono';font-size:10.5px;font-weight:600;color:#ffb4a8;border:1px solid rgba(237,63,46,.45);border-radius:999px;padding:4px 11px}
+/* 飞轮 */
+.wheel{margin-top:88px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.wheel h3{font-size:clamp(24px,2.8vw,36px);font-weight:800;letter-spacing:-.025em;line-height:1.2}
+.wheel h3 em{font-style:normal;color:var(--red)}
+.wheel .wsub{margin-top:14px;font-size:15px;color:#9aa8cd;line-height:1.65;max-width:38ch}
+.fwbox{position:relative}
+.fwring{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:120%;max-width:480px;aspect-ratio:1;border-radius:50%;border:1.5px dashed rgba(237,63,46,.35);pointer-events:none}
+@media (prefers-reduced-motion: no-preference){.fwring{animation:spin 26s linear infinite}}
+.fwcard{position:relative;background:var(--navy-800);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:26px 28px;max-width:420px;margin:0 auto;box-shadow:0 24px 60px rgba(0,0,0,.4);transition:transform .6s var(--spring),opacity .6s var(--spring)}
+.fwcard.swap{transform:translateX(26px) rotate(2deg);opacity:0}
+.fwcard .tt{font-size:15px;font-weight:700;line-height:1.45;min-height:44px}
+.fwcard .rg{font-family:'IBM Plex Mono';font-size:11.5px;color:#8fa0c9;margin-top:5px}
+.fwcard .row{display:flex;align-items:center;justify-content:space-between;margin-top:20px}
+.fwcard .fscore{font-family:'IBM Plex Mono';font-size:40px;font-weight:600;color:#7ef0bc}
+.fwcard .fscore small{font-size:12px;color:#8fa0c9;display:block;letter-spacing:.08em;font-weight:500}
+.fb{display:flex;gap:10px}
+.fb button{font-family:'IBM Plex Mono';font-size:14px;font-weight:600;padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:transparent;color:#eef1f9;cursor:pointer;transition:transform .4s var(--spring),background .3s,border-color .3s}
+.fb button:hover{border-color:#fff}
+.fb button.yes:hover{background:rgba(16,185,129,.15);border-color:#7ef0bc}
+.fb button.no:hover{background:rgba(237,63,46,.15);border-color:var(--red)}
+.fb button.pressed{transform:scale(.9)}
+.trail{display:flex;gap:8px;justify-content:center;margin-top:22px;min-height:30px}
+.trail .v{font-family:'IBM Plex Mono';font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;opacity:0;transform:scale(.5);transition:transform .5s var(--spring),opacity .5s}
+.trail .v.on{opacity:1;transform:scale(1)}
+.trail .v.y{background:rgba(16,185,129,.15);color:#7ef0bc;border:1px solid rgba(126,240,188,.35)}
+.trail .v.n{background:rgba(237,63,46,.14);color:#ff8d7c;border:1px solid rgba(237,63,46,.4)}
+
+/* ===== 覆盖数字 ===== */
+.coverage{padding:150px 0 0}
+.coverage .nums{max-width:1160px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;text-align:center}
+.coverage .n{font-size:clamp(64px,9vw,140px);font-weight:900;letter-spacing:-.05em;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.coverage .n em{font-style:normal;color:var(--red)}
+.coverage .lab{margin-top:10px;font-size:15px;color:var(--muted)}
+.marq{margin-top:80px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 0;overflow:hidden;white-space:nowrap}
+.marq .in{display:inline-block;font-family:'IBM Plex Mono';font-size:14px;color:var(--soft);animation:tick 40s linear infinite}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion: reduce){.marq .in{animation:none}}
+.marq b{color:var(--ink);font-weight:600}
+
+/* ===== 截图证据 ===== */
+.proof{padding:150px 0}
+.proof .head{text-align:center;margin-bottom:56px;padding:0 24px}
+.proof h2{font-size:clamp(34px,5vw,68px);font-weight:900;letter-spacing:-.04em;line-height:1.02}
+.proof h2 em{font-style:normal;color:var(--red)}
+.proof .stagewrap{max-width:1080px;margin:0 auto;padding:0 32px;position:relative}
+.proof .anno{position:absolute;z-index:5;pointer-events:none}
+.proof .ringmark{position:absolute;left:56.5%;top:31%;width:34%;height:9.5%;border:2.5px solid var(--red);border-radius:12px;box-shadow:0 0 0 6px rgba(237,63,46,.14);z-index:5}
+.proof .tagline{position:absolute;left:66%;top:14%;background:var(--red);color:#fff;font-family:'IBM Plex Mono';font-size:12px;font-weight:600;padding:8px 13px;border-radius:7px;z-index:6;box-shadow:0 10px 30px rgba(237,63,46,.35)}
+.proof .tagline::after{content:"";position:absolute;left:24px;top:100%;width:2px;height:34px;background:var(--red)}
+
+/* ===== 社会证明双卡：Kaeser + 客户评价 ===== */
+.proofduo{max-width:1160px;margin:0 auto;padding:30px 40px 150px;display:grid;grid-template-columns:5fr 7fr;gap:20px;align-items:stretch}
+.proofduo .shell{display:flex}
+.proofduo .core{flex:1}
+.kcard{background:var(--navy-900);padding:52px 46px;display:flex;flex-direction:column;justify-content:center;color:#fff}
+.kcard .kplate{display:inline-block;background:#fff;border-radius:10px;padding:16px 22px;line-height:0}
+.kcard .kplate img{height:44px;width:auto;image-rendering:-webkit-optimize-contrast}
+.kcard .rule{width:90px;height:5px;background:var(--red);margin:26px 0 20px;border-radius:3px}
+.kcard p{font-size:15px;line-height:1.7;color:#b9c4e2}
+.kcard p b{color:#fff}
+.kcard .stat{margin-top:28px;font-family:'IBM Plex Mono';font-size:12px;font-weight:600;letter-spacing:.16em;color:#8fa0c9}
+.qcard{background:#fff;padding:56px 58px 48px;position:relative}
+.qcard::before{content:"\201C";position:absolute;left:34px;top:64px;font-size:130px;font-weight:900;color:var(--red);opacity:.16;line-height:0;pointer-events:none}
+.qcard blockquote{font-size:clamp(19px,2.1vw,25px);font-weight:700;letter-spacing:-.02em;line-height:1.5;color:var(--ink);border:0;margin:0}
+.qcard blockquote mark{background:#fde4dd;color:var(--red-deep);padding:0 3px;border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.qattr{margin-top:32px;display:flex;align-items:center;gap:14px}
+.qattr .av{width:46px;height:46px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.qattr .nm b{display:block;font-size:15.5px}
+.qattr .nm span{font-size:13px;color:var(--muted)}
+.qattr .lk{margin-left:auto;font-size:13.5px;font-weight:600;color:var(--navy);border-bottom:1.5px solid var(--red);padding-bottom:1px;white-space:nowrap}
+.qattr .lk:hover{color:var(--red-deep)}
+
+/* ===== 联系表单（CTA 内） ===== */
+.cwrap{max-width:580px;margin:52px auto 0;text-align:left}
+.cform{padding:42px 46px;position:relative}
+.cform .fld{margin-bottom:18px}
+.cform label{display:block;font-size:13.5px;font-weight:600;margin-bottom:7px;color:var(--ink)}
+.cform label small{color:var(--soft);font-weight:500}
+.cform input,.cform textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font:inherit;font-size:15px;color:var(--ink);background:#fff;transition:border-color .3s,box-shadow .3s}
+.cform input:focus,.cform textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(237,63,46,.13)}
+.cform input.err{border-color:var(--red-deep);background:#fff7f5}
+.cform textarea{min-height:92px;resize:vertical}
+.cform .frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.drop{display:block;border:1.5px dashed #d5d5cd;border-radius:10px;padding:16px 18px;font-size:13.5px;line-height:1.55;color:var(--muted);cursor:pointer;background:#fafaf8;transition:border-color .3s,background .3s}
+.drop:hover{border-color:var(--red);background:#fff7f5}
+.drop b{color:var(--ink)}
+.drop.hasfiles{border-style:solid;border-color:var(--red);background:#fff7f5}
+.drop input{display:none}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--muted);font-weight:500;margin:2px 0 16px;cursor:pointer}
+.chk input{width:16px;height:16px;margin-top:1px;accent-color:var(--red);flex-shrink:0}
+.priv{margin-top:14px;font-size:12px;color:var(--soft);line-height:1.55;text-align:center}
+.priv a{color:var(--muted);text-decoration:underline}
+.cform .btn{width:100%;justify-content:center;margin-top:8px;font-size:16px}
+.cdone{display:none;text-align:center;padding:34px 8px 22px}
+.cdone .cdone-h{font-size:30px;font-weight:900;letter-spacing:-.03em}
+.cdone p{margin-top:10px;font-size:15.5px;color:var(--muted);line-height:1.6}
+.cform.sent form{display:none}
+.cform.sent .cdone{display:block}
+.cphone{margin-top:24px;font-size:14.5px;color:var(--muted);position:relative}
+.cphone a{font-weight:700;color:var(--ink);border-bottom:1.5px solid var(--red);padding-bottom:1px}
+.cphone a:hover{color:var(--red-deep)}
+
+/* ===== CTA ===== */
+.cta{position:relative;padding:170px 40px;text-align:center;overflow:hidden}
+.cta .glow{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);width:560px;height:560px;border-radius:50%;background:radial-gradient(circle,rgba(237,63,46,.16),#0000 65%);pointer-events:none}
+.cta h2{position:relative;font-size:clamp(44px,7vw,100px);font-weight:900;letter-spacing:-.045em;line-height:.98}
+.cta p{position:relative;margin:26px auto 40px;font-size:17px;color:var(--muted);max-width:36ch;line-height:1.6}
+.cta .btn{position:relative;font-size:17px;padding:12px 12px 12px 30px}
+.cta .btn .ic{width:40px;height:40px}
+.foot{max-width:1280px;margin:0 auto;padding:36px 40px;display:flex;justify-content:space-between;font-size:14px;color:var(--soft);border-top:1px solid var(--line)}
+
+/* 入场 reveal（重感缓入 + 微模糊聚焦） */
+.rv{opacity:0;transform:translateY(34px);filter:blur(6px);transition:opacity .9s var(--spring),transform .9s var(--spring),filter .9s var(--spring)}
+.rv.vis{opacity:1;transform:none;filter:none}
+@media (prefers-reduced-motion: reduce){.rv{opacity:1;transform:none;filter:none;transition:none}}
+
+@media (max-width:900px){
+  .nav{gap:14px;padding:8px 8px 8px 18px;top:12px}
+  .nav .links{display:none}
+  .doc{width:150px}
+  .docf:nth-child(n+7){display:none}
+  .sec{padding:90px 20px}
+  .cmp .side{padding:28px 20px;min-height:380px}
+  .cmp .side.b4{padding-right:46%}
+  .cmp .afin{width:52%;min-width:0;padding:28px 20px 28px 0}
+  .coverage .nums{grid-template-columns:1fr;gap:56px}
+  .wheel{grid-template-columns:1fr;gap:44px}
+  .sigflow{grid-template-columns:1fr;gap:18px}
+  .arrow{transform:rotate(90deg);padding:0;text-align:center;justify-self:center}
+  .sheet{padding:34px 24px;min-height:0}
+  .sidechip.c1{right:6px;top:-14px}
+  .sidechip.c2{display:none}
+  .bubble{right:8px;bottom:-18px;max-width:240px}
+  .fwring{display:none}
+  .proofduo{grid-template-columns:1fr;padding:10px 20px 90px}
+  .qcard{padding:44px 28px 36px}
+  .qcard::before{left:16px;top:52px;font-size:100px}
+  .qattr{flex-wrap:wrap}
+  .cform{padding:30px 22px}
+  .cwrap{margin-top:40px}
+  .cform .frow{grid-template-columns:1fr}
+  .pricing .duo{grid-template-columns:1fr}
+  .pipe{height:240px}
+  .pipe .core-orb,.pipe .ring{width:96px;height:96px}
+  .minidoc{width:56px}
+  .proof .tagline{display:none}
+}
+/* 无动画兜底 */
+body.static .stage .light{opacity:1}
+body.static .docf{opacity:.08}
+body.static .orb{display:none}
+body.static .copy.before{display:none}
+body.static .copy.after{visibility:visible}
+body.static .copy.after > *{opacity:1 !important;transform:none !important}
+body.static .nav{--nav-ink:#111420;--nav-bg:rgba(252,252,250,.72)}
+</style>
+</head>
+<body>
+
+<div class="note"><span class="tag">C+ v2</span><b>Visual-First</b>：阅读比重降 60%,每屏一个红色焦点。新增:Ollie 深夜流水线、巨型计数、截图红圈标注、双层镶嵌容器、漂浮胶囊导航。<a href="direction-c-plus.html">← v1</a> · <a href="directions.html">三方向</a></div>
+
+<nav class="nav">
+  <a href="#"><img class="logoimg" src="../images/oemmart-20logo-20no-20inc.png" alt="OEMMart"></a>
+  <div class="links"><a href="#">Product</a><a href="#">About</a><a href="#contact">Contact</a></div>
+  <a class="btn red" href="#contact"><span>Book a demo</span><span class="ic">→</span></a>
+</nav>
+
+<!-- ============ 变身舞台 ============ -->
+<section class="stage" id="stage">
+  <div class="light" id="light"></div>
+
+  <div class="docf" style="left:6%;top:12%"><div class="doc" style="transform:rotate(-8deg)">
+    <div class="fn">NEW_CUMBERLAND_Comp_on.pdf</div><div class="tx"></div>
+    <div class="meta"><span>355 pages</span><span>federal</span></div>
+    <div class="due">DUE IN 12 DAYS</div>
+  </div></div>
+  <div class="docf" style="left:74%;top:8%"><div class="doc" style="transform:rotate(7deg)">
+    <div class="fn">Roseville_Power_Plant_2_Repower_RFP_Bid.pdf</div><div class="tx short"></div>
+    <div class="meta"><span>212 pages</span><span>municipal</span></div>
+  </div></div>
+  <div class="docf" style="left:14%;top:58%"><div class="doc" style="transform:rotate(5deg)">
+    <div class="fn">City_of_Palo_Alto_Advanced_Water_Purification_System.pdf</div><div class="tx"></div>
+    <div class="meta"><span>178 pages</span><span>municipal</span></div>
+    <div class="due">DUE IN 6 DAYS</div>
+  </div></div>
+  <div class="docf" style="left:80%;top:52%"><div class="doc sigdoc" style="transform:rotate(-6deg)">
+    <div class="fn">INDUSTRY WIRE</div><div class="tx short"></div>
+    <div class="meta"><span>Competitor exits Texas</span><span>5h ago</span></div>
+  </div></div>
+  <div class="docf" style="left:38%;top:4%"><div class="doc sigdoc" style="transform:rotate(3deg)">
+    <div class="fn">FEDERAL REGISTER</div><div class="tx short"></div>
+    <div class="meta"><span>$2.1B water grants</span><span>12m ago</span></div>
+  </div></div>
+  <div class="docf" style="left:55%;top:66%"><div class="doc" style="transform:rotate(9deg)">
+    <div class="fn">Naval_Yard_Compressed_Air_Maintenance_SOW.pdf</div><div class="tx"></div>
+    <div class="meta"><span>240 pages</span><span>federal</span></div>
+    <div class="due">DUE IN 21 DAYS</div>
+  </div></div>
+  <div class="docf" style="left:2%;top:36%"><div class="doc" style="transform:rotate(6deg)">
+    <div class="fn">Texas_Standing_Offer_Industrial_Equipment.pdf</div><div class="tx short"></div>
+    <div class="meta"><span>124 pages</span><span>state</span></div>
+  </div></div>
+  <div class="docf" style="left:86%;top:30%"><div class="doc" style="transform:rotate(-4deg)">
+    <div class="fn">Alberta_Infrastructure_Mechanical_RFQ.pdf</div><div class="tx short"></div>
+    <div class="meta"><span>88 pages</span><span>provincial</span></div>
+  </div></div>
+
+  <div class="orb" id="orb"></div>
+
+  <div class="copy before" id="before">
+    <h1>Every deal you're missing is public.</h1>
+    <p>Buyers publish what they need. Standards shift. Competitors move. It all lands somewhere, faster than any team can read.</p>
+  </div>
+
+  <div class="copy after" id="after">
+    <img class="mark" src="../images/oemmart-20logo-20no-20inc.png" alt="OEMMart">
+    <h1>Ollie turns it all into <em>demand intelligence.</em></h1>
+    <p>Find the deals, score your fit, draft the response, see where your market is heading. One AI, every morning.</p>
+    <div class="ctas">
+      <a class="btn red" href="#contact"><span>Book a demo</span><span class="ic">→</span></a>
+      <a class="btn dark plain" href="#">See it work</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Before/After 滑块 ============ -->
+<section class="sec">
+  <div class="kick rv">DRAG THE LINE</div>
+  <h2 class="rv">Monday, 8:02 AM.</h2>
+  <div class="cmp-wrap shell rv">
+    <div class="core">
+    <div class="cmp" id="cmp">
+      <div class="side b4">
+        <span class="label">WITHOUT OEMMART</span>
+        <h3>Six portals. 361 new postings. Good luck.</h3>
+        <div class="portal"><b>SAM.gov</b><span>214 new postings</span></div>
+        <div class="portal"><b>Ohio Procurement Portal</b><span>37 new postings</span></div>
+        <div class="portal"><b>Texas SmartBuy</b><span>41 new postings</span></div>
+        <div class="portal"><b>Ontario Tenders Portal</b><span>18 new postings</span></div>
+        <div class="portal"><b>Alberta Purchasing Connection</b><span>22 new postings</span></div>
+        <div class="portal"><b>Pennsylvania eMarketplace</b><span>29 new postings</span></div>
+      </div>
+      <div class="side af">
+        <div class="afin">
+        <span class="label">WITH OEMMART</span>
+        <h3>One email. Three worth your time.</h3>
+        <div class="mail">
+          <div class="mh"><b>Your matches this morning</b><span>from Ollie, 6:00 AM</span></div>
+          <div class="match"><div class="t">Rotary screw air compressors, wastewater plant retrofit<small>State of Ohio · closes in 21 days</small></div><span class="sc hi">92</span></div>
+          <div class="match"><div class="t">Compressed air system, naval yard maintenance<small>SAM.gov · closes in 34 days</small></div><span class="sc hi">88</span></div>
+          <div class="match"><div class="t">HVAC and air treatment, school district<small>Ontario · closes in 12 days</small></div><span class="sc mid">61</span></div>
+        </div>
+        </div>
+      </div>
+      <div class="handle"></div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Ollie 机器 ============ -->
+<section class="machine">
+  <h2 class="rv">Matched <em>while you sleep.</em></h2>
+  <div class="pipe rv">
+    <div class="rail"></div>
+    <div class="minidoc"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+    <div class="minidoc d2"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+    <div class="minidoc d3"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+    <div class="ring"></div>
+    <div class="core-orb"></div>
+    <div class="outchip score">92</div>
+    <div class="outchip cite">Source: pg. 355</div>
+    <div class="outchip draft">Draft response.docx</div>
+  </div>
+  <div class="pipe-labels rv"><span>READ</span><span class="mid">SCORE</span><span>DRAFT</span></div>
+</section>
+
+<!-- ============ AI 初稿：自己写字的标书纸 ============ -->
+<section class="draftsec">
+  <div class="head">
+    <h2 class="rv">The first draft <em>writes itself.</em></h2>
+    <p class="dsub rv">Ask for changes in plain English. Only that paragraph rewrites. Hand edits welcome.</p>
+  </div>
+  <div class="sheetwrap rv">
+    <div class="sidechip c1">pulled from tender · pg. 355</div>
+    <div class="sidechip c2">from your catalogue</div>
+    <div class="shell"><div class="core">
+      <div class="sheet" id="sheet">
+        <div class="dt">Response to RFP: Wastewater Plant Retrofit</div>
+        <div class="dm">Draft 1 · generated from NEW_CUMBERLAND_Comp_on.pdf</div>
+        <p class="para"><b>3.2 Technical Approach.</b> Kaeser Compressors USA proposes two <span class="tok">CSD 125 rotary screw units</span> with integrated variable-speed drives, sized to the peak demand stated in <span class="tok">Section 2.4, pg. 41</span> of the specification.</p>
+        <p class="para"><b>3.3 Compliance.</b> Shutoff valves are omitted on emergency equipment supply lines where prohibited by the authority having jurisdiction, per <span class="tok">Source: pg. 355</span>. All substituted materials will be submitted for review in advance.</p>
+        <p class="para" id="p34"><b>3.4 Exceptions.</b> Our equipment meets the stated requirements with one exception, documented below with supporting data from <span class="tok">your product catalogue</span>.</p>
+      </div>
+    </div></div>
+    <div class="bubble" id="bubble">
+      <div class="who">YOU · JUST NOW</div>
+      Cite our ISO 8573-1 Class 2 rating in the exception.
+    </div>
+  </div>
+</section>
+
+<!-- ============ Signal：雷达情报站 + 匹配飞轮 ============ -->
+<section class="signal">
+  <div class="in">
+    <div class="kick rv">SIGNAL</div>
+    <h2 class="rv">A thousand signals. <em>One move.</em></h2>
+    <p class="sub rv">Ollie fuses live market signals with your catalogue, wins and regions, then tells you where to push next.</p>
+    <div class="sigflow rv">
+      <div>
+        <div class="clab">RAW SIGNALS</div>
+        <div class="rawlist" id="rawlist"></div>
+      </div>
+      <div class="arrow">→</div>
+      <div>
+        <div class="clab">YOUR CONTEXT</div>
+        <div class="lenscard" id="lens"><div class="lensin">
+          <div class="lorb"></div>
+          <div class="lrow">Your catalogue</div>
+          <div class="lrow">Your past wins</div>
+          <div class="lrow">Your regions</div>
+          <div class="lrow">Your goals</div>
+        </div></div>
+      </div>
+      <div class="arrow">→</div>
+      <div>
+        <div class="clab hotlab">YOUR MOVE</div>
+        <div class="insight" id="insight">
+          <div class="ihl" id="ihl"></div>
+          <div class="ibody" id="ibody"></div>
+          <div class="ichips" id="ichips"></div>
+        </div>
+      </div>
+    </div>
+    <div class="wheel">
+      <div class="rv">
+        <h3>Every yes and no makes the next match <em>sharper.</em></h3>
+        <p class="wsub">Rate a match once. Ollie retunes what it looks for, and the scores climb.</p>
+      </div>
+      <div class="fwbox rv">
+        <div class="fwring"></div>
+        <div class="fwcard" id="fwcard">
+          <div class="tt" id="fwtt"></div>
+          <div class="rg" id="fwrg"></div>
+          <div class="row">
+            <div class="fscore"><span id="fwsc">61</span><small>FITSCORE</small></div>
+            <div class="fb">
+              <button class="yes" id="fbyes" type="button">✓</button>
+              <button class="no" id="fbno" type="button">✗</button>
+            </div>
+          </div>
+        </div>
+        <div class="trail" id="trail"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 覆盖数字 ============ -->
+<section class="coverage">
+  <div class="nums">
+    <div class="rv"><div class="n" data-count="1">0</div><div class="lab">federal source, SAM.gov</div></div>
+    <div class="rv"><div class="n"><em data-count="20">0</em><em>+</em></div><div class="lab">U.S. state portals</div></div>
+    <div class="rv"><div class="n" data-count="2">0</div><div class="lab">Canadian provinces</div></div>
+  </div>
+  <div class="marq rv"><div class="in" id="marq"><b>Watched every morning:</b> SAM.gov · Ohio Procurement · Texas SmartBuy · Ontario Tenders · Alberta Purchasing · Pennsylvania eMarketplace · California eProcure · New York Contract Reporter · Florida MFMP · Georgia Procurement Registry &nbsp;&nbsp;&nbsp;</div></div>
+</section>
+
+<!-- ============ 截图证据 ============ -->
+<section class="proof">
+  <div class="head">
+    <h2 class="rv">Every answer <em>shows its source.</em></h2>
+  </div>
+  <div class="stagewrap rv">
+    <div class="tagline">source · page 355</div>
+    <div class="shell"><div class="core">
+      <img src="../images/screenshot-202025-08-27-20at-2011.48.41-e2-80-afam-p-1080.png" alt="OEMMart answering tender questions with page-level citations">
+    </div></div>
+    <div class="ringmark"></div>
+  </div>
+</section>
+
+<!-- ============ 社会证明：Kaeser + 客户评价 ============ -->
+<section class="proofduo">
+  <div class="shell rv"><div class="core kcard">
+    <div><span class="kplate"><img src="../images/kaeser-us-logo.png" alt="Kaeser Compressors"></span></div>
+    <div class="rule"></div>
+    <p><b>Kaeser Compressors USA</b> screens tenders across all 50 states with OEMMart.</p>
+    <div class="stat">PAYING CUSTOMER · SINCE 2025</div>
+  </div></div>
+  <div class="shell rv"><div class="core qcard">
+    <blockquote>"You found some great project that I didn't think any platform could match this deep! <mark>Even my existing subscription was unable to find these projects for me.</mark>"</blockquote>
+    <div class="qattr">
+      <div class="av">JC</div>
+      <div class="nm"><b>Dr. Joseph E. Cater III</b><span>Market Economics</span></div>
+      <a class="lk" href="https://www.linkedin.com/in/joseph-e-cater-iii-ph-d-mba" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div></div>
+</section>
+
+<!-- ============ CTA + 联系流程（生产版接 HubSpot: portalId 341778708 / formId 90f0e3b8-f6d7-4d19-a872-c69098bc6d91） ============ -->
+<section class="cta" id="contact">
+  <div class="glow"></div>
+  <h2 class="rv">Bid on the right things.</h2>
+  <p class="rv">A 30-minute demo on your own product line. No slides.</p>
+  <div class="cwrap shell rv"><div class="core cform">
+    <form id="demoform" novalidate>
+      <div class="frow">
+        <div class="fld">
+          <label for="cf-fname">First name</label>
+          <input id="cf-fname" name="firstname" type="text" autocomplete="given-name" required>
+        </div>
+        <div class="fld">
+          <label for="cf-lname">Last name</label>
+          <input id="cf-lname" name="lastname" type="text" autocomplete="family-name" required>
+        </div>
+      </div>
+      <div class="fld">
+        <label for="cf-company">Company name</label>
+        <input id="cf-company" name="company" type="text" autocomplete="organization" required>
+      </div>
+      <div class="fld">
+        <label for="cf-email">Work email</label>
+        <input id="cf-email" name="email" type="email" autocomplete="email" required>
+      </div>
+      <div class="fld">
+        <label for="cf-phone">Phone number <small>optional</small></label>
+        <input id="cf-phone" name="phone" type="tel" autocomplete="tel">
+      </div>
+      <div class="fld">
+        <label for="cf-file">Product catalogue <small>optional · PDF or ZIP</small></label>
+        <label class="drop" id="drop" for="cf-file">
+          <b>Attach your catalogue</b><span id="dropnames"> and Ollie starts scoring tenders against it from day one.</span>
+          <input id="cf-file" name="catalog" type="file" multiple accept=".pdf,.zip">
+        </label>
+      </div>
+      <label class="chk"><input type="checkbox" name="consent"><span>Send me product updates from OEMMart.</span></label>
+      <button class="btn red" type="submit"><span>Book a demo</span><span class="ic">→</span></button>
+      <p class="priv">We use your details to set up your demo and account, nothing else. See our <a href="#">Privacy Policy</a>.</p>
+    </form>
+    <div class="cdone" id="cdone">
+      <div class="cdone-h">Got it.</div>
+      <p>We'll reply within one business day with times for your demo.</p>
+    </div>
+  </div></div>
+  <p class="cphone rv">Prefer to talk? <a href="tel:+19257704587">+1 (925) 770-4587</a></p>
+</section>
+
+<footer class="foot"><span>OEMMart Inc. Toronto, Canada</span><span>Privacy · Terms · Contact</span></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hasGsap = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+
+  // 跑马灯内容翻倍以实现无缝循环
+  const mq = document.getElementById('marq');
+  mq.innerHTML += mq.innerHTML;
+
+  if (reduce || !hasGsap){
+    document.body.classList.add('static','lit');
+  } else {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const stage = document.getElementById('stage');
+    const docs = gsap.utils.toArray('.doc');
+
+    gsap.set('#after', {visibility:'visible'});
+    gsap.set('#after > *', {autoAlpha:0, y:44});
+
+    const tl = gsap.timeline({
+      scrollTrigger:{
+        trigger: stage, start:'top top', end:'+=2800',
+        pin:true, scrub:1, invalidateOnRefresh:true,
+        onUpdate: self => document.body.classList.toggle('lit', self.progress > 0.62)
+      }
+    });
+
+    tl.to('#before', {autoAlpha:0, y:-60, duration:1.2, ease:'power1.in'}, 0.3);
+    docs.forEach((doc, i)=>{
+      const wrap = doc.parentElement;
+      tl.to(doc, {
+        x: ()=> stage.clientWidth*0.5 - (wrap.offsetLeft + doc.offsetWidth/2),
+        y: ()=> stage.clientHeight*0.44 - (wrap.offsetTop + doc.offsetHeight/2),
+        rotation: (i%2 ? 300 : -300),
+        scale: 0.04, autoAlpha: 0,
+        duration: 2.4, ease: 'power2.in'
+      }, 0.5 + i*0.12);
+    });
+    tl.to('#orb', {autoAlpha:1, scale:1.25, duration:1.6, ease:'power2.out'}, 1.4);
+    tl.to('#orb', {scale:0.95, duration:0.5, ease:'power1.inOut'}, 3.2);
+    tl.to('#light', {opacity:1, duration:1.8, ease:'power1.inOut'}, 3.6);
+    tl.to('#orb', {autoAlpha:0, scale:2.6, duration:1.4, ease:'power2.in'}, 3.7);
+    tl.to('#after > *', {autoAlpha:1, y:0, duration:1.4, stagger:0.3, ease:'power3.out'}, 4.6);
+    tl.to({}, {duration:0.8});
+  }
+
+  // reveal
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('vis'); io.unobserve(e.target);} });
+  },{threshold:0.16});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+  // 巨型数字滚动计数
+  const cio = new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(!e.isIntersecting) return;
+      const el = e.target, target = +el.dataset.count, dur = 1400, t0 = performance.now();
+      const step = t =>{
+        const p = Math.min(1,(t - t0)/dur), eased = 1 - Math.pow(1-p,3);
+        el.textContent = Math.round(target*eased);
+        if(p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+      cio.unobserve(el);
+    });
+  },{threshold:0.6});
+  document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
+
+  // Before/After 拖拽
+  const cmp = document.getElementById('cmp');
+  let dragging = false;
+  const setX = clientX =>{
+    const r = cmp.getBoundingClientRect();
+    cmp.style.setProperty('--x', Math.min(92, Math.max(8,(clientX - r.left)/r.width*100))+'%');
+  };
+  cmp.addEventListener('pointerdown', e=>{ dragging=true; setX(e.clientX); cmp.setPointerCapture(e.pointerId); });
+  cmp.addEventListener('pointermove', e=>{ if(dragging) setX(e.clientX); });
+  cmp.addEventListener('pointerup', ()=> dragging=false);
+  cmp.addEventListener('pointercancel', ()=> dragging=false);
+
+  /* ===== 标书纸：逐词书写 + 自然语言修订第二幕 ===== */
+  const sheet = document.getElementById('sheet');
+  (function(){
+    const wrapWords = node =>{
+      [...node.childNodes].forEach(ch=>{
+        if(ch.nodeType === 3){
+          const frag = document.createDocumentFragment();
+          ch.textContent.split(/(\s+)/).forEach(part=>{
+            if(!part) return;
+            if(/^\s+$/.test(part)){ frag.appendChild(document.createTextNode(part)); return; }
+            const s = document.createElement('span'); s.className='w'; s.textContent=part; frag.appendChild(s);
+          });
+          node.replaceChild(frag, ch);
+        } else if(ch.nodeType === 1 && ch.id !== 'caret'){ wrapWords(ch); }
+      });
+    };
+    const paras = [...sheet.querySelectorAll('.para')];
+    const originals = paras.map(p=>p.innerHTML);
+    const p34 = document.getElementById('p34');
+    const bubble = document.getElementById('bubble');
+    const P34_REV = '<b>3.4 Exceptions.</b> Our equipment meets the stated requirements with one exception: air quality class, where our <span class="tok">ISO 8573-1 Class 2</span> rating exceeds the specified class, documented with data from <span class="tok">your product catalogue</span>. <span class="rvtag">REWRITTEN</span>';
+
+    if(reduce){
+      p34.innerHTML = P34_REV;
+      p34.classList.add('sel');
+      bubble.classList.add('on');
+      return;
+    }
+    const caret = document.createElement('span'); caret.className='caret'; caret.id='caret';
+    const typeWords = (scope, speedMin, speedRand, done) =>{
+      const words = [...scope.querySelectorAll('.w:not(.on)')];
+      let i = 0;
+      const t = ()=>{
+        if(i >= words.length){ done && done(); return; }
+        words[i].classList.add('on');
+        if(words[i].parentNode) words[i].parentNode.insertBefore(caret, words[i].nextSibling);
+        i++;
+        setTimeout(t, speedMin + Math.random()*speedRand);
+      };
+      t();
+    };
+    const run = ()=>{
+      // 第一幕：整稿书写
+      paras.forEach((p,idx)=>{ p.innerHTML = originals[idx]; p.classList.remove('sel'); });
+      bubble.classList.remove('on');
+      paras.forEach(wrapWords);
+      typeWords(sheet, 38, 66, ()=>{
+        // 第二幕：用户圈中 3.4 段，说一句话
+        setTimeout(()=>{
+          p34.classList.add('sel');
+          bubble.classList.add('on');
+          // 第三幕：只重写这一段
+          setTimeout(()=>{
+            p34.innerHTML = P34_REV;
+            wrapWords(p34);
+            typeWords(p34, 20, 28, ()=>{ setTimeout(run, 5600); });
+          }, 2300);
+        }, 1100);
+      });
+    };
+    let started = false;
+    const sio = new IntersectionObserver(es=>{
+      es.forEach(e=>{ if(e.isIntersecting && !started){ started=true; setTimeout(run,500); sio.disconnect(); } });
+    },{threshold:0.35});
+    sio.observe(sheet);
+  })();
+
+  /* ===== Signal 合成流水线：原始信号 → 你的业务透镜 → 行动建议 ===== */
+  (function(){
+    const raw = [
+      {s:'FEDERAL REGISTER', t:'12m ago', h:'$2.1B water infrastructure grants for 2027'},
+      {s:'OHIO DAS', t:'1h ago', h:'Energy-efficiency standards updated for public buildings'},
+      {s:'SAM.GOV', t:'22m ago', h:'Pre-solicitation: shore-side compressed air systems'},
+      {s:'INDUSTRY WIRE', t:'5h ago', h:'Major competitor exits Texas service market'},
+      {s:'NAVY SMALL BIZ', t:'2h ago', h:'FY27 set-aside goals raised for coastal yards'},
+      {s:'PORT AUTHORITY', t:'40m ago', h:'Two shipyard expansion filings on the Gulf coast'}
+    ];
+    const insights = [
+      {hl:"Pre-position for Ohio's Q1 wastewater surge.",
+       body:'Grant money, new efficiency standards and a competitor exit all point the same way. Your CSD line fits the incoming specs.',
+       chips:['FEDERAL REGISTER','OHIO DAS','INDUSTRY WIRE'], hot:[0,1,3]},
+      {hl:'Extend the naval win to two more shipyards.',
+       body:'A fresh pre-solicitation matches your March scope. Set-aside goals and expansion filings widen the door.',
+       chips:['SAM.GOV','NAVY SMALL BIZ','PORT AUTHORITY'], hot:[2,4,5]}
+    ];
+    const rawlist = document.getElementById('rawlist');
+    raw.forEach(it=>{
+      const d = document.createElement('div');
+      d.className = 'rawchip';
+      d.innerHTML = '<div class="s"><span>'+it.s+'</span><span>'+it.t+'</span></div><div class="h">'+it.h+'</div>';
+      rawlist.appendChild(d);
+    });
+    const chips = [...rawlist.children];
+    const lens = document.getElementById('lens'), insight = document.getElementById('insight');
+    const ihl = document.getElementById('ihl'), ibody = document.getElementById('ibody'), ichips = document.getElementById('ichips');
+    const show = ins =>{
+      ihl.textContent = ins.hl; ibody.textContent = ins.body;
+      ichips.innerHTML = ins.chips.map(c=>'<span class="ichip">'+c+'</span>').join('');
+    };
+    show(insights[0]);
+    chips.forEach((c,i)=>{ if(insights[0].hot.includes(i)) c.classList.add('hot'); });
+    if(reduce) return;
+    let k = 0;
+    setInterval(()=>{
+      const next = insights[(k+1) % insights.length];
+      chips.forEach(c=>c.classList.remove('hot'));
+      // 逐个点亮下一组信号
+      next.hot.forEach((idx,j)=> setTimeout(()=>chips[idx].classList.add('hot'), 350*j) );
+      setTimeout(()=>{ lens.classList.add('pulse'); }, 1300);
+      setTimeout(()=>{ insight.classList.add('swap'); }, 1750);
+      setTimeout(()=>{
+        k = (k+1) % insights.length;
+        show(insights[k]);
+        insight.classList.remove('swap');
+        lens.classList.remove('pulse');
+      }, 2350);
+    }, 7600);
+  })();
+
+  /* ===== 匹配飞轮 ===== */
+  (function(){
+    const seq = [
+      {tt:'General industrial equipment, standing offer renewal', rg:'Texas · closes in 40 days', sc:34, v:'n'},
+      {tt:'HVAC and air treatment equipment, school district', rg:'Ontario · closes in 12 days', sc:61, v:'n'},
+      {tt:'Compressed air system, naval yard maintenance', rg:'SAM.gov · closes in 34 days', sc:88, v:'y'},
+      {tt:'Rotary screw compressors, wastewater plant retrofit', rg:'State of Ohio · closes in 21 days', sc:93, v:'y'}
+    ];
+    const card = document.getElementById('fwcard'), tt = document.getElementById('fwtt'),
+          rg = document.getElementById('fwrg'), sc = document.getElementById('fwsc'),
+          trail = document.getElementById('trail'),
+          byes = document.getElementById('fbyes'), bno = document.getElementById('fbno');
+    let k = 0, busy = false, timer = null;
+    const show = s =>{ tt.textContent = s.tt; rg.textContent = s.rg; sc.textContent = s.sc; };
+    const stamp = v =>{
+      const chip = document.createElement('span');
+      chip.className = 'v ' + v; chip.textContent = v === 'y' ? '✓' : '✗';
+      trail.appendChild(chip);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>chip.classList.add('on')));
+    };
+    const advance = manual =>{
+      if(busy) return; busy = true;
+      const cur = seq[k];
+      const btn = (manual || cur.v) === 'y' ? byes : bno;
+      btn.classList.add('pressed');
+      stamp(manual || cur.v);
+      setTimeout(()=>{
+        btn.classList.remove('pressed');
+        card.classList.add('swap');
+        setTimeout(()=>{
+          k = (k+1) % seq.length;
+          if(k === 0) trail.innerHTML = '';
+          show(seq[k]);
+          card.classList.remove('swap');
+          busy = false;
+        }, 620);
+      }, 650);
+    };
+    show(seq[0]);
+    if(!reduce){
+      timer = setInterval(()=>advance(null), 4200);
+      const bump = v =>{ clearInterval(timer); advance(v); timer = setInterval(()=>advance(null), 4200); };
+      byes.addEventListener('click', ()=>bump('y'));
+      bno.addEventListener('click', ()=>bump('n'));
+    } else {
+      show(seq[3]);
+      ['n','n','y','y'].forEach(v=>{ stamp(v); });
+      trail.querySelectorAll('.v').forEach(c=>c.classList.add('on'));
+    }
+  })();
+
+  /* ===== 联系表单（mockup：本地成功态；生产版换 HubSpot embed） ===== */
+  (function(){
+    const form = document.getElementById('demoform');
+    if(!form) return;
+    form.addEventListener('submit', e=>{
+      e.preventDefault();
+      let ok = true;
+      form.querySelectorAll('input[required]').forEach(inp=>{
+        const bad = !inp.value.trim() || (inp.type==='email' && !/^\S+@\S+\.\S+$/.test(inp.value));
+        inp.classList.toggle('err', bad);
+        if(bad) ok = false;
+      });
+      if(!ok) return;
+      const btn = form.querySelector('button[type=submit]');
+      btn.querySelector('span').textContent = 'Sending...';
+      btn.disabled = true;
+      setTimeout(()=>{ form.closest('.cform').classList.add('sent'); }, 800);
+    });
+    form.querySelectorAll('input').forEach(inp=> inp.addEventListener('input', ()=>inp.classList.remove('err')) );
+    // 目录上传：显示已选文件名
+    const file = document.getElementById('cf-file'), drop = document.getElementById('drop'), names = document.getElementById('dropnames');
+    file.addEventListener('change', ()=>{
+      const fs = [...file.files].map(f=>f.name);
+      drop.classList.toggle('hasfiles', fs.length > 0);
+      names.textContent = fs.length ? ': ' + fs.join(', ') : ' and Ollie starts scoring tenders against it from day one.';
+    });
+  })();
+})();
+</script>
+</body>
+</html>

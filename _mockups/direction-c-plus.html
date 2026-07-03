@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OEMMart 方向 C+ · Transformation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ed3f2e; --red-deep:#d4441e; --navy:#27276e;
+  --navy-900:#0f1a3e; --navy-800:#152250;
+  --paper:#fcfcfa; --ink:#111420; --muted:#565d6d; --soft:#9aa0ad; --line:#e4e4de;
+  --nav-ink:#eef1f9;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--paper)}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+.note{position:fixed;left:16px;bottom:16px;z-index:60;max-width:420px;background:#111827;color:#d1d5db;font-size:12.5px;line-height:1.7;padding:12px 16px;border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,.4);opacity:.94}
+.note b{color:#fff}
+.note .tag{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:11px;padding:2px 8px;border-radius:4px;margin-right:10px;vertical-align:1px}
+.note a{color:#93c5fd;text-decoration:underline}
+
+/* ===== 固定导航（颜色随世界翻转） ===== */
+.nav{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:72px;color:var(--nav-ink);transition:background .3s}
+.nav.solid{background:rgba(252,252,250,.86);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav .wordmark{font-weight:800;font-size:19px;letter-spacing:.01em;color:var(--nav-ink)}
+.nav .wordmark span{color:var(--red)}
+.nav .links{display:flex;gap:34px;font-size:15px;font-weight:500;color:var(--nav-ink);opacity:.85}
+.nav .btn{background:var(--red);color:#fff}
+.btn{display:inline-block;font-weight:600;font-size:15px;padding:13px 26px;border-radius:999px;cursor:pointer;border:0;transition:transform .15s,background .2s}
+.btn:active{transform:translateY(1px) scale(.98)}
+.btn.red{background:var(--red);color:#fff}
+.btn.red:hover{background:var(--red-deep)}
+.btn.dark{background:var(--ink);color:#fff}
+.btn.dark:hover{background:var(--navy)}
+
+/* ===== 变身舞台 ===== */
+.stage{position:relative;min-height:100dvh;background:var(--navy-900);overflow:hidden}
+.stage .light{position:absolute;inset:0;background:var(--paper);opacity:0;pointer-events:none}
+.doc{position:absolute;width:210px;background:#fff;border-radius:8px;padding:14px 14px 12px;box-shadow:0 18px 50px rgba(0,0,0,.42);will-change:transform,opacity}
+.doc .fn{font-family:'IBM Plex Mono';font-size:10.5px;font-weight:600;color:#334;line-height:1.4;word-break:break-all;border-bottom:1px solid #e8e8e2;padding-bottom:8px;margin-bottom:9px}
+.doc .tx{height:64px;background:repeating-linear-gradient(#0000 0 3px,#d7d7cf 3px 5px,#0000 5px 8px)}
+.doc .tx.short{height:38px}
+.doc .meta{margin-top:9px;font-family:'IBM Plex Mono';font-size:10px;color:#8a8f9c;display:flex;justify-content:space-between}
+.doc .due{position:absolute;top:-10px;right:-14px;background:var(--red);color:#fff;font-family:'IBM Plex Mono';font-size:10px;font-weight:600;padding:5px 9px;border-radius:4px;transform:rotate(6deg);box-shadow:0 6px 16px rgba(237,63,46,.4)}
+.orb{position:absolute;left:50%;top:44%;width:150px;height:150px;transform:translate(-50%,-50%) scale(.4);opacity:0;border-radius:50%;background:radial-gradient(circle at 32% 28%,#ff7a5e,var(--red) 42%,var(--navy) 100%);box-shadow:0 0 90px rgba(237,63,46,.45), inset 0 2px 18px rgba(255,255,255,.35);will-change:transform,opacity}
+.copy{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px}
+.copy.before{color:#eef1f9;z-index:3}
+.copy.before h1{font-size:clamp(34px,5vw,64px);font-weight:900;letter-spacing:-.04em;line-height:1.02;max-width:16ch;text-shadow:0 4px 40px rgba(15,26,62,.8)}
+.copy.before p{margin-top:22px;font-size:18px;line-height:1.6;color:#b9c4e2;max-width:44ch;text-shadow:0 2px 20px rgba(15,26,62,.9)}
+.copy.after{z-index:4;visibility:hidden}
+.copy.after .mark{height:40px;margin:0 auto 28px}
+.copy.after h1{font-size:clamp(40px,6.4vw,88px);font-weight:900;letter-spacing:-.045em;line-height:.98;color:var(--ink)}
+.copy.after h1 em{font-style:normal;color:var(--red)}
+.copy.after p{margin:26px auto 34px;font-size:19px;line-height:1.6;color:var(--muted);max-width:38ch}
+.copy.after .ctas{display:flex;gap:14px;justify-content:center}
+.copy.after > *{will-change:transform,opacity}
+
+/* ===== Before/After 拖拽对比 ===== */
+.sec{max-width:1160px;margin:0 auto;padding:110px 40px}
+.sec h2{font-size:clamp(32px,4.4vw,56px);font-weight:900;letter-spacing:-.035em;line-height:1.04;max-width:20ch}
+.sec .lede{margin-top:16px;font-size:17px;color:var(--muted);line-height:1.65;max-width:52ch}
+.cmp{position:relative;margin-top:56px;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 32px 90px rgba(17,20,32,.14);user-select:none;touch-action:pan-y}
+.cmp .side{padding:44px 48px;min-height:430px}
+.cmp .side.b4{background:#e9eaee;padding-right:48%}
+.cmp .side.af{position:absolute;inset:0;background:var(--paper);clip-path:inset(0 0 0 var(--x,55%));display:flex;justify-content:flex-end}
+.cmp .afin{width:44%;min-width:340px;display:flex;flex-direction:column;align-items:flex-start}
+.cmp .label{display:inline-block;font-family:'IBM Plex Mono';font-size:11.5px;font-weight:600;letter-spacing:.08em;padding:6px 12px;border-radius:5px;margin-bottom:26px}
+.cmp .b4 .label{background:#d3d5db;color:#4a4f5c}
+.cmp .af .label{background:var(--red);color:#fff}
+.cmp h3{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:20px}
+.cmp .b4 h3{color:#4a4f5c}
+.portal{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;background:#f2f3f5;border:1px solid #dcdee4;border-radius:8px;margin-bottom:9px;font-size:14.5px;color:#4a4f5c;max-width:480px}
+.portal b{font-weight:600}
+.portal span{font-family:'IBM Plex Mono';font-size:12px;color:#8a8f9c}
+.mail{max-width:520px;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 12px 36px rgba(17,20,32,.08)}
+.mail .mh{padding:16px 20px;border-bottom:1px solid var(--line);font-size:14px}
+.mail .mh b{display:block;font-size:15px}
+.mail .mh span{color:var(--soft);font-size:12.5px;font-family:'IBM Plex Mono')}
+.match{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 20px;border-bottom:1px solid #f0f0ec}
+.match:last-child{border-bottom:0}
+.match .t{font-size:14px;line-height:1.45}
+.match .t small{display:block;font-family:'IBM Plex Mono';font-size:11px;color:var(--soft);margin-top:3px}
+.match .sc{font-family:'IBM Plex Mono';font-size:17px;font-weight:600;padding:5px 11px;border-radius:6px;flex-shrink:0}
+.sc.hi{color:#0a7d52;background:#e2f6ec}
+.sc.mid{color:#9a6a05;background:#fdf3d8}
+.handle{position:absolute;top:0;bottom:0;left:var(--x,55%);width:3px;background:var(--red);cursor:ew-resize;z-index:5}
+.handle::after{content:"◂ ▸";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--red);color:#fff;font-size:13px;letter-spacing:2px;padding:10px 13px;border-radius:999px;white-space:nowrap;box-shadow:0 8px 24px rgba(237,63,46,.45)}
+
+/* ===== 三件事 ===== */
+.three{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.three .grid{margin-top:60px;display:grid;grid-template-columns:1fr 1fr 1fr;border-left:1px solid var(--line)}
+.three .g{padding:8px 36px 8px 28px;border-right:1px solid var(--line)}
+.three .g .n{font-family:'IBM Plex Mono';font-size:13px;font-weight:600;color:var(--red);margin-bottom:14px}
+.three .g h3{font-size:19px;font-weight:800;letter-spacing:-.01em}
+.three .g p{margin-top:10px;font-size:14.5px;line-height:1.7;color:var(--muted)}
+.three h2 em{font-style:italic;color:var(--red);line-height:1.1;padding-bottom:4px}
+
+/* ===== 真实截图 ===== */
+.proof .frame{margin-top:56px;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 40px 100px rgba(17,20,32,.14)}
+.facts{margin-top:44px;display:flex;justify-content:center;gap:64px;flex-wrap:wrap;text-align:center}
+.facts .f{font-size:15px;color:var(--muted)}
+.facts .f b{display:block;font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:4px}
+
+/* ===== Kaeser ===== */
+.kae{text-align:center}
+.kae .line{font-size:clamp(24px,3vw,36px);font-weight:700;letter-spacing:-.02em;line-height:1.35;max-width:26ch;margin:0 auto}
+.kae .line em{font-style:normal;color:var(--red)}
+.kae .who{margin-top:24px;font-size:15px;color:var(--muted)}
+
+/* ===== 定价 ===== */
+.pricing{border-top:1px solid var(--line);background:#fff}
+.pricing .in{max-width:1160px;margin:0 auto;padding:110px 40px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.pricing h2{font-size:clamp(32px,4vw,52px);font-weight:900;letter-spacing:-.035em;line-height:1.05}
+.pricing .sub{margin-top:18px;font-size:16.5px;color:var(--muted);line-height:1.65;max-width:38ch}
+.tiers{border-top:1px solid var(--line)}
+.tier{display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding:28px 4px;border-bottom:1px solid var(--line)}
+.tier h3{font-size:19px;font-weight:700}
+.tier p{font-size:14px;color:var(--muted);margin-top:4px}
+.tier .amt{font-size:30px;font-weight:800;letter-spacing:-.02em;white-space:nowrap}
+.tier .amt small{font-size:14px;font-weight:500;color:var(--soft)}
+
+/* ===== CTA / Footer ===== */
+.cta{padding:130px 40px;text-align:center}
+.cta h2{font-size:clamp(40px,6vw,80px);font-weight:900;letter-spacing:-.04em;line-height:1}
+.cta p{margin:24px auto 36px;font-size:18px;color:var(--muted);max-width:36ch;line-height:1.6}
+.foot{max-width:1280px;margin:0 auto;padding:36px 40px;display:flex;justify-content:space-between;font-size:14px;color:var(--soft);border-top:1px solid var(--line)}
+
+/* 入场 reveal */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+.rv.vis{opacity:1;transform:none}
+
+@media (max-width:900px){
+  .nav{padding:0 20px}
+  .nav .links{display:none}
+  .doc{width:150px}
+  .doc:nth-child(n+7){display:none}
+  .cmp .side{padding:28px 20px}
+  .cmp .side.b4{padding-right:46%}
+  .cmp .afin{width:52%;min-width:0}
+  .three .grid{grid-template-columns:1fr;border-left:0}
+  .three .g{border-right:0;border-top:1px solid var(--line);padding:24px 4px}
+  .pricing .in{grid-template-columns:1fr;gap:48px}
+  .sec{padding:80px 20px}
+}
+@media (prefers-reduced-motion: reduce){
+  .rv{opacity:1;transform:none;transition:none}
+}
+/* 无动画兜底：GSAP 未加载或 reduced motion 时的静态终态 */
+body.static .stage .light{opacity:1}
+body.static .doc{opacity:.08}
+body.static .orb{display:none}
+body.static .copy.before{display:none}
+body.static .copy.after{visibility:visible}
+body.static .copy.after > *{opacity:1 !important;transform:none !important}
+body.static{--nav-ink:#111420}
+</style>
+</head>
+<body>
+
+<div class="note"><span class="tag">方向 C+</span><b>Transformation 变身叙事</b>：往下滚动,亲历产品价值——标书淹没世界(BEFORE) → 被 Ollie 吞噬 → 世界翻亮(AFTER)。中段还有一个可拖拽的 Before/After 对比滑块。<a href="directions.html">← 返回三方向对比</a></div>
+
+<nav class="nav" id="nav">
+  <div class="wordmark">OEM<span>MART</span></div>
+  <div class="links"><a href="#">Product</a><a href="#">Pricing</a><a href="#">About</a></div>
+  <a class="btn red" href="#">Book a demo</a>
+</nav>
+
+<!-- ============ 变身舞台 ============ -->
+<section class="stage" id="stage">
+  <div class="light" id="light"></div>
+
+  <div class="doc" style="left:6%;top:12%;transform:rotate(-8deg)">
+    <div class="fn">NEW_CUMBERLAND_Comp_on.pdf</div><div class="tx"></div>
+    <div class="meta"><span>355 pages</span><span>federal</span></div>
+    <div class="due">DUE IN 12 DAYS</div>
+  </div>
+  <div class="doc" style="left:74%;top:8%;transform:rotate(7deg)">
+    <div class="fn">Roseville_Power_Plant_2_Repower_RFP_Bid.pdf</div><div class="tx short"></div>
+    <div class="meta"><span>212 pages</span><span>municipal</span></div>
+  </div>
+  <div class="doc" style="left:14%;top:58%;transform:rotate(5deg)">
+    <div class="fn">City_of_Palo_Alto_Advanced_Water_Purification_System.pdf</div><div class="tx"></div>
+    <div class="meta"><span>178 pages</span><span>municipal</span></div>
+    <div class="due">DUE IN 6 DAYS</div>
+  </div>
+  <div class="doc" style="left:80%;top:52%;transform:rotate(-6deg)">
+    <div class="fn">State_of_Ohio_Wastewater_Retrofit_RFP.pdf</div><div class="tx short"></div>
+    <div class="meta"><span>146 pages</span><span>state</span></div>
+  </div>
+  <div class="doc" style="left:38%;top:4%;transform:rotate(3deg)">
+    <div class="fn">Ontario_School_District_HVAC_Tender.pdf</div><div class="tx short"></div>
+    <div class="meta"><span>96 pages</span><span>provincial</span></div>
+  </div>
+  <div class="doc" style="left:55%;top:66%;transform:rotate(9deg)">
+    <div class="fn">Naval_Yard_Compressed_Air_Maintenance_SOW.pdf</div><div class="tx"></div>
+    <div class="meta"><span>240 pages</span><span>federal</span></div>
+    <div class="due">DUE IN 21 DAYS</div>
+  </div>
+  <div class="doc" style="left:2%;top:36%;transform:rotate(6deg)">
+    <div class="fn">Texas_Standing_Offer_Industrial_Equipment.pdf</div><div class="tx short"></div>
+    <div class="meta"><span>124 pages</span><span>state</span></div>
+  </div>
+  <div class="doc" style="left:86%;top:30%;transform:rotate(-4deg)">
+    <div class="fn">Alberta_Infrastructure_Mechanical_RFQ.pdf</div><div class="tx short"></div>
+    <div class="meta"><span>88 pages</span><span>provincial</span></div>
+  </div>
+
+  <div class="orb" id="orb"></div>
+
+  <div class="copy before" id="before">
+    <h1>Somewhere in this pile is a contract you'd win.</h1>
+    <p>Hundreds of public tenders publish every day. Hundreds of pages each. Someone on your team has to read them.</p>
+  </div>
+
+  <div class="copy after" id="after">
+    <img class="mark" src="../images/oemmart-20logo-20no-20inc.png" alt="OEMMart">
+    <h1>Ollie reads them. <em>You decide.</em></h1>
+    <p>FitScore ranks every tender against your catalogue. The best matches arrive scored, cited and drafted.</p>
+    <div class="ctas"><a class="btn red" href="#">Book a demo</a><a class="btn dark" href="#">See it work</a></div>
+  </div>
+</section>
+
+<!-- ============ Before/After 拖拽对比 ============ -->
+<section class="sec">
+  <h2 class="rv">Monday morning, with and without OEMMart.</h2>
+  <p class="lede rv">Drag the divider. Same tenders, same deadline, two very different weeks.</p>
+  <div class="cmp rv" id="cmp">
+    <div class="side b4">
+      <span class="label">WITHOUT OEMMART</span>
+      <h3>Check 6 portals. Read everything. Hope you didn't miss one.</h3>
+      <div class="portal"><b>SAM.gov</b><span>214 new postings</span></div>
+      <div class="portal"><b>Ohio Procurement Portal</b><span>37 new postings</span></div>
+      <div class="portal"><b>Texas SmartBuy</b><span>41 new postings</span></div>
+      <div class="portal"><b>Ontario Tenders Portal</b><span>18 new postings</span></div>
+      <div class="portal"><b>Alberta Purchasing Connection</b><span>22 new postings</span></div>
+      <div class="portal"><b>Pennsylvania eMarketplace</b><span>29 new postings</span></div>
+    </div>
+    <div class="side af">
+      <div class="afin">
+      <span class="label">WITH OEMMART</span>
+      <h3>One email. Three bids worth your time. Already scored.</h3>
+      <div class="mail">
+        <div class="mh"><b>Your matches this morning</b><span>from Ollie, 6:00 AM</span></div>
+        <div class="match"><div class="t">Rotary screw air compressors, wastewater plant retrofit<small>State of Ohio · closes in 21 days</small></div><span class="sc hi">92</span></div>
+        <div class="match"><div class="t">Compressed air system, naval yard maintenance<small>SAM.gov · closes in 34 days</small></div><span class="sc hi">88</span></div>
+        <div class="match"><div class="t">HVAC and air treatment, school district<small>Ontario · closes in 12 days</small></div><span class="sc mid">61</span></div>
+      </div>
+      </div>
+    </div>
+    <div class="handle" id="handle"></div>
+  </div>
+</section>
+
+<!-- ============ 三件事 ============ -->
+<section class="three">
+  <div class="sec" style="padding-top:110px;padding-bottom:110px">
+    <h2 class="rv">Three things Ollie does <em>while you sleep.</em></h2>
+    <div class="grid">
+      <div class="g rv"><div class="n">READ</div><h3>Every new tender</h3><p>Federal, state and provincial portals, checked and read overnight. Nothing slips past because nobody had time.</p></div>
+      <div class="g rv"><div class="n">SCORE</div><h3>The fit, in one number</h3><p>FitScore compares each tender against your product catalogue and ranks what is worth your attention.</p></div>
+      <div class="g rv"><div class="n">DRAFT</div><h3>Your answers</h3><p>Your standard qualification questions arrive pre-answered, with page-level citations, before you open the document.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 真实产品 ============ -->
+<section class="sec proof">
+  <h2 class="rv">Not a mockup. This is the product.</h2>
+  <p class="lede rv">Every answer cites the exact page of the tender document, so your compliance team can verify in one click.</p>
+  <div class="frame rv"><img src="../images/screenshot-202025-08-27-20at-2011.48.41-e2-80-afam-p-1080.png" alt="OEMMart answering tender questions with page-level citations"></div>
+  <div class="facts rv">
+    <div class="f"><b>SAM.gov + 20 states</b>U.S. coverage</div>
+    <div class="f"><b>AB + ON</b>Canadian coverage</div>
+    <div class="f"><b>Every morning</b>matched bids, scored</div>
+    <div class="f"><b>Page-level</b>citations on every answer</div>
+  </div>
+</section>
+
+<!-- ============ Kaeser ============ -->
+<section class="sec kae">
+  <div class="line rv">Kaeser Compressors USA screens tenders across <em>all 50 states</em> with OEMMart.</div>
+  <div class="who rv">Paying customer since 2025. Name and logo used with permission.</div>
+</section>
+
+<!-- ============ 定价 ============ -->
+<section class="pricing">
+  <div class="in">
+    <div>
+      <h2 class="rv">One price. No credit math.</h2>
+      <p class="sub rv">Coverage-based pricing. Start regional, go national when the wins stack up.</p>
+    </div>
+    <div class="tiers rv">
+      <div class="tier"><div><h3>Regional</h3><p>One state or province</p></div><div class="amt">$300<small>/mo</small></div></div>
+      <div class="tier"><div><h3>National</h3><p>Full U.S. and Canada coverage</p></div><div class="amt">$1,000<small>/mo</small></div></div>
+      <div class="tier"><div><h3>Enterprise</h3><p>Teams, integrations, onboarding</p></div><div class="amt">Let's talk</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta">
+  <h2 class="rv">Bid on the right things.</h2>
+  <p class="rv">A 30-minute demo on your own product line. No slides.</p>
+  <a class="btn red rv" href="#">Book a demo</a>
+</section>
+
+<footer class="foot"><span>OEMMart Inc. Toronto, Canada</span><span>Privacy · Terms · Contact</span></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hasGsap = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+
+  if (reduce || !hasGsap){
+    document.body.classList.add('static');
+  } else {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const stage = document.getElementById('stage');
+    const docs = gsap.utils.toArray('.doc');
+    const orb = document.getElementById('orb');
+
+    // after 文案子元素初始态
+    gsap.set('#after', {visibility:'visible'});
+    gsap.set('#after > *', {autoAlpha:0, y:44});
+
+    const tl = gsap.timeline({
+      scrollTrigger:{
+        trigger: stage,
+        start: 'top top',
+        end: '+=2800',
+        pin: true,
+        scrub: 1,
+        invalidateOnRefresh: true
+      }
+    });
+
+    // Act 1: BEFORE 文案让位，文件被吸入中心
+    tl.to('#before', {autoAlpha:0, y:-60, duration:1.2, ease:'power1.in'}, 0.3);
+    docs.forEach((doc, i)=>{
+      tl.to(doc, {
+        x: ()=> stage.clientWidth*0.5 - (doc.offsetLeft + doc.offsetWidth/2),
+        y: ()=> stage.clientHeight*0.44 - (doc.offsetTop + doc.offsetHeight/2),
+        rotation: (i%2 ? 300 : -300),
+        scale: 0.04,
+        autoAlpha: 0,
+        duration: 2.4,
+        ease: 'power2.in'
+      }, 0.5 + i*0.12);
+    });
+
+    // Act 2: Ollie 球体登场吞噬
+    tl.to(orb, {autoAlpha:1, scale:1.25, duration:1.6, ease:'power2.out'}, 1.4);
+    tl.to(orb, {scale:0.95, duration:0.5, ease:'power1.inOut'}, 3.2);
+
+    // Act 3: 世界翻亮
+    tl.to('#light', {opacity:1, duration:1.8, ease:'power1.inOut'}, 3.6);
+    tl.to('html', {'--nav-ink':'#111420', duration:1.2}, 3.8);
+    tl.to(orb, {autoAlpha:0, scale:2.6, duration:1.4, ease:'power2.in'}, 3.7);
+
+    // Act 4: AFTER 内容依次登场
+    tl.to('#after > *', {autoAlpha:1, y:0, duration:1.4, stagger:0.3, ease:'power3.out'}, 4.6);
+    tl.to({}, {duration:0.8}); // 收尾停顿
+
+    // 导航底色：离开舞台后加实底
+    ScrollTrigger.create({
+      trigger: stage,
+      start: 'bottom 80px',
+      onEnter: ()=> document.getElementById('nav').classList.add('solid'),
+      onLeaveBack: ()=> document.getElementById('nav').classList.remove('solid')
+    });
+  }
+
+  // reveal（两种模式都用；reduced motion 时 CSS 已禁用位移）
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('vis'); io.unobserve(e.target);} });
+  },{threshold:0.18});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+  // Before/After 拖拽滑块
+  const cmp = document.getElementById('cmp');
+  let dragging = false;
+  const setX = clientX =>{
+    const r = cmp.getBoundingClientRect();
+    const pct = Math.min(92, Math.max(8, (clientX - r.left)/r.width*100));
+    cmp.style.setProperty('--x', pct+'%');
+  };
+  cmp.addEventListener('pointerdown', e=>{ dragging=true; setX(e.clientX); cmp.setPointerCapture(e.pointerId); });
+  cmp.addEventListener('pointermove', e=>{ if(dragging) setX(e.clientX); });
+  cmp.addEventListener('pointerup', ()=> dragging=false);
+  cmp.addEventListener('pointercancel', ()=> dragging=false);
+})();
+</script>
+</body>
+</html>
