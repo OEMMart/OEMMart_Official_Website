@@ -66,17 +66,18 @@
   },{threshold:0.6});
   document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
 
-  // Before/After 拖拽
+  // Before/After 对比：桌面鼠标 hover 自动跟随，触摸设备按住拖动
   const cmp = document.getElementById('cmp');
-  let dragging = false;
+  let touching = false;
   const setX = clientX =>{
     const r = cmp.getBoundingClientRect();
     cmp.style.setProperty('--x', Math.min(92, Math.max(8,(clientX - r.left)/r.width*100))+'%');
   };
-  cmp.addEventListener('pointerdown', e=>{ dragging=true; setX(e.clientX); cmp.setPointerCapture(e.pointerId); });
-  cmp.addEventListener('pointermove', e=>{ if(dragging) setX(e.clientX); });
-  cmp.addEventListener('pointerup', ()=> dragging=false);
-  cmp.addEventListener('pointercancel', ()=> dragging=false);
+  cmp.addEventListener('mousemove', e=> setX(e.clientX));                    // 桌面：无需按下，跟随鼠标
+  cmp.addEventListener('pointerdown', e=>{ if(e.pointerType!=='mouse'){ touching=true; setX(e.clientX); } });
+  cmp.addEventListener('pointermove', e=>{ if(e.pointerType!=='mouse' && touching) setX(e.clientX); });
+  cmp.addEventListener('pointerup', ()=> touching=false);
+  cmp.addEventListener('pointercancel', ()=> touching=false);
 
   /* ===== 标书纸：逐词书写 + 自然语言修订第二幕 ===== */
   const sheet = document.getElementById('sheet');
@@ -248,68 +249,6 @@
     }
   })();
 
-  /* ===== 联系表单：提交到 HubSpot Forms API =====
-     注意：目录文件无法经此匿名 API 上传（需 Files API 鉴权），
-     选择了文件时在成功文案中承诺回信附安全上传链接。
-     TODO: 营销同意勾选需拿到 HubSpot subscriptionTypeId 后接入 legalConsentOptions。 */
-  (function(){
-    const HS_PORTAL = '341778708';
-    const HS_FORM = '90f0e3b8-f6d7-4d19-a872-c69098bc6d91';
-    const form = document.getElementById('demoform');
-    if(!form) return;
-    const val = id => document.getElementById(id).value.trim();
-    form.addEventListener('submit', e=>{
-      e.preventDefault();
-      let ok = true;
-      form.querySelectorAll('input[required]').forEach(inp=>{
-        const bad = !inp.value.trim() || (inp.type==='email' && !/^\S+@\S+\.\S+$/.test(inp.value));
-        inp.classList.toggle('err', bad);
-        if(bad) ok = false;
-      });
-      if(!ok) return;
-      const btn = form.querySelector('button[type=submit]');
-      const label = btn.querySelector('span');
-      label.textContent = 'Sending...';
-      btn.disabled = true;
-      const hutk = (document.cookie.match(/hubspotutk=([^;]+)/) || [])[1];
-      const payload = {
-        fields: [
-          {name:'firstname', value: val('cf-fname')},
-          {name:'lastname', value: val('cf-lname')},
-          {name:'company', value: val('cf-company')},
-          {name:'email', value: val('cf-email')},
-          {name:'phone', value: val('cf-phone')}
-        ],
-        context: Object.assign({pageUri: location.href, pageName: document.title}, hutk ? {hutk} : {})
-      };
-      fetch('https://api.hsforms.com/submissions/v3/integration/submit/'+HS_PORTAL+'/'+HS_FORM, {
-        method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
-      }).then(r=>{
-        if(!r.ok) throw new Error('submit failed');
-        const hasFiles = document.getElementById('cf-file').files.length > 0;
-        if(hasFiles) document.querySelector('#cdone p').textContent =
-          "We'll reply within one business day with demo times and a secure link for your catalogue.";
-        form.closest('.cform').classList.add('sent');
-      }).catch(()=>{
-        label.textContent = 'Book a demo';
-        btn.disabled = false;
-        let err = document.getElementById('cerr');
-        if(!err){
-          err = document.createElement('p');
-          err.id = 'cerr';
-          err.style.cssText = 'margin-top:12px;font-size:13.5px;color:#d4441e;text-align:center';
-          err.textContent = "Something went wrong sending the form. Call us at +1 (925) 770-4587 and we'll set it up by phone.";
-          form.appendChild(err);
-        }
-      });
-    });
-    form.querySelectorAll('input').forEach(inp=> inp.addEventListener('input', ()=>inp.classList.remove('err')) );
-    // 目录上传：显示已选文件名
-    const file = document.getElementById('cf-file'), drop = document.getElementById('drop'), names = document.getElementById('dropnames');
-    file.addEventListener('change', ()=>{
-      const fs = [...file.files].map(f=>f.name);
-      drop.classList.toggle('hasfiles', fs.length > 0);
-      names.textContent = fs.length ? ': ' + fs.join(', ') : ' and Ollie starts scoring tenders against it from day one.';
-    });
-  })();
+  /* 联系表单由 HubSpot 官方嵌入脚本渲染（见 index.html 页尾），
+     reCAPTCHA / 文件上传 / 营销同意均由 HubSpot 原生处理。 */
 })();
