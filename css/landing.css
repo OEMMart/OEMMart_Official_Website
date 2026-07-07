@@ -244,17 +244,17 @@ body.static .sheet .w{opacity:1}
 .fwcard .row{display:flex;align-items:center;justify-content:space-between;margin-top:20px}
 .fwcard .fscore{font-family:'IBM Plex Mono';font-size:40px;font-weight:600;color:#7ef0bc}
 .fwcard .fscore small{font-size:12px;color:#8fa0c9;display:block;letter-spacing:.08em;font-weight:500}
+.fwcard .fscore #fwsc{transition:color .55s var(--spring)}
+.fwcard .fscore #fwsc.t-hi{color:#7ef0bc}
+.fwcard .fscore #fwsc.t-mid{color:#fcd34d}
+.fwcard .fscore #fwsc.t-low{color:#ff8d7c}
 .fb{display:flex;gap:10px}
 .fb button{font-family:'IBM Plex Mono';font-size:14px;font-weight:600;padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:transparent;color:#eef1f9;cursor:pointer;transition:transform .4s var(--spring),background .3s,border-color .3s}
 .fb button:hover{border-color:#fff}
 .fb button.yes:hover{background:rgba(16,185,129,.15);border-color:#7ef0bc}
 .fb button.no:hover{background:rgba(237,63,46,.15);border-color:var(--red)}
 .fb button.pressed{transform:scale(.9)}
-.trail{display:flex;gap:8px;justify-content:center;margin-top:22px;min-height:30px}
-.trail .v{font-family:'IBM Plex Mono';font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;opacity:0;transform:scale(.5);transition:transform .5s var(--spring),opacity .5s}
-.trail .v.on{opacity:1;transform:scale(1)}
-.trail .v.y{background:rgba(16,185,129,.15);color:#7ef0bc;border:1px solid rgba(126,240,188,.35)}
-.trail .v.n{background:rgba(237,63,46,.14);color:#ff8d7c;border:1px solid rgba(237,63,46,.4)}
+.fwcard.cycle{opacity:0;transform:scale(.96)}
 
 /* ===== 覆盖数字 ===== */
 .coverage{padding:150px 0 0}

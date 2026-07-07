@@ -208,32 +208,26 @@
     ];
     const card = document.getElementById('fwcard'), tt = document.getElementById('fwtt'),
           rg = document.getElementById('fwrg'), sc = document.getElementById('fwsc'),
-          trail = document.getElementById('trail'),
           byes = document.getElementById('fbyes'), bno = document.getElementById('fbno');
     let k = 0, busy = false, timer = null;
-    const show = s =>{ tt.textContent = s.tt; rg.textContent = s.rg; sc.textContent = s.sc; };
-    const stamp = v =>{
-      const chip = document.createElement('span');
-      chip.className = 'v ' + v; chip.textContent = v === 'y' ? '✓' : '✗';
-      trail.appendChild(chip);
-      requestAnimationFrame(()=>requestAnimationFrame(()=>chip.classList.add('on')));
-    };
+    const tone = v => v >= 80 ? 't-hi' : v >= 50 ? 't-mid' : 't-low';
+    const show = s =>{ tt.textContent = s.tt; rg.textContent = s.rg; sc.textContent = s.sc; sc.className = 'fnum ' + tone(s.sc); };
     const advance = manual =>{
       if(busy) return; busy = true;
       const cur = seq[k];
       const btn = (manual || cur.v) === 'y' ? byes : bno;
       btn.classList.add('pressed');
-      stamp(manual || cur.v);
+      const nextK = (k + 1) % seq.length;
+      const cycling = nextK === 0;               // 爬到最高分后，柔和淡出重开一轮（非硬跳回落）
       setTimeout(()=>{
         btn.classList.remove('pressed');
-        card.classList.add('swap');
+        card.classList.add(cycling ? 'cycle' : 'swap');
         setTimeout(()=>{
-          k = (k+1) % seq.length;
-          if(k === 0) trail.innerHTML = '';
+          k = nextK;
           show(seq[k]);
-          card.classList.remove('swap');
+          card.classList.remove('swap', 'cycle');
           busy = false;
-        }, 620);
+        }, cycling ? 820 : 620);
       }, 650);
     };
     show(seq[0]);
@@ -243,9 +237,7 @@
       byes.addEventListener('click', ()=>bump('y'));
       bno.addEventListener('click', ()=>bump('n'));
     } else {
-      show(seq[3]);
-      ['n','n','y','y'].forEach(v=>{ stamp(v); });
-      trail.querySelectorAll('.v').forEach(c=>c.classList.add('on'));
+      show(seq[0]);
     }
   })();
 
