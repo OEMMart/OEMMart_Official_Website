@@ -256,6 +256,46 @@ body.static .sheet .w{opacity:1}
 .fb button.pressed{transform:scale(.9)}
 .fwcard.cycle{opacity:0;transform:scale(.96)}
 
+/* ===== SignalForge / Brain / Modules ===== */
+.sfengine,.brainsec,.modulesec{padding:150px 0}
+.sfengine{background:var(--paper);color:var(--ink)}
+.sfengine .in,.brainsec .in,.modulesec .in{max-width:1160px;margin:0 auto;padding:0 40px}
+.sfengine h2,.brainsec h2,.modulesec h2{font-size:clamp(38px,5.6vw,80px);font-weight:900;letter-spacing:-.04em;line-height:1;max-width:12ch}
+.sfengine .sub{margin-top:18px;font-size:17px;color:var(--muted);line-height:1.65;max-width:58ch}
+.sfstory{margin-top:54px;background:linear-gradient(135deg,var(--navy-900),var(--navy));color:#eef1f9;border-radius:26px;padding:34px;display:grid;grid-template-columns:1.3fr auto;gap:28px;align-items:center;box-shadow:0 26px 70px rgba(15,26,62,.22)}
+.sfstory h3{font-size:clamp(24px,3vw,36px);line-height:1.1;letter-spacing:-.03em;margin-bottom:14px}
+.sfstory p{color:#cbd3ea;line-height:1.65;max-width:70ch}
+.sfpipeline{margin:34px 0;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.sfpipeline span{background:#fff;border:1px solid var(--line);box-shadow:0 12px 28px rgba(17,20,32,.06);border-radius:999px;padding:11px 15px;font-size:14px;font-weight:700}
+.sfpipeline b{color:var(--red);font-family:'IBM Plex Mono';font-size:15px}
+.sfcards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.sfcard,.modcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 18px 44px rgba(17,20,32,.08)}
+.sfcard small{font-family:'IBM Plex Mono';font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--red)}
+.sfcard h3,.modcard h3{font-size:19px;line-height:1.2;letter-spacing:-.02em;margin:12px 0 10px}
+.sfcard p,.modcard p{color:var(--muted);line-height:1.55;font-size:14.5px}
+.brainsec{background:linear-gradient(180deg,#fff,var(--paper));color:var(--ink)}
+.brainsec .in{display:grid;grid-template-columns:.9fr 1.1fr;gap:58px;align-items:center}
+.braincopy p{font-size:18px;color:var(--muted);line-height:1.7;max-width:46ch}
+.brainui{border:1px solid #dfe3ea;border-radius:24px;overflow:hidden;background:#f6f8fb;box-shadow:0 34px 90px rgba(17,20,32,.16)}
+.bbar{height:48px;background:var(--ink);color:#fff;display:flex;align-items:center;gap:8px;padding:0 16px;font-family:'IBM Plex Mono';font-size:12px}
+.bbar span{width:10px;height:10px;border-radius:50%;background:var(--red)}
+.bbar span:nth-child(2){background:#f1b84b}.bbar span:nth-child(3){background:#2eb67d;margin-right:8px}
+.bbody{display:grid;grid-template-columns:210px 1fr;min-height:380px}
+.bnav{background:#fff;border-right:1px solid #dfe3ea;padding:16px;display:flex;flex-direction:column;gap:8px}
+.bnav div{border-radius:12px;padding:12px;font-weight:700;font-size:13px;color:#3d4452}
+.bnav .on{background:var(--red);color:#fff}
+.bpanel{padding:34px}
+.bscore{font-family:'IBM Plex Mono';font-size:12px;font-weight:700;letter-spacing:.14em;color:#0a7d52;margin-bottom:12px}
+.bpanel h3{font-size:28px;line-height:1.08;letter-spacing:-.03em;margin-bottom:12px}
+.bpanel p{color:var(--muted);line-height:1.6}
+.bpills{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.bpills span{background:#e2f6ec;color:#0a7d52;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:700}
+.bmsg{margin-top:22px;background:#fff;border:1px solid #dfe3ea;border-radius:14px;padding:16px;color:#343a48;line-height:1.55;box-shadow:0 12px 28px rgba(17,20,32,.08)}
+.modulesec{background:var(--navy-900);color:#eef1f9}
+.modulesec h2{max-width:14ch}
+.modgrid{margin-top:48px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.modcard{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.12);box-shadow:none;min-height:178px}
+.modcard p{color:#aeb9d8}
 /* ===== 覆盖数字 ===== */
 .coverage{padding:150px 0 0}
 .coverage .nums{max-width:1160px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;text-align:center}
@@ -388,6 +428,13 @@ body.static .sheet .w{opacity:1}
   .cmp .side{padding:28px 20px;min-height:380px}
   .cmp .side.b4{padding-right:46%}
   .cmp .afin{width:52%;min-width:0;padding:28px 20px 28px 0}
+  .sfengine,.brainsec,.modulesec{padding:100px 0}
+  .sfengine .in,.brainsec .in,.modulesec .in{padding:0 20px}
+  .sfstory{grid-template-columns:1fr;padding:26px}
+  .sfcards,.modgrid{grid-template-columns:1fr}
+  .sfpipeline b{display:none}
+  .brainsec .in,.bbody{grid-template-columns:1fr}
+  .bnav{border-right:0;border-bottom:1px solid #dfe3ea}
   .coverage .nums{grid-template-columns:1fr;gap:56px}
   .wheel{grid-template-columns:1fr;gap:44px}
   .signal .edge{grid-template-columns:1fr;gap:26px;padding:32px 24px}
