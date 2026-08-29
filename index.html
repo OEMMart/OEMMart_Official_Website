@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/landing.css?v=17">
+<link rel="stylesheet" href="css/landing.css?v=19">
 <script>
   // Apollo visitor tracking (ported from previous site)
   function initApollo() {
@@ -285,14 +285,22 @@
         </div>
         <div class="rrow r2 hero">
           <div class="rlab">THE PERSON WHO SIGNS IT</div>
+          <!-- 计费模型就是产品里的规则，逐条对应：找到=免费、点击才扣、先邮箱后电话、
+               同一条不会扣第二次。说明文字取自已批准的 brochure Plate 10 与产品 README。
+               只出现职位，不出现任何具名个人。 -->
           <div class="person">
             <span class="who">Director of Procurement</span>
-            <span class="contact" id="chip">
+            <span class="contact" id="chEmail">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-              <span id="chiptext">Direct email and phone</span>
+              <span class="cht">Email</span>
             </span>
-            <button class="reveal" id="unsealbtn" type="button">REVEAL</button>
+            <span class="contact" id="chPhone">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+              <span class="cht">Phone</span>
+            </span>
+            <button class="reveal" id="unsealbtn" type="button">UNLOCK EMAIL · 1 CREDIT</button>
           </div>
+          <p class="unote" id="unote">Finding people is free. Only revealing a detail spends, one click at a time.</p>
         </div>
         <div class="rrow r3">
           <div class="rlab">WHY THEY TAKE THE CALL</div>
@@ -354,12 +362,36 @@
   <div class="head">
     <h2 class="rv">Every answer <em>shows its source.</em></h2>
   </div>
-  <div class="stagewrap rv">
-    <div class="tagline">source · page 355</div>
-    <div class="shell"><div class="core">
-      <img src="images/screenshot-202025-08-27-20at-2011.48.41-e2-80-afam-p-1080.png" alt="OEMMart answering tender questions with page-level citations">
-    </div></div>
-    <div class="ringmark"></div>
+  <!-- 原先这里是 chat.oemmart.com 的旧截图：另一个产品、chatbot 形态，且图里最后一行
+       写着 "no exact chunk citation was provided"，正好否定上面那句标题。已下线。
+       换成产品真实的评分归因：每一分都记在某一条上，点开就是那几分的理由。
+       数值逐字取自已批准的 mockup detail-v2-radar.html。 -->
+  <div class="attrib rv" id="attrib">
+    <div class="ahd">
+      <span class="alab">Why this scored 88</span>
+      <span class="ahint">Open any line</span>
+    </div>
+    <button class="ar" type="button" aria-expanded="false">
+      <span class="arh"><span class="arn">Market relevance</span><span class="arbar"><i style="width:92%"></i></span><span class="arp">23<em>/25</em></span></span>
+      <span class="arw">Your rooftop HVAC line directly matches 11 of 14 specified units.</span>
+    </button>
+    <button class="ar" type="button" aria-expanded="false">
+      <span class="arh"><span class="arn">Capability alignment</span><span class="arbar"><i style="width:88%"></i></span><span class="arp">22<em>/25</em></span></span>
+      <span class="arw">Past federal installs (2 similar contracts) satisfy the mandatory experience clause.</span>
+    </button>
+    <button class="ar" type="button" aria-expanded="false">
+      <span class="arh"><span class="arn">Organizational compatibility</span><span class="arbar"><i style="width:80%"></i></span><span class="arp">16<em>/20</em></span></span>
+      <span class="arw">Bilingual documentation capacity meets PSPC requirements.</span>
+    </button>
+    <button class="ar gap" type="button" aria-expanded="false">
+      <span class="arh"><span class="arn">Delivery capacity</span><span class="arbar"><i style="width:73%"></i></span><span class="arp">11<em>/15</em></span></span>
+      <span class="arw">Winnipeg is outside your service region — subcontractor likely needed.</span>
+    </button>
+    <button class="ar" type="button" aria-expanded="false">
+      <span class="arh"><span class="arn">Competitive advantage</span><span class="arbar"><i style="width:80%"></i></span><span class="arp">12<em>/15</em></span></span>
+      <span class="arw">BAS integration expertise differentiates against the 3 likely incumbents.</span>
+    </button>
+    <p class="afoot">The score is allowed to say no. Delivery capacity is the line that argues against this bid, and it is shown at the same size as the ones that argue for it.</p>
   </div>
 </section>
 
@@ -455,7 +487,7 @@
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script src="js/landing.js?v=17"></script>
+<script src="js/landing.js?v=19"></script>
 <!-- HubSpot embed form (portal 341778708, region na3, new forms tool).
      Handles reCAPTCHA, file upload and consent natively. Renders in an iframe. -->
 <script src="https://js-na3.hsforms.net/forms/embed/341778708.js" defer></script>

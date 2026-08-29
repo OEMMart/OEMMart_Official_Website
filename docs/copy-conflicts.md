@@ -131,6 +131,12 @@ The ledger names the four screenshots worth capturing instead: Command Center wi
 counters, a signal detail with the score breakdown, the evidence panel, and Contacts in its locked
 state. Capturing them needs a login on a tenant that has real signal data.
 
+**Update 2026-08-29.** The `<img>` is gone — the proof section now shows the product's real score
+attribution instead. **But the same file is still the `og:image`** (`index.html`, line 13), so every
+time anyone shares oemmart.com on LinkedIn, Slack or anywhere else, the preview card is still a
+screenshot of the old chat product. Same defect, wider blast radius, and it needs an asset nobody
+has yet: a real SignalForge screen at about 1200×630. **Needs a decision and a file.**
+
 ### C5 — The Brain's status
 
 Not currently on the site, and the decision of 2026-08-29 is to keep it off. Recorded here so it is

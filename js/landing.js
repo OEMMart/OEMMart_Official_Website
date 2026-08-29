@@ -194,15 +194,31 @@
     },{threshold:0.3});
     io2.observe(wrap);
 
+    /* 解锁的三段：找到=免费 → 点一次解锁邮箱(1 credit) → 再点解锁电话(1 credit)。
+       产品强制先邮箱后电话，同一条不会扣第二次；这里把这条规则演出来。
+       值全部打码：真实联系人不放上公网。 */
     var btn=document.getElementById('unsealbtn'),
-        chip=document.getElementById('chip'),
-        t=document.getElementById('chiptext');
+        chE=document.getElementById('chEmail'),
+        chP=document.getElementById('chPhone'),
+        note=document.getElementById('unote');
     if(!btn) return;
+    var step=0;
+    var STATES=[
+      {chip:chE, val:'d••••••@••••••••.com',
+       next:'UNLOCK PHONE · 1 CREDIT',
+       note:'Email unlocked and stored. Phone never unlocks before email — the product enforces that order.'},
+      {chip:chP, val:'+1 ••• ••• ••••',
+       next:'UNLOCKED',
+       note:'Never charged twice. Repeated clicks return the saved value instead of spending again.'}
+    ];
     btn.addEventListener('click',function(){
-      chip.classList.add('open');
-      t.textContent='d••••••@••••••••.com  ·  +1 ••• ••• ••••';
-      btn.textContent='REVEALED';
-      btn.disabled=true;
+      var s=STATES[step]; if(!s) return;
+      s.chip.classList.add('open');
+      s.chip.querySelector('.cht').textContent=s.val;
+      btn.textContent=s.next;
+      note.textContent=s.note;
+      step++;
+      if(step>=STATES.length) btn.disabled=true;
     });
   })();
 
@@ -386,6 +402,26 @@
       });
     }
   }
+
+  /* ===== 评分归因：点开任意一行看那几分的理由 =====
+     用 <button aria-expanded> 而不是 div，键盘可操作，读屏能报开合状态。 */
+  (function(){
+    const panel = document.getElementById('attrib');
+    if(!panel) return;
+    const rows = [...panel.querySelectorAll('.ar')];
+    rows.forEach(r => r.addEventListener('click', ()=>{
+      r.setAttribute('aria-expanded', r.getAttribute('aria-expanded') !== 'true');
+    }));
+    // 首次进入视野时把第一行打开，让"可以点"这件事自己说出来
+    const aio = new IntersectionObserver(es=>{
+      es.forEach(e =>{
+        if(!e.isIntersecting) return;
+        setTimeout(()=> rows[0]?.setAttribute('aria-expanded','true'), 420);
+        aio.disconnect();
+      });
+    },{threshold:0.3});
+    aio.observe(panel);
+  })();
 
   /* 联系表单由 HubSpot 官方嵌入脚本渲染（见 index.html 页尾），
      reCAPTCHA / 文件上传 / 营销同意均由 HubSpot 原生处理。 */
