@@ -582,3 +582,135 @@ body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
   .match .t{font-size:13px}
   .match .sc{align-self:flex-start}
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   产品剧场 — 钉住 + scrub，竖滚驱动横移
+   视觉沿用既有语法：浮起的面（白色上缘 + 暖阴影）、内容沉槽、一个深锚点。
+   无左侧色条。
+   ══════════════════════════════════════════════════════════════════════ */
+.theatre{position:relative;background:var(--sand-4);overflow:hidden;padding:96px 0 0}
+.theatre .tkick{max-width:1160px;margin:0 auto 30px;padding:0 40px;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.theatre .tkick .kick{margin:0}
+.theatre .tnote{font-size:14px;color:var(--muted)}
+.theatre .track{overflow:hidden}
+.theatre .panels{display:flex;gap:26px;padding:0 40px 8px;will-change:transform}
+
+.theatre .tp{flex:none;width:min(556px,80vw);background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(247,246,243,.86));
+  border:1px solid var(--sand-5);border-radius:var(--r-lg);padding:22px 24px 24px;
+  box-shadow:inset 0 1px 0 var(--lift-3),0 1px 3px rgba(var(--warm-sh),.05),0 22px 48px rgba(var(--warm-sh),.13);
+  display:flex;flex-direction:column}
+.theatre .tpk{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);display:flex;align-items:baseline;gap:9px;padding-bottom:14px;border-bottom:1px solid var(--sand-5);margin-bottom:16px}
+.theatre .tpk b{color:var(--red);font-size:12px}
+.theatre .tpbody{display:flex;flex-direction:column;gap:9px}
+.theatre .tsub{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--sand-9);margin-top:9px}
+.theatre .tsub.nom{margin:0}
+
+/* 沉槽：面板内的数据行都坐在凹进去的槽里 */
+.theatre .oprow, .theatre .cs, .theatre .dt, .theatre .fl, .theatre .fx, .theatre .dr{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:var(--r-sm);
+  background:var(--sand-2);box-shadow:inset 0 1px 2px rgba(var(--warm-sh),.07);font-size:13px;color:var(--sand-12)}
+.theatre .oprow{transition:transform .34s var(--spring),box-shadow .34s var(--spring),background .3s}
+.theatre .oprow:hover{transform:translateY(-2px);background:var(--sand-1);
+  box-shadow:inset 0 1px 0 var(--lift-3),0 8px 20px rgba(var(--warm-sh),.12)}
+.theatre .av{width:28px;height:28px;flex:none;border-radius:7px;background:var(--sand-6);color:var(--sand-12);
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700}
+.theatre .av.lg{width:38px;height:38px;font-size:12px}
+.theatre .opt{flex:1;min-width:0;font-weight:600;line-height:1.3}
+.theatre .opt small, .theatre .cs small{display:block;font-weight:400;font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
+.theatre .dt small{font-weight:400;font-size:11px;color:var(--muted);font-family:var(--mono)}
+.theatre .sc{font-family:var(--mono);font-size:15px;font-weight:600;padding:3px 9px;border-radius:var(--r-sm);flex:none}
+.theatre .sc.hi{color:var(--green-pale-ink);background:#edf3ec;border:1px solid #d9e7d8}
+.theatre .cs b, .theatre .dt b{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--red-pale-ink);flex:none;width:52px}
+.theatre .cs span, .theatre .dt span{flex:1;min-width:0;font-weight:600;line-height:1.3}
+
+/* KPI */
+.theatre .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.theatre .kpi{position:relative;background:var(--sand-2);border-radius:var(--r-sm);padding:13px 12px;
+  box-shadow:inset 0 1px 2px rgba(var(--warm-sh),.07);display:flex;flex-direction:column;gap:3px}
+.theatre .kpi.hot{background:var(--red-pale)}
+.theatre .kn{font-family:var(--mono);font-size:26px;font-weight:600;letter-spacing:-.02em;line-height:1;color:var(--sand-12)}
+.theatre .kn em{font-style:normal}
+.theatre .kpi.hot .kn{color:var(--red-pale-ink)}
+.theatre .kl{font-size:11px;color:var(--muted);line-height:1.3}
+.theatre .kflag{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.12em;color:var(--red-pale-ink);margin-top:2px}
+
+/* 招标头 */
+.theatre .thd{display:flex;align-items:flex-start;gap:12px}
+.theatre .thdt{flex:1;min-width:0}
+.theatre .thdt b{display:block;font-size:16px;font-weight:800;letter-spacing:-.02em;line-height:1.22}
+.theatre .thdt small{display:block;margin-top:5px;font-size:11px;color:var(--muted);line-height:1.9}
+.theatre .tg{font-style:normal;font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;
+  padding:2px 7px;border-radius:5px;background:var(--sand-3);border:1px solid var(--sand-6);color:var(--sand-11);white-space:nowrap}
+.theatre .tg.red{color:var(--red-pale-ink);background:var(--red-pale);border-color:var(--red-pale-bd)}
+.theatre .tgs{display:flex;gap:6px;flex-wrap:wrap}
+.theatre .msc{flex:none;text-align:center;background:var(--red-pale);border:1px solid var(--red-pale-bd);
+  border-radius:var(--r-sm);padding:7px 12px;color:var(--red-pale-ink)}
+.theatre .msc span{display:block;font-family:var(--mono);font-size:25px;font-weight:600;line-height:1}
+.theatre .msc small{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;line-height:1.25;display:block;margin-top:3px}
+.theatre .tov{font-size:13px;line-height:1.6;color:var(--muted)}
+
+/* 文档 */
+.theatre .dhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.theatre .zip{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.06em;padding:7px 12px;border-radius:var(--r-pill);
+  background:var(--sand-12);color:var(--sand-1);cursor:pointer;border:0;transition:background .3s,transform .4s var(--spring)}
+.theatre .zip:hover{background:var(--graphite-3)}
+.theatre .zip:active{transform:scale(.97)}
+.theatre .zip[disabled]{opacity:.55;cursor:default}
+.theatre .fi{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.06em;color:var(--red-pale-ink);
+  background:var(--red-pale);border-radius:4px;padding:3px 5px;flex:none}
+.theatre .fn{flex:1;min-width:0;font-family:var(--mono);font-size:11px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.theatre .fs{font-family:var(--mono);font-size:10.5px;color:var(--muted);flex:none}
+.theatre .fl{position:relative;overflow:hidden}
+.theatre .fl.pull::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(var(--red-rgb),.18),rgba(var(--red-rgb),0));
+  animation:sweep .55s var(--spring) forwards}
+@keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.theatre .zipout{font-family:var(--mono);font-size:10.5px;color:var(--green-pale-ink);min-height:15px;opacity:0;transition:opacity .4s}
+.theatre .zipout.on{opacity:1}
+.theatre .fx{justify-content:space-between;font-size:12px;padding:8px 12px}
+.theatre .fx span{color:var(--muted)}
+.theatre .fx b{font-family:var(--mono);font-weight:600}
+
+/* journey 步进器 */
+.theatre .jy{list-style:none;display:flex;flex-direction:column;gap:0}
+.theatre .jy li{position:relative;padding:7px 0 7px 24px;font-size:12.5px;color:var(--sand-9);transition:color .4s}
+.theatre .jy li::before{content:"";position:absolute;left:5px;top:13px;width:8px;height:8px;border-radius:50%;
+  background:var(--sand-6);transition:background .4s,box-shadow .4s}
+.theatre .jy li:not(:last-child)::after{content:"";position:absolute;left:8.5px;top:21px;bottom:-3px;width:1px;background:var(--sand-5)}
+.theatre .jy li.done{color:var(--muted)}
+.theatre .jy li.done::before{background:var(--sand-9)}
+.theatre .jy li.now{color:var(--sand-12);font-weight:700}
+.theatre .jy li.now::before{background:var(--red);box-shadow:0 0 0 4px rgba(var(--red-rgb),.16)}
+
+/* 草稿 + 决策 */
+.theatre .dr .drv{font-family:var(--mono);font-size:10px;color:var(--muted);flex:none;width:72px}
+.theatre .dr .drn{flex:1;min-width:0;font-family:var(--mono);font-size:11px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.theatre .dr .drr{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--green-pale-ink);flex:none}
+.theatre .dr.old{opacity:.55}
+.theatre .dr.old .drr{color:var(--muted)}
+.theatre .dec{display:flex;gap:9px;margin-top:12px}
+.theatre .dec .btn{font-size:13.5px;padding:7px 7px 7px 18px}
+.theatre .dec .btn .ic{width:26px;height:26px;font-size:13px}
+.theatre .btn.ghost{background:var(--sand-3);color:var(--sand-11);border:1px solid var(--sand-6);padding:7px 18px;border-radius:999px;font-weight:600;cursor:pointer}
+.theatre .btn.ghost:hover{background:var(--sand-4)}
+.theatre .decn{font-size:11.5px;line-height:1.5;color:var(--muted);margin-top:9px;transition:color .4s}
+.theatre .decn.ok{color:var(--green-pale-ink);font-weight:600}
+
+/* 进度指示 */
+.theatre .tprog{display:flex;gap:7px;justify-content:center;padding:26px 0 96px}
+.theatre .tprog i{width:26px;height:3px;border-radius:2px;background:var(--sand-6);transition:background .4s,width .4s var(--spring)}
+.theatre .tprog i.on{background:var(--red);width:40px}
+
+/* 手机：不钉、不横移，四块纵向堆叠，交互全保留 */
+@media (max-width:640px){
+  .theatre{padding:72px 0 0}
+  .theatre .tkick{padding:0 20px;margin-bottom:22px}
+  .theatre .track{overflow:visible}
+  .theatre .panels{flex-direction:column;gap:18px;padding:0 20px;transform:none !important}
+  .theatre .tp{width:auto;padding:18px 16px 20px}
+  .theatre .kpis{grid-template-columns:1fr 1fr}
+  .theatre .kpi:last-child{grid-column:1 / -1}
+  .theatre .thd{flex-wrap:wrap}
+  .theatre .msc{order:-1}
+  .theatre .tprog{display:none}
+}

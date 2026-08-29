@@ -82,14 +82,20 @@
   const cio = new IntersectionObserver(es=>{
     es.forEach(e=>{
       if(!e.isIntersecting) return;
-      const el = e.target, target = +el.dataset.count, dur = 1400, t0 = performance.now();
+      const el = e.target, target = +el.dataset.count, dur = 1400;
+      cio.unobserve(el);
+      // 同 countUp：IntersectionObserver 在后台标签页照常触发，但 rAF 不跑，
+      // 不特判就会永远停在 0。
+      const settle = () => { el.textContent = target; };
+      if(document.hidden){ settle(); return; }
+      const t0 = performance.now();
       const step = t =>{
         const p = Math.min(1,(t - t0)/dur), eased = 1 - Math.pow(1-p,3);
         el.textContent = Math.round(target*eased);
         if(p < 1) requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
-      cio.unobserve(el);
+      setTimeout(settle, dur + 220);
     });
   },{threshold:0.6});
   document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
@@ -242,6 +248,144 @@
       show(seq[0]);
     }
   })();
+
+
+  /* ══════════════════════════════════════════════════════════════════
+     产品剧场
+     横移：钉住 + scrub。区块钉在视口，滚轮向下把内部面板向左推，走完释放。
+     用户全程只竖着滚 —— 不需要 shift、不需要手动横拖。
+     GSAP 管这个叫 "fake horizontal scroll"：pin 外壳、动里面的子元素、ease 必须是 none。
+     手机（≤640px）与 prefers-reduced-motion 都不建这套，CSS 已让面板纵向堆叠。
+     ══════════════════════════════════════════════════════════════════ */
+  const theatre = document.getElementById('theatre');
+  const panels  = document.getElementById('panels');
+
+  // 数字滚动：进场时从 0 数到目标，支持一位小数
+  const countUp = el =>{
+    if (el.dataset.done) return;
+    el.dataset.done = '1';
+    const target = parseFloat(el.dataset.cnt), dec = (el.dataset.cnt.split('.')[1] || '').length;
+    const dur = 900;
+    const settle = () => { el.textContent = target.toFixed(dec); };
+    // 后台标签页里 requestAnimationFrame 不会触发。若不特判，数字会被标成"已跑"
+    // 却永远停在 0 —— 用户中键新标签页打开本站就会看到这个。
+    if (document.hidden){ settle(); return; }
+    const t0 = performance.now();
+    const step = t =>{
+      const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = (target * e).toFixed(dec);
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+    setTimeout(settle, dur + 220);   // 兜底：中途被切到后台也不会卡在半路
+  };
+
+  if (theatre && panels){
+    if (reduce || !hasGsap){
+      // 降级：不横移，直接把数字落到终值
+      theatre.querySelectorAll('[data-cnt]').forEach(el => el.textContent = el.dataset.cnt);
+    } else {
+      gsap.matchMedia().add({
+        wide: '(min-width:641px)',
+        narrow:'(max-width:640px)'
+      }, (ctx)=>{
+        const dots = [...document.querySelectorAll('#tprog i')];
+        const cnts = [...theatre.querySelectorAll('[data-cnt]')];
+
+        if (ctx.conditions.narrow){
+          // 纵向堆叠：面板各自进入视口时数字才跑
+          const io = new IntersectionObserver(es=>{
+            es.forEach(e =>{ if(e.isIntersecting){ e.target.querySelectorAll('[data-cnt]').forEach(countUp); io.unobserve(e.target); } });
+          }, {threshold:.35});
+          theatre.querySelectorAll('.tp').forEach(p => io.observe(p));
+          return () => io.disconnect();
+        }
+
+        // 横移距离按实际内容算，invalidateOnRefresh 让它跟着视口变
+        const travel = () => Math.max(0, panels.scrollWidth - window.innerWidth);
+
+        const hz = gsap.to(panels, {
+          x: () => -travel(),
+          ease: 'none',                       // containerAnimation 的硬要求：滚动与位移必须 1:1
+          scrollTrigger:{
+            trigger: theatre,
+            start: 'top top',
+            end: () => '+=' + travel(),
+            pin: true,
+            scrub: 0.5,
+            invalidateOnRefresh: true,
+            onUpdate: self =>{
+              const i = Math.min(dots.length - 1, Math.round(self.progress * (dots.length - 1)));
+              dots.forEach((d, k) => d.classList.toggle('on', k === i));
+              armCounters();
+            }
+          }
+        });
+
+        /* 每块面板横向进场时才跑自己的数字。
+           这里刻意不用 containerAnimation 子触发器：它依赖容器动画自身的渲染节拍，
+           在滚动事件被外壳代理的环境里可能一次都不发火（实测如此）。
+           直接读面板的实际横向位置更笨也更可靠 —— 主 onUpdate 每帧都会调它。 */
+        function armCounters(){          // 函数声明：会提升，onUpdate 若在创建时同步触发也不会撞 TDZ
+          cnts.forEach(el =>{
+            if (el.dataset.done) return;
+            const p = el.closest('.tp');
+            if (p && p.getBoundingClientRect().left < window.innerWidth * 0.78) countUp(el);
+          });
+        }
+        armCounters();   // 第一块一进剧场就在视口里，不等横移
+      });
+    }
+
+    /* ── 面板交互（两个断点都生效，与横移无关）── */
+
+    // 03 · 打包下载：四行依次扫过，然后报出总量
+    const zipbtn = document.getElementById('zipbtn');
+    const zipout = document.getElementById('zipout');
+    if (zipbtn && zipout){
+      zipbtn.addEventListener('click', ()=>{
+        const files = [...theatre.querySelectorAll('.fl')];
+        zipbtn.disabled = true;
+        zipout.classList.remove('on');
+        files.forEach(f => f.classList.remove('pull'));
+        files.forEach((f, i) => setTimeout(()=> f.classList.add('pull'), i * 190));
+        const total = files.reduce((s, f) => s + parseFloat(f.dataset.mb || 0), 0);
+        setTimeout(()=>{
+          zipout.textContent = '✓ ' + files.length + ' files · ' + total.toFixed(1) + ' MB — one archive, one click';
+          zipout.classList.add('on');
+          zipbtn.disabled = false;
+        }, files.length * 190 + 420);
+      });
+    }
+
+    // 04 · 决策：journey 真的往前走一格
+    const journey = document.getElementById('journey');
+    const pursue  = document.getElementById('pursue');
+    const decline = document.getElementById('decline');
+    const decnote = document.getElementById('decnote');
+    if (journey && pursue && decline && decnote){
+      const steps = [...journey.children];
+      const reset = () =>{
+        steps.forEach((li, i) => li.className = i < 2 ? 'done' : (i === 2 ? 'now' : ''));
+        pursue.querySelector('span').textContent = 'Pursue';
+        decnote.className = 'decn';
+        decnote.textContent = 'Deciding moves this tender into your pursued pipeline and notifies the OEMMart team.';
+      };
+      pursue.addEventListener('click', ()=>{
+        steps.forEach((li, i) => li.className = i < 3 ? 'done' : (i === 3 ? 'now' : ''));
+        pursue.querySelector('span').textContent = 'Pursuing';
+        decnote.className = 'decn ok';
+        decnote.textContent = '✓ Moved into your pursued pipeline. Proposal generation is now the live stage.';
+        setTimeout(reset, 5200);
+      });
+      decline.addEventListener('click', ()=>{
+        steps.forEach(li => li.className = li.className === 'now' ? '' : li.className);
+        decnote.className = 'decn';
+        decnote.textContent = 'Declined. It stays on the record, and the scoring learns from the call.';
+        setTimeout(reset, 5200);
+      });
+    }
+  }
 
   /* 联系表单由 HubSpot 官方嵌入脚本渲染（见 index.html 页尾），
      reCAPTCHA / 文件上传 / 营销同意均由 HubSpot 原生处理。 */
