@@ -12,36 +12,64 @@
     gsap.registerPlugin(ScrollTrigger);
 
     const stage = document.getElementById('stage');
-    const docs = gsap.utils.toArray('.doc');
 
-    gsap.set('#after', {visibility:'visible'});
-    gsap.set('#after > *', {autoAlpha:0, y:44});
+    // 手机上 2800px 的 pin 等于三屏多的空滚动，而且只有 4 张卡在场（CSS 隐藏了其余 4 张）。
+    // gsap.matchMedia 在断点不再匹配时自动 revert 掉这里建的所有动画与 ScrollTrigger，
+    // 不需要手写 resize 清理。 https://gsap.com/docs/v3/GSAP/gsap.matchMedia/
+    gsap.matchMedia().add({
+      isMobile: '(max-width:640px)',
+      isDesktop:'(min-width:641px)'
+    }, (ctx)=>{
+      const { isMobile } = ctx.conditions;
 
-    const tl = gsap.timeline({
-      scrollTrigger:{
-        trigger: stage, start:'top top', end:'+=2800',
-        pin:true, scrub:1, invalidateOnRefresh:true,
-        onUpdate: self => document.body.classList.toggle('lit', self.progress > 0.62)
-      }
+      // display:none 的卡片 offsetParent 为 null，不参与汇聚动画
+      const docs = gsap.utils.toArray('.doc').filter(d => d.offsetParent !== null);
+
+      gsap.set('#after', {visibility:'visible'});
+      gsap.set('#after > *', {autoAlpha:0, y:44});
+
+      const tl = gsap.timeline({
+        scrollTrigger:{
+          trigger: stage, start:'top top', end: isMobile ? '+=1500' : '+=2800',
+          pin:true, scrub:1, invalidateOnRefresh:true,
+          onUpdate: self => document.body.classList.toggle('lit', self.progress > 0.62)
+        }
+      });
+
+      tl.to('#before', {autoAlpha:0, y:-60, duration:1.2, ease:'power1.in'}, 0.3);
+      docs.forEach((doc, i)=>{
+        const wrap = doc.parentElement;
+        tl.to(doc, {
+          x: ()=> stage.clientWidth*0.5 - (wrap.offsetLeft + doc.offsetWidth/2),
+          y: ()=> stage.clientHeight*0.44 - (wrap.offsetTop + doc.offsetHeight/2),
+          rotation: (i%2 ? 300 : -300),
+          scale: 0.04, autoAlpha: 0,
+          duration: 2.4, ease: 'power2.in'
+        }, 0.5 + i*0.12);
+      });
+      tl.to('#orb', {autoAlpha:1, scale:1.25, duration:1.6, ease:'power2.out'}, 1.4);
+      tl.to('#orb', {scale:0.95, duration:0.5, ease:'power1.inOut'}, 3.2);
+      tl.to('#light', {opacity:1, duration:1.8, ease:'power1.inOut'}, 3.6);
+      tl.to('#orb', {autoAlpha:0, scale:2.6, duration:1.4, ease:'power2.in'}, 3.7);
+      tl.to('#after > *', {autoAlpha:1, y:0, duration:1.4, stagger:0.3, ease:'power3.out'}, 4.6);
+      tl.to({}, {duration:0.8});
     });
+  }
 
-    tl.to('#before', {autoAlpha:0, y:-60, duration:1.2, ease:'power1.in'}, 0.3);
-    docs.forEach((doc, i)=>{
-      const wrap = doc.parentElement;
-      tl.to(doc, {
-        x: ()=> stage.clientWidth*0.5 - (wrap.offsetLeft + doc.offsetWidth/2),
-        y: ()=> stage.clientHeight*0.44 - (wrap.offsetTop + doc.offsetHeight/2),
-        rotation: (i%2 ? 300 : -300),
-        scale: 0.04, autoAlpha: 0,
-        duration: 2.4, ease: 'power2.in'
-      }, 0.5 + i*0.12);
+  // 移动端导航面板：手机上 .nav .links 是 display:none，这是它唯一的入口
+  const navToggle = document.getElementById('navtoggle');
+  const navMenu   = document.getElementById('navmenu');
+  if (navToggle && navMenu){
+    const setOpen = open =>{
+      navToggle.setAttribute('aria-expanded', String(open));
+      navMenu.classList.toggle('open', open);
+    };
+    navToggle.addEventListener('click', ()=> setOpen(navToggle.getAttribute('aria-expanded') !== 'true'));
+    navMenu.addEventListener('click', e =>{ if(e.target.tagName === 'A') setOpen(false); });
+    document.addEventListener('click', e =>{
+      if(!navMenu.contains(e.target) && !navToggle.contains(e.target)) setOpen(false);
     });
-    tl.to('#orb', {autoAlpha:1, scale:1.25, duration:1.6, ease:'power2.out'}, 1.4);
-    tl.to('#orb', {scale:0.95, duration:0.5, ease:'power1.inOut'}, 3.2);
-    tl.to('#light', {opacity:1, duration:1.8, ease:'power1.inOut'}, 3.6);
-    tl.to('#orb', {autoAlpha:0, scale:2.6, duration:1.4, ease:'power2.in'}, 3.7);
-    tl.to('#after > *', {autoAlpha:1, y:0, duration:1.4, stagger:0.3, ease:'power3.out'}, 4.6);
-    tl.to({}, {duration:0.8});
+    document.addEventListener('keydown', e =>{ if(e.key === 'Escape') setOpen(false); });
   }
 
   // reveal

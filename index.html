@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/landing.css?v=11">
+<link rel="stylesheet" href="css/landing.css?v=13">
 <script>
   // Apollo visitor tracking (ported from previous site)
   function initApollo() {
@@ -39,7 +39,10 @@
   <a href="#"><img class="logoimg" src="images/oemmart-20logo-20no-20inc.png" alt="OEMMart"></a>
   <div class="links"><a href="#product">Product</a><a href="#about">About</a><a href="#contact">Contact</a></div>
   <a class="btn red" href="#contact"><span>Book a demo</span><span class="ic">→</span></a>
+  <button class="navtoggle" id="navtoggle" type="button" aria-expanded="false" aria-controls="navmenu" aria-label="Menu"><span class="bars"><i></i><i></i><i></i></span></button>
 </nav>
+<!-- 手机上 .nav .links 被隐藏，这个面板是它唯一的替代。链接与上面同源，无新增文案。 -->
+<div class="navmenu" id="navmenu"><a href="#product">Product</a><a href="#about">About</a><a href="#contact">Contact</a></div>
 
 <!-- ============ 变身舞台 ============ -->
 <section class="stage" id="stage">
@@ -355,7 +358,7 @@
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script src="js/landing.js?v=11"></script>
+<script src="js/landing.js?v=13"></script>
 <!-- HubSpot embed form (portal 341778708, region na3, new forms tool).
      Handles reCAPTCHA, file upload and consent natively. Renders in an iframe. -->
 <script src="https://js-na3.hsforms.net/forms/embed/341778708.js" defer></script>

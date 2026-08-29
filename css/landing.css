@@ -36,7 +36,7 @@ a{text-decoration:none;color:inherit}
 
 
 /* ===== 漂浮胶囊导航 ===== */
-.nav{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:28px;padding:9px 9px 9px 24px;border-radius:var(--r-pill);color:var(--nav-ink);background:var(--nav-bg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.12);box-shadow:0 8px 32px rgba(0,0,0,.3);transition:background .4s,border-color .4s}
+.nav{position:fixed;top:18px;left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 24px);z-index:40;display:flex;align-items:center;gap:28px;padding:9px 9px 9px 24px;border-radius:var(--r-pill);color:var(--nav-ink);background:var(--nav-bg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.12);box-shadow:0 8px 32px rgba(0,0,0,.3);transition:background .4s,border-color .4s}
 body.lit .nav{--nav-ink:var(--sand-12);--nav-bg:rgba(253,253,252,.76);border-color:var(--sand-5);box-shadow:inset 0 1px 0 var(--lift-3),0 8px 32px rgba(var(--warm-sh),.12)}
 .nav .logoimg{height:28px;width:auto;display:block;transition:filter .4s}
 body:not(.lit):not(.static) .nav .logoimg{filter:brightness(0) invert(1)}
@@ -503,4 +503,82 @@ html{scroll-behavior:smooth}
   .sf-in{grid-template-columns:1fr 1fr;gap:34px 24px;padding:54px 20px 40px}
   .sf-brand{grid-column:1 / -1}
   .sf-bottom{flex-direction:column;gap:8px;text-align:center;padding:20px}
+}
+
+/* ===== 移动端导航：汉堡 + 面板 =====
+   .nav .links 在 ≤900px 被隐藏，此前没有任何替代，手机上无法跳转 #product / #about。
+   面板复用同一组链接，不新增任何文案。触摸目标 40px，高于 WCAG 2.5.8 的 24px 下限。 */
+.navtoggle{display:none;width:40px;height:40px;border-radius:50%;align-items:center;justify-content:center;
+  background:transparent;border:0;color:var(--nav-ink);cursor:pointer;flex:none;transition:background .3s}
+.navtoggle:hover{background:rgba(255,255,255,.1)}
+body.lit .navtoggle:hover{background:rgba(0,0,0,.06)}
+.navtoggle .bars{display:block;width:18px;height:12px;position:relative}
+.navtoggle .bars i{position:absolute;left:0;right:0;height:2px;border-radius:2px;background:currentColor;
+  transition:transform .34s var(--spring),opacity .2s}
+.navtoggle .bars i:nth-child(1){top:0}
+.navtoggle .bars i:nth-child(2){top:5px}
+.navtoggle .bars i:nth-child(3){top:10px}
+.navtoggle[aria-expanded="true"] .bars i:nth-child(1){transform:translateY(5px) rotate(45deg)}
+.navtoggle[aria-expanded="true"] .bars i:nth-child(2){opacity:0}
+.navtoggle[aria-expanded="true"] .bars i:nth-child(3){transform:translateY(-5px) rotate(-45deg)}
+
+.navmenu{position:fixed;top:68px;left:50%;transform:translateX(-50%) translateY(-8px);
+  width:max-content;min-width:186px;max-width:calc(100vw - 24px);z-index:39;
+  display:flex;flex-direction:column;gap:2px;padding:8px;border-radius:var(--r-lg);
+  color:var(--nav-ink);background:var(--nav-bg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 44px rgba(0,0,0,.34);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .28s,transform .34s var(--spring),visibility .28s}
+body.lit .navmenu{border-color:var(--sand-5);box-shadow:inset 0 1px 0 var(--lift-3),0 18px 44px rgba(var(--warm-sh),.14)}
+.navmenu.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+.navmenu a{display:block;padding:11px 18px;border-radius:10px;font-size:15px;font-weight:500;
+  color:var(--nav-ink);transition:background .25s}
+.navmenu a:hover{background:rgba(255,255,255,.09)}
+body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
+
+/* ===== 手机竖屏（≤640px）=====
+   此前最窄断点是 820px，375–430px 完全没有针对性布局。 */
+@media (max-width:640px){
+  .navtoggle{display:inline-flex}
+  .nav{gap:10px;padding:7px 7px 7px 14px;top:10px}
+  .nav .logoimg{height:24px}
+  .btn{font-size:14px;padding:7px 7px 7px 16px;gap:9px;white-space:nowrap}
+  .btn .ic{width:28px;height:28px;font-size:14px}
+
+  /* hero：卡片缩小并退出正文区，只留 4 张分居上下两带，正文不再被压 */
+  .doc{width:112px}
+  .doc .fn{font-size:9.5px;padding-bottom:6px;margin-bottom:7px}
+  .doc .tx{height:44px}
+  .doc .tx.short{height:26px}
+  .doc .meta{font-size:9px;margin-top:7px}
+  .doc .due{font-size:9px;padding:4px 7px;top:-8px;right:-10px}
+  .stage > .docf{display:none}
+  .stage > .docf:nth-child(2),
+  .stage > .docf:nth-child(5),
+  .stage > .docf:nth-child(6),
+  .stage > .docf:nth-child(7){display:block}
+  /* left 值已按「.doc 旋转后的外接盒」校准过：.docf 自身的盒不含子元素 rotate，
+     照它排会让 -8deg / 9deg 那两张的左角切出屏幕 5px 和 1px。 */
+  .stage > .docf:nth-child(2){left:3%  !important;top:5%  !important}
+  .stage > .docf:nth-child(6){left:55% !important;top:3%  !important}
+  .stage > .docf:nth-child(7){left:4%  !important;top:73% !important}
+  .stage > .docf:nth-child(5){left:53% !important;top:76% !important}
+
+  /* Before/After 滑块：.afin 右对齐，其左缘必须正好落在裁切线 --x 上。
+     ≤900px 那档是 width:52% 配 --x:55%，内容左边 7% 被 clip-path 吃掉
+     （"One email" 显示成 "ne email"）。这里让两者严格互补：48% + 52%。 */
+  .cmp{--x:52%}
+  .cmp .side{padding:26px 16px;min-height:0}
+  .cmp .side.b4{padding-right:54%}
+  .cmp .afin{width:48%;padding:26px 16px 26px 0}
+  .cmp h3{font-size:16px;margin-bottom:14px}
+  .cmp .label{font-size:10px;padding:5px 9px;margin-bottom:16px}
+  .handle::after{font-size:11px;padding:8px 10px}
+
+  /* 名称与数量在 ~180px 宽里并排会挤成一团，改上下 */
+  .portal{flex-direction:column;align-items:flex-start;gap:2px;padding:9px 11px;font-size:13px;margin-bottom:7px}
+  .mail .mh{padding:12px 14px}
+  .match{flex-direction:column;align-items:flex-start;gap:7px;padding:12px 14px}
+  .match .t{font-size:13px}
+  .match .sc{align-self:flex-start}
 }
