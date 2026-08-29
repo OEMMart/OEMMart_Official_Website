@@ -146,56 +146,30 @@
     sio.observe(sheet);
   })();
 
-  /* ===== Signal 合成流水线：原始信号 → 你的业务透镜 → 行动建议 ===== */
+  /* ===== Signal：记录在读者眼前被拼装出来，再揭示联系方式 ===== */
   (function(){
-    const raw = [
-      {s:'FEDERAL REGISTER', t:'12m ago', h:'$2.1B water infrastructure grants for 2027'},
-      {s:'OHIO DAS', t:'1h ago', h:'Energy-efficiency standards updated for public buildings'},
-      {s:'SAM.GOV', t:'22m ago', h:'Pre-solicitation: shore-side compressed air systems'},
-      {s:'INDUSTRY WIRE', t:'5h ago', h:'Major competitor exits Texas service market'},
-      {s:'NAVY SMALL BIZ', t:'2h ago', h:'FY27 set-aside goals raised for coastal yards'},
-      {s:'PORT AUTHORITY', t:'40m ago', h:'Two shipyard expansion filings on the Gulf coast'}
-    ];
-    const insights = [
-      {hl:"Pre-position for Ohio's Q1 wastewater surge.",
-       body:'Grant money, new efficiency standards and a competitor exit all point the same way. Your CSD line fits the incoming specs.',
-       chips:['FEDERAL REGISTER','OHIO DAS','INDUSTRY WIRE'], hot:[0,1,3]},
-      {hl:'Extend the naval win to two more shipyards.',
-       body:'A fresh pre-solicitation matches your March scope. Set-aside goals and expansion filings widen the door.',
-       chips:['SAM.GOV','NAVY SMALL BIZ','PORT AUTHORITY'], hot:[2,4,5]}
-    ];
-    const rawlist = document.getElementById('rawlist');
-    raw.forEach(it=>{
-      const d = document.createElement('div');
-      d.className = 'rawchip';
-      d.innerHTML = '<div class="s"><span>'+it.s+'</span><span>'+it.t+'</span></div><div class="h">'+it.h+'</div>';
-      rawlist.appendChild(d);
+    var wrap=document.getElementById('joinwrap');
+    if(!wrap) return;
+    var io2=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(!e.isIntersecting) return;
+        wrap.classList.add('on');
+        setTimeout(function(){ wrap.classList.add('done'); }, 1200);   // feeders lock once the record lands
+        io2.disconnect();
+      });
+    },{threshold:0.3});
+    io2.observe(wrap);
+
+    var btn=document.getElementById('unsealbtn'),
+        chip=document.getElementById('chip'),
+        t=document.getElementById('chiptext');
+    if(!btn) return;
+    btn.addEventListener('click',function(){
+      chip.classList.add('open');
+      t.textContent='d••••••@••••••••.com  ·  +1 ••• ••• ••••';
+      btn.textContent='REVEALED';
+      btn.disabled=true;
     });
-    const chips = [...rawlist.children];
-    const lens = document.getElementById('lens'), insight = document.getElementById('insight');
-    const ihl = document.getElementById('ihl'), ibody = document.getElementById('ibody'), ichips = document.getElementById('ichips');
-    const show = ins =>{
-      ihl.textContent = ins.hl; ibody.textContent = ins.body;
-      ichips.innerHTML = ins.chips.map(c=>'<span class="ichip">'+c+'</span>').join('');
-    };
-    show(insights[0]);
-    chips.forEach((c,i)=>{ if(insights[0].hot.includes(i)) c.classList.add('hot'); });
-    if(reduce) return;
-    let k = 0;
-    setInterval(()=>{
-      const next = insights[(k+1) % insights.length];
-      chips.forEach(c=>c.classList.remove('hot'));
-      // 逐个点亮下一组信号
-      next.hot.forEach((idx,j)=> setTimeout(()=>chips[idx].classList.add('hot'), 350*j) );
-      setTimeout(()=>{ lens.classList.add('pulse'); }, 1300);
-      setTimeout(()=>{ insight.classList.add('swap'); }, 1750);
-      setTimeout(()=>{
-        k = (k+1) % insights.length;
-        show(insights[k]);
-        insight.classList.remove('swap');
-        lens.classList.remove('pulse');
-      }, 2350);
-    }, 7600);
   })();
 
   /* ===== 匹配飞轮 ===== */
