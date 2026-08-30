@@ -662,7 +662,8 @@ body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
   letter-spacing:.12em;text-transform:uppercase;color:var(--sand-9);padding-right:39px}
 .sfdemo .sfd-screen{position:relative;height:400px;background:var(--sand-2);
   transition:height .5s var(--spring)}
-.sfdemo .sfd-screen iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+/* 宽高与缩放由 JS 的 fit() 设定（见 landing.js）：窄屏用 900px 逻辑宽度再等比缩放 */
+.sfdemo .sfd-screen iframe{position:absolute;left:0;top:0;width:100%;height:100%;border:0;display:block}
 
 /* 解说条：药丸 + 标题 + 一句说明，全部在框外 */
 .sfdemo .sfd-bar{margin-top:30px;text-align:center;max-width:620px}

@@ -345,15 +345,13 @@
     io.observe(wrap);
 
     // iframe 里的模块加载完才开始发指令，否则第一条 postMessage 会打空
+    /* 高度跟随内容。宽度不缩放：缩到手机宽度会把 11px 的表格文字压成 4px，
+       比列不全更糟。窄屏改由 modules.html 里的媒体查询收掉低价值列，文字始终原生大小。 */
     const screen = wrap.querySelector(".sfd-screen");
     addEventListener("message", (e) => {
       const d = e.data || {};
       if(d.sfReady){ ready = true; paint(); arm(); }
-      // 幕高各异，外框跟着内容收放，省掉一框死空白
-      if(d.sfHeight && screen){
-        const h = Math.max(300, Math.min(560, d.sfHeight));
-        screen.style.height = h + "px";
-      }
+      if(d.sfHeight && screen) screen.style.height = Math.max(280, Math.min(560, d.sfHeight)) + "px";
     });
 
     paint();

@@ -52,6 +52,17 @@
   .lift{position:relative;z-index:2;border-radius:var(--r-md);
     box-shadow:0 0 0 2px rgba(var(--red-rgb),.55),0 0 0 7px rgba(var(--red-rgb),.16);
     transition:box-shadow .45s var(--spring)}
+  /* 窄屏下少渲染几列（见 renderList 的 visibleCols）。
+     用 CSS 藏 td 没用 —— 表是 table-layout:fixed 配 colgroup，<col> 照样占着宽度。 */
+  /* 列不全时表格自适应宽度（见 renderList）—— 产品的 col 固定宽在这里会溢出 */
+  #m-rank table.fluid{table-layout:auto;width:100%}
+  #m-rank table.fluid .sg span,#m-rank table.fluid .cn span{white-space:normal}
+  #m-rank table.fluid th,#m-rank table.fluid td{padding-left:9px;padding-right:9px}
+  @media (max-width:640px){
+    .mod{padding:14px}
+    #m-reach thead th:nth-child(2), #m-reach tbody td:nth-child(2){display:none}
+    .dhead .sub{display:none}
+  }
   @media (prefers-reduced-motion:reduce){
     .mod,.simcur{transition:none}
     .simcur{display:none}
@@ -178,10 +189,22 @@ const fbTag = f => f==="relevant" ? '<span class="tag good">Relevant</span>'
               : '<span class="tag status">Undecided</span>';
 
 let pole = "signals";
+/* 窄屏保留哪几列。产品在窄屏是让这张宽表横向滚动，但自动播放的演示里没人会去拨，
+   所以这里按宽度裁 —— 分数、公司、标题是这一幕的论点，其余是细节。
+   colgroup 必须一起裁：table-layout:fixed 下 <col> 不跟着 td 隐藏。 */
+function visibleCols(){
+  const w = innerWidth;
+  return w <= 640 ? 3 : w <= 880 ? 5 : 7;
+}
 function renderList(){
   const rows = pole==="signals" ? SIGNALS : TENDERS;
-  cg.innerHTML = COLS[pole].map(c=>`<col class="${c}">`).join("");
-  thd.innerHTML = "<tr>" + HEAD[pole].map(([l,r])=>`<th${r?' class="r"':''}>${l}</th>`).join("") + "</tr>";
+  const n = visibleCols();
+  // 列不全时连 colgroup 一起撤掉：那些 col 类带的是产品的固定像素宽，
+  // 留着的话 3 列照样合计 557px，照样溢出。撤掉并转 table-layout:auto 才真的收得住。
+  const full = n === COLS[pole].length;
+  cg.innerHTML = full ? COLS[pole].map(c=>`<col class="${c}">`).join("") : "";
+  cg.closest("table").classList.toggle("fluid", !full);
+  thd.innerHTML = "<tr>" + HEAD[pole].slice(0, n).map(([l,r])=>`<th${r?' class="r"':''}>${l}</th>`).join("") + "</tr>";
   tbd.innerHTML = rows.map(r=>{
     const k = Math.max(0, Math.min(1,(r.s-50)/50));
     return `<tr class="lrow" style="--dep:${(0.02+k*0.32).toFixed(3)};--ext:${Math.round(16+k*64)}%">
@@ -195,6 +218,8 @@ function renderList(){
       <td class="r"><span class="dt">${r.d}</span></td>
     </tr>`;
   }).join("");
+  // 裁掉超出的单元格，与 colgroup 对齐
+  [...tbd.rows, ...thd.rows].forEach(tr=>{ while(tr.cells.length > n) tr.deleteCell(-1); });
 }
 function movePuck(){
   const on = document.querySelector("#poles a.on");
@@ -339,7 +364,7 @@ addEventListener("resize", reportHeight);
 
 renderList(); renderWbar(); renderReach();
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(movePuck);
-addEventListener("resize", movePuck);
+addEventListener("resize", ()=>{ movePuck(); renderList(); reportHeight(); });
 
 addEventListener("message", e=>{
   const d = e.data || {};
