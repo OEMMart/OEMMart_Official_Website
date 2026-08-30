@@ -25,7 +25,7 @@
      覆盖掉会让面板和页面变成同一个色，整屏发平。 */
   html,body{margin:0;height:100%;overflow:hidden}
   .mod{position:absolute;inset:0;padding:22px 24px;opacity:0;pointer-events:none;
-    display:flex;align-items:center;justify-content:center;
+    display:flex;align-items:flex-start;justify-content:center;
     transform:translateY(10px);transition:opacity .5s var(--spring),transform .5s var(--spring)}
   /* .main 提供模块之间 16px 的竖向节奏，与产品一致。
      .main 是 flex column，默认会把最后一个面板拉满剩余高度 —— 演示里那是一大片空白，
@@ -58,6 +58,7 @@
      用 CSS 藏 td 没用 —— 表是 table-layout:fixed 配 colgroup，<col> 照样占着宽度。 */
   /* 列不全时表格自适应宽度（见 renderList）—— 产品的 col 固定宽在这里会溢出 */
   #m-rank table.fluid{table-layout:auto;width:100%}
+  #m-rank table.fluid .sg,#m-rank table.fluid .cn{overflow:visible}
   #m-rank table.fluid .sg span,#m-rank table.fluid .cn span{white-space:normal}
   #m-rank table.fluid th,#m-rank table.fluid td{padding-left:9px;padding-right:9px}
   @media (max-width:640px){
@@ -98,7 +99,7 @@
 <!-- ═══ 幕 2 · EXPLAIN ── 评分归因模块（照 detail.tsx 的 DetailHeader + WBar） ═══ -->
 <section class="mod" id="m-explain">
   <div class="main">
-  <div class="dhead panel" style="margin-bottom:12px">
+  <div class="dhead panel">
     <div class="co-mark">MI</div>
     <div class="who">
       <h1>Magna International</h1>
@@ -115,7 +116,6 @@
   <!-- 判定：照 SignalDetail.tsx 的 DPanel kick="Feedback" + .row > .pill / .pill.no -->
   <div class="dpanel panel fb">
     <div class="kick">Feedback</div>
-    <h4 class="signal-feedback-heading">Your feedback</h4>
     <div class="row">
       <button class="pill" id="vRel" type="button" aria-pressed="false">Relevant</button>
       <button class="pill no" id="vNot" type="button" aria-pressed="false">Not relevant</button>
@@ -213,9 +213,10 @@ function renderList(){
   const n = visibleCols();
   // 列不全时连 colgroup 一起撤掉：那些 col 类带的是产品的固定像素宽，
   // 留着的话 3 列照样合计 557px，照样溢出。撤掉并转 table-layout:auto 才真的收得住。
-  const full = n === COLS[pole].length;
-  cg.innerHTML = full ? COLS[pole].map(c=>`<col class="${c}">`).join("") : "";
-  cg.closest("table").classList.toggle("fluid", !full);
+  // 恒定流式：产品的 col 固定像素宽是给"带左栏的完整应用"调的，演示容器窄一截，
+  // 7 列照那套宽度必然溢出（实测右侧 SOURCE / PUBLISHED 被切）。这里一律让表自适应。
+  cg.innerHTML = "";
+  cg.closest("table").classList.add("fluid");
   thd.innerHTML = "<tr>" + HEAD[pole].slice(0, n).map(([l,r])=>`<th${r?' class="r"':''}>${l}</th>`).join("") + "</tr>";
   tbd.innerHTML = rows.map(r=>{
     const k = Math.max(0, Math.min(1,(r.s-50)/50));
@@ -278,7 +279,9 @@ vNot.onclick = () => setVerdict("not_relevant");
 const LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
 let reach = 0;
 function renderReach(){
-  ctb.innerHTML = PEOPLE.map(p=>`
+  // 分组行是产品真有的：Contacts 表按信号分组，产品引导第一步就叫「One bar, one signal」
+  const grp = `<tr class="grp"><td colspan="4"><span class="kick grplink">Magna International · Breaks ground on new stamping facility</span></td></tr>`;
+  ctb.innerHTML = grp + PEOPLE.map(p=>`
     <tr${p.best?' class="bestrow"':''}>
       <td><div class="ctwho"><div class="co-mark">${p.ini}</div><div class="ctid">
         <div class="ctnm"><div class="cn"><span>${p.role}</span></div>${p.best?'<span class="bm">Best match</span>':''}</div>
@@ -365,24 +368,13 @@ function show(id){
   const sc = SCENES[id]; if(!sc) return;
   document.getElementById(sc.el).classList.add("on");
   if(id === "rank") requestAnimationFrame(movePuck);
-  reportHeight();
   sc.play(t);
 }
 
-/* 每一幕高度不同 —— 把内容高度报给父页面，让外框跟着收放，框内不留死空白。
-   字体落地后再报一次：webfont 会改行高，先报的数会偏小。 */
-function reportHeight(){
-  const main = document.querySelector(".mod.on > .main");
-  if(!main || parent === window) return;
-  const pad = 22 * 2;
-  parent.postMessage({ sfHeight: Math.ceil(main.getBoundingClientRect().height + pad) }, "*");
-}
-if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>setTimeout(reportHeight, 60));
-addEventListener("resize", reportHeight);
 
 renderList(); renderWbar(); renderReach();
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(movePuck);
-addEventListener("resize", ()=>{ movePuck(); renderList(); reportHeight(); });
+addEventListener("resize", ()=>{ movePuck(); renderList(); });
 
 addEventListener("message", e=>{
   const d = e.data || {};

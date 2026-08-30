@@ -646,7 +646,7 @@ body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
    无左侧色条；层次沿用既有语法：浮起的面、白色上缘、暖阴影。
    ══════════════════════════════════════════════════════════════════════ */
 .sfdemo{background:var(--sand-4);padding:104px 0}
-.sfdemo .sfd-in{max-width:1160px;margin:0 auto;padding:0 40px}
+.sfdemo .sfd-in{max-width:1160px;margin:0 auto;padding:0 40px;display:flex;flex-direction:column}
 
 /* 段落抬头：给这一段一个出现在这里的理由 */
 .sfdemo .sfd-head{text-align:center;margin-bottom:34px}
@@ -654,16 +654,10 @@ body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
 .sfdemo .sfd-head h2{font-size:clamp(34px,5vw,60px);font-weight:900;letter-spacing:-.038em;line-height:1.02}
 .sfdemo .sfd-head h2 em{font-style:normal;color:var(--red)}
 
-/* 沉槽：框、药丸、解说共处一面，整段收成一个物件而不是三样浮着的东西 */
-.sfdemo .sfd-stage{padding:26px 26px 30px;border-radius:26px;
-  background:linear-gradient(180deg,var(--sand-5),var(--sand-4));
-  box-shadow:inset 0 2px 5px rgba(var(--warm-sh),.10),inset 0 -1px 0 var(--lift-2);
-  display:flex;flex-direction:column;align-items:center}
-
-/* 浏览器窗口：槽里浮起的那一件 */
-.sfdemo .sfd-frame{width:100%;border-radius:var(--r-lg);overflow:hidden;background:var(--sand-2);
-  border:1px solid var(--sand-6);
-  box-shadow:inset 0 1px 0 var(--lift-3),0 1px 3px rgba(var(--warm-sh),.06),0 26px 54px rgba(var(--warm-sh),.16)}
+/* 框子用网站自带的 .shell（padding + 白色上缘 + 暖阴影 + 纸纹），.core 负责裁切。
+   这里只补 shell 没有的东西：宽度、以及 core 里两段的堆叠。 */
+.sfdemo .sfd-frame{width:100%}
+.sfdemo .sfd-frame > .core{display:flex;flex-direction:column}
 .sfdemo .sfd-chrome{display:flex;align-items:center;gap:12px;padding:0 14px;height:38px;
   background:linear-gradient(180deg,var(--sand-3),var(--sand-4));border-bottom:1px solid var(--sand-5)}
 .sfdemo .sfd-dots{display:flex;gap:6px;flex:none}
@@ -671,13 +665,13 @@ body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
 /* 只写产品名，不编造域名 —— 生产环境的地址我并不知道 */
 .sfdemo .sfd-app{flex:1;text-align:center;font-family:var(--mono);font-size:10.5px;font-weight:500;
   letter-spacing:.12em;text-transform:uppercase;color:var(--sand-9);padding-right:39px}
-.sfdemo .sfd-screen{position:relative;height:400px;background:var(--sand-2);
-  transition:height .5s var(--spring)}
+/* 固定高度：幕间高度跳动比留一点空白更难看。短的那幕由 .mod 居中吸收。 */
+.sfdemo .sfd-screen{position:relative;height:484px;background:var(--sand-2)}
 /* 宽高与缩放由 JS 的 fit() 设定（见 landing.js）：窄屏用 900px 逻辑宽度再等比缩放 */
 .sfdemo .sfd-screen iframe{position:absolute;left:0;top:0;width:100%;height:100%;border:0;display:block}
 
 /* 解说条：药丸 + 标题 + 一句说明，全部在框外 */
-.sfdemo .sfd-bar{margin-top:24px;text-align:center;max-width:640px}
+.sfdemo .sfd-bar{margin-top:26px;margin-left:auto;margin-right:auto;text-align:center;max-width:640px}
 .sfdemo .sfd-pills{display:inline-flex;gap:5px;padding:4px;border-radius:var(--r-pill);
   background:var(--sand-3);box-shadow:inset 0 1px 2px rgba(var(--warm-sh),.10),0 1px 0 var(--lift-2)}
 .sfdemo .sfd-pill{position:relative;overflow:hidden;isolation:isolate;
@@ -700,7 +694,6 @@ body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
 @media (max-width:900px){
   .sfdemo{padding:80px 0}
   .sfdemo .sfd-in{padding:0 20px}
-  .sfdemo .sfd-stage{padding:16px 14px 22px;border-radius:20px}
   .sfdemo .sfd-head{margin-bottom:26px}
 
 }

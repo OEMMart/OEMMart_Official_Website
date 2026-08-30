@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/landing.css?v=29">
+<link rel="stylesheet" href="css/landing.css?v=32">
 <script>
   // Apollo visitor tracking (ported from previous site)
   function initApollo() {
@@ -151,20 +151,21 @@
       <h2>The instrument, <em>at a glance.</em></h2>
     </div>
 
-    <!-- 一个沉槽装下框、药丸和解说：三样东西此前各自浮在页面底色上，读起来是三件事。
-         槽（凹）里放框（凸），是既有的一凹一凸语法，整段因此收成一个物件。 -->
-    <div class="sfd-stage rv">
-    <div class="sfd-frame">
-      <div class="sfd-chrome">
-        <span class="sfd-dots"><i></i><i></i><i></i></span>
-        <span class="sfd-app">SignalForge</span>
-      </div>
-      <div class="sfd-screen">
-        <iframe id="sfdFrame" src="demo/modules.html" title="SignalForge, running" loading="lazy"></iframe>
+    <!-- 用网站自己的 .shell > .core（上面那个对比滑块同款）把它收成一个物件。
+         之前我另造了一个凹槽，那套语法这站上没有，读起来是外来的。 -->
+    <div class="sfd-frame shell rv">
+      <div class="core">
+        <div class="sfd-chrome">
+          <span class="sfd-dots"><i></i><i></i><i></i></span>
+          <span class="sfd-app">SignalForge</span>
+        </div>
+        <div class="sfd-screen">
+          <iframe id="sfdFrame" src="demo/modules.html" title="SignalForge, running" loading="lazy"></iframe>
+        </div>
       </div>
     </div>
 
-    <div class="sfd-bar">
+    <div class="sfd-bar rv">
       <div class="sfd-pills" id="sfdPills" role="tablist" aria-label="Demo chapters">
         <button class="sfd-pill on" type="button" role="tab" aria-selected="true"  data-scene="rank">Rank</button>
         <button class="sfd-pill"    type="button" role="tab" aria-selected="false" data-scene="explain">Explain</button>
@@ -172,7 +173,6 @@
       </div>
       <h3 class="sfd-title" id="sfdTitle"></h3>
       <p class="sfd-desc" id="sfdDesc"></p>
-    </div>
     </div>
   </div>
 </section>
@@ -430,7 +430,7 @@
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script src="js/landing.js?v=29"></script>
+<script src="js/landing.js?v=32"></script>
 <!-- HubSpot embed form (portal 341778708, region na3, new forms tool).
      Handles reCAPTCHA, file upload and consent natively. Renders in an iframe. -->
 <script src="https://js-na3.hsforms.net/forms/embed/341778708.js" defer></script>
