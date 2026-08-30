@@ -169,10 +169,12 @@ const SIGNALS = [
   {s:68, co:"Kestrel Petrochemical",    loc:"Sarnia, ON",    h:"Hiring plant reliability engineers, 14 roles",    t:"Hiring growth",      fb:"not_relevant", src:"Careers",   d:"JUL 05"},
 ];
 const TENDERS = [
-  {s:88, co:"HVAC Replacement — Federal Building Complex", loc:"FB-4127-2026 · Canada", h:"Federal Buildings Authority",       t:"$1.2M CAD", fb:"undecided",    src:"Federal",    d:"JUL 27"},
-  {s:84, co:"Rotating Equipment Maintenance",              loc:"DL-2026-0041 · USA",    h:"National Defence Logistics Office", t:"$2.7M USD", fb:"undecided",    src:"Federal",    d:"AUG 12"},
-  {s:79, co:"Industrial Air Compressors, standing offer",  loc:"RW-SO-4471 · USA",      h:"State of Ridgeway Purchasing",      t:"$480K USD", fb:"undecided",    src:"State",      d:"AUG 02"},
-  {s:61, co:"HVAC and air treatment, school district",     loc:"NL-2026-118 · Canada",  h:"Northlake District Board",          t:"$610K CAD", fb:"not_relevant", src:"Provincial", d:"JUL 24"},
+  {s:88, co:"HVAC Replacement — Federal Building Complex",   loc:"FB-4127-2026 · Canada", h:"Federal Buildings Authority",       t:"$1.2M CAD", fb:"pursuing",  src:"Federal",    d:"JUL 27"},
+  {s:84, co:"Rotating Equipment Maintenance",                loc:"DL-2026-0041 · USA",    h:"National Defence Logistics Office", t:"$2.7M USD", fb:"undecided", src:"Federal",    d:"AUG 12"},
+  {s:79, co:"Industrial Air Compressors, standing offer",    loc:"RW-SO-4471 · USA",      h:"State of Ridgeway Purchasing",      t:"$480K USD", fb:"undecided", src:"State",      d:"AUG 02"},
+  {s:76, co:"Compressed air system, wastewater plant",       loc:"WV-2026-0883 · USA",    h:"Westvale Water Authority",          t:"$1.4M USD", fb:"undecided", src:"Municipal",  d:"AUG 19"},
+  {s:70, co:"Boiler and chiller replacement, regional site", loc:"SH-RFP-2261 · Canada",  h:"Southhaven Health Region",          t:"$3.1M CAD", fb:"undecided", src:"Provincial", d:"SEP 04"},
+  {s:61, co:"HVAC and air treatment, school district",       loc:"NL-2026-118 · Canada",  h:"Northlake District Board",          t:"$610K CAD", fb:"declined",  src:"Provincial", d:"JUL 24"},
 ];
 /* 三个维度与逐行理由的句式取自已批准的 mockup signal-contacts-inline.html，
    其中的公司指涉已换成虚构主体。就这三行 —— 那份 mockup 只有这三个维度。 */
@@ -203,8 +205,11 @@ const HEAD = {
 const initials = n => { const p=n.split(" — ")[0].trim().split(/\s+/).filter(w=>/[\p{L}\p{N}]/u.test(w));
   return p.length===1 ? p[0].slice(0,2).toUpperCase() : p.slice(0,2).map(w=>w[0].toUpperCase()).join(""); };
 const tier = n => n>=80?"s1":n>=60?"s2":"s3";
-const fbTag = f => f==="relevant" ? '<span class="tag good">Relevant</span>'
-              : f==="not_relevant" ? '<span class="tag">Not relevant</span>'
+/* 两极的判定词汇不同，产品里也是分开的：detail.tsx 注释写明「signal 说 Relevant /
+   Not relevant，tender 说 Pursuing / Declined」。之前两极共用信号那套，是我的疏漏。 */
+const FB_LABEL = {relevant:"Relevant", not_relevant:"Not relevant", pursuing:"Pursuing", declined:"Declined"};
+const fbTag = f => (f==="relevant"||f==="pursuing") ? `<span class="tag good">${FB_LABEL[f]}</span>`
+              : (f==="not_relevant"||f==="declined") ? `<span class="tag">${FB_LABEL[f]}</span>`
               : '<span class="tag status">Undecided</span>';
 
 let pole = "signals";
