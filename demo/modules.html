@@ -100,9 +100,9 @@
 <section class="mod" id="m-explain">
   <div class="main">
   <div class="dhead panel">
-    <div class="co-mark">MI</div>
+    <div class="co-mark">HA</div>
     <div class="who">
-      <h1>Magna International</h1>
+      <h1>Halden Automotive Group</h1>
       <div class="sub">Breaks ground on new stamping facility <span class="tag">Signal</span> <span class="tag">News</span> Detected Jul 19, 2026</div>
     </div>
     <div class="sp"></div>
@@ -153,35 +153,42 @@
 </div>
 
 <script>
-/* ── 数据：假的。字段与产品 SignalListItem / TenderListItem 对齐 ─────────────── */
+/* ── 数据：全部虚构 ───────────────────────────────────────────────────────────
+   公司、机构、标号、联系人全是编的。此前用的是 Magna / Hydro-Québec / Suncor /
+   US Army Corps of Engineers 这类真实机构，配上编造的事件和分数 —— 那等于伪造真实
+   企业的记录，不该出现在公开页面上。
+   城市保留真实的（城市不会因此被安上不实主张）；信号来源写的是产品真实的来源类别
+   （News / SEC EDGAR / Careers / Industry），那是在陈述产品覆盖什么，不是编造某条记录。
+   字段与产品 SignalListItem / TenderListItem 对齐。 */
 const SIGNALS = [
-  {s:92, co:"Hydro-Québec",        loc:"Montréal, QC",   h:"$2.1B grid modernization program announced",    t:"Modernization",      fb:"undecided",    src:"News",      d:"JUL 21"},
-  {s:91, co:"Magna International", loc:"London, ON",     h:"Breaks ground on new stamping facility",        t:"Facility expansion", fb:"relevant",     src:"News",      d:"JUL 19"},
-  {s:85, co:"Linamar",             loc:"Guelph, ON",     h:"Expands Guelph machining capacity",             t:"Capacity expansion", fb:"undecided",    src:"News",      d:"JUL 17"},
-  {s:81, co:"Suncor Energy",       loc:"Calgary, AB",    h:"10-K filing notes compressor station upgrades", t:"Filing",             fb:"undecided",    src:"SEC EDGAR", d:"JUL 12"},
-  {s:68, co:"Cenovus Energy",      loc:"Calgary, AB",    h:"Hiring plant reliability engineers, 14 roles",  t:"Hiring growth",      fb:"not_relevant", src:"Careers",   d:"JUL 05"},
+  {s:92, co:"Cascadia Grid Authority",  loc:"Portland, OR",  h:"$2.1B grid modernization program announced",      t:"Modernization",      fb:"undecided",    src:"News",      d:"JUL 21"},
+  {s:91, co:"Halden Automotive Group",  loc:"London, ON",    h:"Breaks ground on new stamping facility",          t:"Facility expansion", fb:"relevant",     src:"News",      d:"JUL 19"},
+  {s:85, co:"Ravensbourne Machining",   loc:"Guelph, ON",    h:"Expands machining capacity at its Guelph plant",  t:"Capacity expansion", fb:"undecided",    src:"News",      d:"JUL 17"},
+  {s:83, co:"Fairmount Aerospace",      loc:"Cincinnati, OH",h:"Air compressor maintenance contract renewed",     t:"Maintenance cycle",  fb:"undecided",    src:"Industry",  d:"JUL 15"},
+  {s:81, co:"Meridian Energy Partners", loc:"Houston, TX",   h:"Annual filing notes compressor station upgrades", t:"Filing",             fb:"undecided",    src:"SEC EDGAR", d:"JUL 12"},
+  {s:68, co:"Kestrel Petrochemical",    loc:"Sarnia, ON",    h:"Hiring plant reliability engineers, 14 roles",    t:"Hiring growth",      fb:"not_relevant", src:"Careers",   d:"JUL 05"},
 ];
 const TENDERS = [
-  {s:88, co:"HVAC Replacement — Federal Building Complex", loc:"EW527-241338 · Canada", h:"Public Works & Government Services Canada", t:"$1.2M CAD", fb:"undecided",    src:"MERX",     d:"JUL 27"},
-  {s:84, co:"Rotating Equipment Maintenance",              loc:"W912-26-R-0041 · USA",  h:"US Army Corps of Engineers",                t:"$2.7M USD", fb:"undecided",    src:"SAM.gov",  d:"AUG 12"},
-  {s:79, co:"Industrial Air Compressors, standing offer",  loc:"TX-SO-4471 · USA",      h:"Texas SmartBuy",                            t:"$480K USD", fb:"undecided",    src:"SmartBuy", d:"AUG 02"},
-  {s:61, co:"HVAC and air treatment, school district",     loc:"ON-2026-118 · Canada",  h:"Ontario Tenders Portal",                    t:"$610K CAD", fb:"not_relevant", src:"Ontario",  d:"JUL 24"},
+  {s:88, co:"HVAC Replacement — Federal Building Complex", loc:"FB-4127-2026 · Canada", h:"Federal Buildings Authority",       t:"$1.2M CAD", fb:"undecided",    src:"Federal",    d:"JUL 27"},
+  {s:84, co:"Rotating Equipment Maintenance",              loc:"DL-2026-0041 · USA",    h:"National Defence Logistics Office", t:"$2.7M USD", fb:"undecided",    src:"Federal",    d:"AUG 12"},
+  {s:79, co:"Industrial Air Compressors, standing offer",  loc:"RW-SO-4471 · USA",      h:"State of Ridgeway Purchasing",      t:"$480K USD", fb:"undecided",    src:"State",      d:"AUG 02"},
+  {s:61, co:"HVAC and air treatment, school district",     loc:"NL-2026-118 · Canada",  h:"Northlake District Board",          t:"$610K CAD", fb:"not_relevant", src:"Provincial", d:"JUL 24"},
 ];
-/* 逐字取自已批准的 mockup signal-contacts-inline.html 的 Magna 场景。
-   就这三行 —— 那份 mockup 只有这三个维度，不补第四第五行。 */
+/* 三个维度与逐行理由的句式取自已批准的 mockup signal-contacts-inline.html，
+   其中的公司指涉已换成虚构主体。就这三行 —— 那份 mockup 只有这三个维度。 */
 const WROWS = [
   {lb:"Market relevance", pct:96, v:"24/25", why:"New stamping lines need press automation and die-handling equipment — direct fit with your product line."},
   {lb:"Timing",           pct:92, v:"23/25", why:"Groundbreaking phase — equipment sourcing decisions are being made in the next two quarters."},
   {lb:"Buyer access",     pct:90, v:"18/20", why:"Ontario site with named plant leadership — decision-makers are identifiable and reachable."},
 ];
-/* 职位与「为什么是这个人」逐字取自 mockup signal-contacts-inline.html。
-   mockup 里是具名真人（Sarah Chen / s.chen@magna.com 之类），Magna 是真实公司 ——
-   把这种东西放上公开官网等于伪造一家真实企业的人员记录。按 brochure Plate 10 的先例：
-   只留职位，不出现任何具名个人，值全部打码。 */
+/* 联系人：只出现职位，不出现具名个人；公司为虚构主体；邮箱电话全部打码。 */
 const PEOPLE = [
-  {ini:"VP", role:"VP Operations",                    co:"Magna Body & Chassis",  why:"Owns capex approval for new-plant equipment programs — the budget for exactly what this signal is about.", best:true},
-  {ini:"PM", role:"Plant Manager",                    co:"London Stamping",       why:"Named site lead in the groundbreaking announcement.",                                                       best:false},
-  {ini:"DM", role:"Director, Manufacturing Engineering", co:"Magna International", why:"Specs press-line automation for body-in-white programs.",                                                  best:false},
+  {ini:"VP", role:"VP Operations",                       co:"Halden Body & Chassis",   why:"Owns capex approval for new-plant equipment programs — the budget for exactly what this signal is about.", best:true},
+  {ini:"PM", role:"Plant Manager",                       co:"Halden London Stamping",  why:"Named site lead in the groundbreaking announcement.",                                                       best:false},
+  {ini:"DM", role:"Director, Manufacturing Engineering", co:"Halden Automotive Group", why:"Specs press-line automation for body-in-white programs.",                                                   best:false},
+  {ini:"PL", role:"Procurement Lead, Capital Equipment", co:"Halden Automotive Group", why:"Runs the RFQ process for equipment packages of this size.",                                                 best:false},
+  {ini:"MS", role:"Maintenance Superintendent",          co:"Halden London Stamping",  why:"Owns the service contract that follows installation.",                                                      best:false},
+  {ini:"CP", role:"Controller, Capital Projects",        co:"Halden Automotive Group", why:"Signs off once the technical review clears.",                                                               best:false},
 ];
 
 const COLS = {
@@ -280,7 +287,7 @@ const LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 let reach = 0;
 function renderReach(){
   // 分组行是产品真有的：Contacts 表按信号分组，产品引导第一步就叫「One bar, one signal」
-  const grp = `<tr class="grp"><td colspan="4"><span class="kick grplink">Magna International · Breaks ground on new stamping facility</span></td></tr>`;
+  const grp = `<tr class="grp"><td colspan="4"><span class="kick grplink">Halden Automotive Group · Breaks ground on new stamping facility</span></td></tr>`;
   ctb.innerHTML = grp + PEOPLE.map(p=>`
     <tr${p.best?' class="bestrow"':''}>
       <td><div class="ctwho"><div class="co-mark">${p.ini}</div><div class="ctid">

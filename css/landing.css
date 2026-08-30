@@ -664,7 +664,10 @@ body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
 .sfdemo .sfd-dots i{width:9px;height:9px;border-radius:50%;background:var(--sand-7)}
 /* 只写产品名，不编造域名 —— 生产环境的地址我并不知道 */
 .sfdemo .sfd-app{flex:1;text-align:center;font-family:var(--mono);font-size:10.5px;font-weight:500;
-  letter-spacing:.12em;text-transform:uppercase;color:var(--sand-9);padding-right:39px}
+  letter-spacing:.12em;text-transform:uppercase;color:var(--sand-9)}
+.sfdemo .sfd-sample{flex:none;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--sand-9);background:var(--sand-2);border:1px solid var(--sand-6);
+  padding:3px 8px;border-radius:var(--r-pill)}
 /* 固定高度：幕间高度跳动比留一点空白更难看。短的那幕由 .mod 居中吸收。 */
 .sfdemo .sfd-screen{position:relative;height:484px;background:var(--sand-2)}
 /* 宽高与缩放由 JS 的 fit() 设定（见 landing.js）：窄屏用 900px 逻辑宽度再等比缩放 */
