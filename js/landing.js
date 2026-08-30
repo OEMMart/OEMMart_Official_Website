@@ -311,7 +311,10 @@
       });
       elTitle.textContent = sc.title;
       elDesc.textContent = sc.desc;
-      if(ready) frame.contentWindow.postMessage({ sfScene: id }, "*");
+      // 无条件发。曾经这里是 if(ready) —— ready 由 iframe 的 sfReady 握手置位，
+      // 而本地 iframe 可能在父页面注册监听之前就发完了那一条，握手丢掉，ready 永远是 false，
+      // 于是药丸会亮、标题会变，框里却不换。单点握手不可靠，改成"每次都发 + load 时补发"。
+      try { frame.contentWindow.postMessage({ sfScene: id }, "*"); } catch(_){}
     }
 
     function go(next){
@@ -347,9 +350,12 @@
     // iframe 里的模块加载完才开始发指令，否则第一条 postMessage 会打空
     /* 框高固定在 CSS 里，不跟着幕走 —— 切幕时窗口忽高忽低比留一点空白更难看。
        宽度也不缩放：缩到手机宽会把 11px 的表格文字压成 4px，窄屏改为少渲染几列。 */
-    addEventListener("message", (e) => {
-      if(e.data && e.data.sfReady){ ready = true; paint(); arm(); }
-    });
+    // 三条路都能让它进入就绪：iframe 主动报到、iframe onload、以及父页面自己 load 完。
+    // 任何一条先到都行，重复触发是幂等的。
+    function markReady(){ if(ready) return; ready = true; paint(); arm(); }
+    addEventListener("message", (e) => { if(e.data && e.data.sfReady) markReady(); });
+    frame.addEventListener("load", markReady);
+    if(frame.contentDocument && frame.contentDocument.readyState === "complete") markReady();
 
     paint();
   })();
