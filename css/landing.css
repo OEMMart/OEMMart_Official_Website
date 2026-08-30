@@ -646,13 +646,24 @@ body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
    无左侧色条；层次沿用既有语法：浮起的面、白色上缘、暖阴影。
    ══════════════════════════════════════════════════════════════════════ */
 .sfdemo{background:var(--sand-4);padding:104px 0}
-.sfdemo .sfd-in{max-width:1160px;margin:0 auto;padding:0 40px;display:flex;flex-direction:column;align-items:center}
-.sfdemo .kick{margin-bottom:26px}
+.sfdemo .sfd-in{max-width:1160px;margin:0 auto;padding:0 40px}
 
-/* 浏览器窗口：一个框，说明"这是一个在跑的应用"，而不是一张图 */
+/* 段落抬头：给这一段一个出现在这里的理由 */
+.sfdemo .sfd-head{text-align:center;margin-bottom:34px}
+.sfdemo .sfd-head .kick{margin-bottom:16px}
+.sfdemo .sfd-head h2{font-size:clamp(34px,5vw,60px);font-weight:900;letter-spacing:-.038em;line-height:1.02}
+.sfdemo .sfd-head h2 em{font-style:normal;color:var(--red)}
+
+/* 沉槽：框、药丸、解说共处一面，整段收成一个物件而不是三样浮着的东西 */
+.sfdemo .sfd-stage{padding:26px 26px 30px;border-radius:26px;
+  background:linear-gradient(180deg,var(--sand-5),var(--sand-4));
+  box-shadow:inset 0 2px 5px rgba(var(--warm-sh),.10),inset 0 -1px 0 var(--lift-2);
+  display:flex;flex-direction:column;align-items:center}
+
+/* 浏览器窗口：槽里浮起的那一件 */
 .sfdemo .sfd-frame{width:100%;border-radius:var(--r-lg);overflow:hidden;background:var(--sand-2);
-  border:1px solid var(--sand-5);
-  box-shadow:inset 0 1px 0 var(--lift-3),0 1px 3px rgba(var(--warm-sh),.05),0 34px 70px rgba(var(--warm-sh),.16)}
+  border:1px solid var(--sand-6);
+  box-shadow:inset 0 1px 0 var(--lift-3),0 1px 3px rgba(var(--warm-sh),.06),0 26px 54px rgba(var(--warm-sh),.16)}
 .sfdemo .sfd-chrome{display:flex;align-items:center;gap:12px;padding:0 14px;height:38px;
   background:linear-gradient(180deg,var(--sand-3),var(--sand-4));border-bottom:1px solid var(--sand-5)}
 .sfdemo .sfd-dots{display:flex;gap:6px;flex:none}
@@ -666,9 +677,9 @@ body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
 .sfdemo .sfd-screen iframe{position:absolute;left:0;top:0;width:100%;height:100%;border:0;display:block}
 
 /* 解说条：药丸 + 标题 + 一句说明，全部在框外 */
-.sfdemo .sfd-bar{margin-top:30px;text-align:center;max-width:620px}
+.sfdemo .sfd-bar{margin-top:24px;text-align:center;max-width:640px}
 .sfdemo .sfd-pills{display:inline-flex;gap:5px;padding:4px;border-radius:var(--r-pill);
-  background:var(--sand-3);box-shadow:inset 0 1px 2px rgba(var(--warm-sh),.08)}
+  background:var(--sand-3);box-shadow:inset 0 1px 2px rgba(var(--warm-sh),.10),0 1px 0 var(--lift-2)}
 .sfdemo .sfd-pill{position:relative;overflow:hidden;isolation:isolate;
   padding:7px 20px;border-radius:var(--r-pill);border:0;background:none;cursor:pointer;
   font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
@@ -682,13 +693,15 @@ body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
 .sfdemo .sfd-pill.on.held::before{width:100%;transition:width .3s linear}
 .sfdemo .sfd-pill:focus-visible{outline:2px solid var(--red);outline-offset:3px}
 
-.sfdemo .sfd-title{margin-top:22px;font-size:clamp(21px,2.4vw,27px);font-weight:800;
+.sfdemo .sfd-title{margin-top:20px;font-size:clamp(21px,2.4vw,27px);font-weight:800;
   letter-spacing:-.025em;line-height:1.2;color:var(--ink)}
 .sfdemo .sfd-desc{margin-top:11px;font-size:15px;line-height:1.62;color:var(--muted)}
 
 @media (max-width:900px){
   .sfdemo{padding:80px 0}
   .sfdemo .sfd-in{padding:0 20px}
+  .sfdemo .sfd-stage{padding:16px 14px 22px;border-radius:20px}
+  .sfdemo .sfd-head{margin-bottom:26px}
 
 }
 @media (max-width:640px){

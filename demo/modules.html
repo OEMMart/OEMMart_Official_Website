@@ -48,10 +48,12 @@
     border:2px solid var(--accent);opacity:0}
   .simcur.tap .rip{animation:tap .5s var(--spring)}
   @keyframes tap{0%{opacity:.9;transform:scale(.25)}100%{opacity:0;transform:scale(1)}}
-  /* 轻量聚焦：不压暗整页，只把当前讨论的区域抬起来 */
-  .lift{position:relative;z-index:2;border-radius:var(--r-md);
-    box-shadow:0 0 0 2px rgba(var(--red-rgb),.55),0 0 0 7px rgba(var(--red-rgb),.16);
-    transition:box-shadow .45s var(--spring)}
+  .vnote{font-size:11px;color:var(--green-pale-ink);align-self:center;margin-left:4px}
+  /* 「为什么是这个人」是这一幕最该读到的东西，产品那列的固定宽 + nowrap 会把它截掉。
+     演示里让它换行、并多给一点宽度。 */
+  #m-reach .c-cttitle{width:32%}
+  #m-reach tbody td:nth-child(2) .loc span{white-space:normal}
+  #m-reach tbody td:nth-child(2) .loc{white-space:normal;overflow:visible}
   /* 窄屏下少渲染几列（见 renderList 的 visibleCols）。
      用 CSS 藏 td 没用 —— 表是 table-layout:fixed 配 colgroup，<col> 照样占着宽度。 */
   /* 列不全时表格自适应宽度（见 renderList）—— 产品的 col 固定宽在这里会溢出 */
@@ -109,6 +111,16 @@
     <div class="kick">Match analysis</div>
     <h3>Why this scored 91</h3>
     <div class="wbar" id="wbar"></div>
+  </div>
+  <!-- 判定：照 SignalDetail.tsx 的 DPanel kick="Feedback" + .row > .pill / .pill.no -->
+  <div class="dpanel panel fb">
+    <div class="kick">Feedback</div>
+    <h4 class="signal-feedback-heading">Your feedback</h4>
+    <div class="row">
+      <button class="pill" id="vRel" type="button" aria-pressed="false">Relevant</button>
+      <button class="pill no" id="vNot" type="button" aria-pressed="false">Not relevant</button>
+      <span class="vnote" id="vNote"></span>
+    </div>
   </div>
   </div>
 </section>
@@ -237,21 +249,30 @@ function setPole(p){
 poleT.onclick = e => { e.preventDefault(); setPole("tenders"); };
 poleS.onclick = e => { e.preventDefault(); setPole("signals"); };
 
-/* 评分条：默认收起理由，点一行展开 —— 「点开任意一行看那几分从哪来」 */
+/* 产品里 .wrow .why 是常显的（signalforge.css:687）—— 每一行本来就带着它的理由，
+   这正是这个组件存在的意义。之前我做成"点击展开 + 聚焦环"，是自己发明的交互，
+   而且和这一行的原生 flex 布局打架（环把 24/25 切掉、小字和橙框叠在一起）。撤掉。 */
 function renderWbar(){
-  wbar.innerHTML = WROWS.map((r,i)=>`
-    <div class="wrow" data-i="${i}" role="button" tabindex="0" style="cursor:pointer">
+  wbar.innerHTML = WROWS.map(r=>`
+    <div class="wrow">
       <span class="lb">${r.lb}</span>
       <div class="mid"><div class="tr"><i style="width:${r.pct}%"></i></div>
-        <div class="why" hidden>${r.why}</div></div>
+        <div class="why">${r.why}</div></div>
       <span class="v">${r.v}</span>
     </div>`).join("");
-  wbar.querySelectorAll(".wrow").forEach(el=>{
-    const t = () => { const w = el.querySelector(".why"); w.hidden = !w.hidden; el.classList.toggle("lift", !w.hidden); };
-    el.addEventListener("click", t);
-    el.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); t(); } });
-  });
 }
+
+/* 这一幕的交互改用产品真有的判定按钮。产品自己的引导里写着：
+   「Relevant 和 Not relevant 是评分学习的方式 —— 这一页上你能做的最有价值的一件事」。 */
+function setVerdict(v){
+  vRel.classList.toggle("on", v==="relevant");
+  vNot.classList.toggle("on", v==="not_relevant");
+  vRel.setAttribute("aria-pressed", String(v==="relevant"));
+  vNot.setAttribute("aria-pressed", String(v==="not_relevant"));
+  vNote.textContent = v ? "Recorded. The next round of matching weighs this." : "";
+}
+vRel.onclick = () => setVerdict("relevant");
+vNot.onclick = () => setVerdict("not_relevant");
 
 /* 联系人：找到=免费 → 点一次解锁邮箱 → 再点解锁电话。值全部打码。 */
 const LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
@@ -306,15 +327,12 @@ async function playRank(t){
   hideCur();
 }
 async function playExplain(t){
-  renderWbar();
-  await wait(800); if(!alive(t))return;
-  const rows = [...wbar.querySelectorAll(".wrow")];
-  for(const i of [0,2]){
-    await moveCur(rows[i], -60); if(!alive(t))return;
-    await tap(); if(!alive(t))return;
-    rows[i].click();
-    await wait(1700); if(!alive(t))return;
-  }
+  renderWbar(); setVerdict(null);
+  await wait(1500); if(!alive(t))return;      // 先让读者自己把三行理由读一遍
+  await moveCur(vRel); if(!alive(t))return;
+  await tap(); if(!alive(t))return;
+  setVerdict("relevant");
+  await wait(1600); if(!alive(t))return;
   hideCur();
 }
 async function playReach(t){
