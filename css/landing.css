@@ -97,9 +97,9 @@ body:not(.lit):not(.static) .nav .logoimg{filter:brightness(0) invert(1)}
 .shell>.core{position:relative;z-index:1;border-radius:var(--r-md);overflow:hidden;background:var(--sand-1)}
 
 /* ===== Before/After 滑块 ===== */
-.sec{max-width:1160px;margin:0 auto;padding:130px 40px}
+.sec{max-width:1160px;margin:0 auto;padding:120px 40px}
 .kick{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.18em;color:var(--red);margin-bottom:18px}
-.sec h2{font-size:clamp(36px,5.4vw,72px);font-weight:900;letter-spacing:-.04em;line-height:1;max-width:20ch}
+.sec h2{font-size:clamp(34px,4.8vw,64px);font-weight:900;letter-spacing:-.04em;line-height:1;max-width:20ch}
 .cmp-wrap{margin-top:52px}
 .cmp{position:relative;border-radius:var(--r-md);overflow:hidden;user-select:none;touch-action:pan-y;cursor:ew-resize}
 .cmp .side{padding:44px 48px;min-height:440px}
@@ -130,11 +130,14 @@ body:not(.lit):not(.static) .nav .logoimg{filter:brightness(0) invert(1)}
 .handle::after{content:"◂ ▸";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--red);color:#fff;font-size:13px;letter-spacing:2px;padding:10px 13px;border-radius:var(--r-pill);white-space:nowrap;box-shadow:0 8px 24px rgba(var(--red-rgb),.4)}
 
 /* ===== AI 初稿：自己写字的标书纸 ===== */
-.draftsec{padding:150px 0 140px}
-.draftsec .head{text-align:center;margin-bottom:60px;padding:0 24px}
-.draftsec h2{font-size:clamp(34px,5vw,68px);font-weight:900;letter-spacing:-.04em;line-height:1.02}
+.draftsec{padding:120px 0}
+.draftsec .head{max-width:1160px;margin:0 auto 52px;padding:0 40px}
+.draftsec h2{font-size:clamp(34px,4.8vw,64px);font-weight:900;letter-spacing:-.04em;line-height:1.02}
 .draftsec h2 em{font-style:italic;color:var(--red);padding-bottom:5px;line-height:1.1}
-.sheetwrap{max-width:820px;margin:0 auto;padding:0 32px;position:relative}
+/* 与段落抬头共用一条左轴：容器左缘 = max(40px, 50% - 540px)，此处再减掉自身 32px 内边距。
+   用 % 不用 vw —— vw 含滚动条，会比真实布局中线偏出半个滚动条宽。
+   之前它是 margin:0 auto 居中，抬头靠左、展品居中，两条左缘对不上，整段读起来就散。 */
+.sheetwrap{max-width:820px;margin-left:max(8px,calc(50% - 572px));margin-right:auto;padding:0 32px;position:relative}
 .sheet{background:linear-gradient(180deg,#fff,var(--sand-1));border:1px solid var(--sand-5);border-radius:var(--r-lg);box-shadow:inset 0 1px 0 var(--lift-3),0 2px 6px rgba(var(--warm-sh),.05),0 34px 90px rgba(var(--warm-sh),.14);padding:58px 64px;min-height:540px;font-size:15.5px;line-height:1.85;color:var(--sand-12)}
 .sheet .dt{font-weight:800;font-size:21px;letter-spacing:-.015em;color:var(--ink)}
 .sheet .dm{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin:8px 0 34px;padding-bottom:18px;border-bottom:1px solid var(--sand-4)}
@@ -162,13 +165,13 @@ body.static .sheet .w{opacity:1}
 /* ===== Signal：三件对不上的事，被接成一条记录 =====
    The product is the JOIN, not the contact. So the joined record is the hero object:
    the largest thing on screen, assembled in front of the reader. */
-.signal{position:relative;padding:170px 0 150px;overflow:hidden;background:var(--sand-4)}
+.signal{position:relative;padding:120px 0;overflow:hidden;background:var(--sand-4)}
 .signal::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:
     radial-gradient(54% 46% at 82% 6%, rgba(253,235,230,.6), transparent 70%),
     radial-gradient(46% 40% at 6% 94%, rgba(233,228,218,.7), transparent 72%)}
 .signal .in{position:relative;max-width:1160px;margin:0 auto;padding:0 40px}
-.signal h2{font-size:clamp(40px,5.6vw,80px);font-weight:900;letter-spacing:-.045em;line-height:1;max-width:16ch}
+.signal h2{font-size:clamp(34px,4.8vw,64px);font-weight:900;letter-spacing:-.045em;line-height:1;max-width:16ch}
 .signal h2 em{font-style:normal;color:var(--red)}
 .signal .sub{margin-top:24px;font-size:19px;line-height:1.6;color:var(--muted);max-width:52ch}
 .signal .sub b{color:var(--ink);font-weight:600}
@@ -193,7 +196,7 @@ body.static .sheet .w{opacity:1}
 .joinwrap.done .feedline path{stroke:var(--red-pale-bd)}
 
 /* the record: the hero object */
-.record{position:relative;max-width:760px;margin:0 auto;border-radius:var(--r-lg);overflow:hidden;
+.record{position:relative;max-width:760px;margin:0;border-radius:var(--r-lg);overflow:hidden;
   background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(247,246,243,.86));
   border:1px solid var(--sand-5);
   box-shadow:inset 0 1px 0 var(--lift-3),0 1px 3px rgba(var(--warm-sh),.05),0 26px 56px rgba(var(--warm-sh),.14);
@@ -292,7 +295,7 @@ body.static .sheet .w{opacity:1}
 .fb button.pressed{transform:scale(.9)}
 
 /* ===== 覆盖数字 ===== */
-.coverage{padding:150px 0 0}
+.coverage{padding:120px 0 0}
 .coverage .nums{max-width:1160px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;text-align:center}
 .coverage .n{font-size:clamp(64px,9vw,140px);font-weight:900;letter-spacing:-.05em;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
 .coverage .n em{font-style:normal;color:var(--red)}
@@ -304,21 +307,21 @@ body.static .sheet .w{opacity:1}
 .marq b{color:var(--ink);font-weight:600}
 
 /* ===== 截图证据 ===== */
-.proof{padding:150px 0}
-.proof .head{text-align:center;margin-bottom:56px;padding:0 24px}
-.proof h2{font-size:clamp(34px,5vw,68px);font-weight:900;letter-spacing:-.04em;line-height:1.02}
+.proof{padding:120px 0}
+.proof .head{max-width:1160px;margin:0 auto 52px;padding:0 40px}
+.proof h2{font-size:clamp(34px,4.8vw,64px);font-weight:900;letter-spacing:-.04em;line-height:1.02}
 .proof h2 em{font-style:normal;color:var(--red)}
-.proof .stagewrap{max-width:1080px;margin:0 auto;padding:0 32px;position:relative}
+.proof .stagewrap{max-width:1160px;margin:0 auto;padding:0 40px;position:relative}
 .proof .anno{position:absolute;z-index:5;pointer-events:none}
 .proof .ringmark{position:absolute;left:56.5%;top:31%;width:34%;height:9.5%;border:2.5px solid var(--red);border-radius:12px;box-shadow:0 0 0 6px rgba(var(--red-rgb),.14);z-index:5}
 .proof .tagline{position:absolute;left:66%;top:14%;background:var(--red);color:#fff;font-family:var(--mono);font-size:12px;font-weight:600;padding:8px 13px;border-radius:var(--r-sm);z-index:6;box-shadow:0 10px 30px rgba(var(--red-rgb),.35)}
 .proof .tagline::after{content:"";position:absolute;left:24px;top:100%;width:2px;height:34px;background:var(--red)}
 
 /* ===== 社会证明双卡：Kaeser + 客户评价 ===== */
-.proofduo{max-width:1160px;margin:0 auto;padding:30px 40px 150px;display:grid;grid-template-columns:5fr 7fr;gap:20px;align-items:stretch}
+.proofduo{max-width:1160px;margin:0 auto;padding:0 40px 120px;display:grid;grid-template-columns:5fr 7fr;gap:20px;align-items:stretch}
 .proofduo .shell{display:flex}
 .proofduo .core{flex:1}
-.kcard{background:linear-gradient(180deg,var(--graphite-2),var(--graphite));padding:52px 46px;display:flex;flex-direction:column;justify-content:center;color:var(--on-dark-1)}
+.shell>.core.kcard,.kcard{background:linear-gradient(180deg,var(--graphite-2),var(--graphite));padding:52px 46px;display:flex;flex-direction:column;justify-content:center;color:var(--on-dark-1)}
 .kcard .kplate{display:inline-block;background:var(--sand-1);border-radius:var(--r-sm);padding:16px 22px;line-height:0}
 .kcard .kplate img{height:44px;width:auto;image-rendering:-webkit-optimize-contrast}
 .kcard .rule{width:90px;height:5px;background:var(--red);margin:26px 0 20px;border-radius:3px}
@@ -401,9 +404,9 @@ body.static .sheet .w{opacity:1}
 #hs-form-target .legal-consent-container p{margin:0 0 8px;font-size:12px;color:var(--soft);line-height:1.5}
 
 /* ===== CTA ===== */
-.cta{position:relative;padding:170px 40px;text-align:center;overflow:hidden}
+.cta{position:relative;padding:140px 40px;text-align:center;overflow:hidden}
 .cta .glow{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);width:560px;height:560px;border-radius:50%;background:radial-gradient(circle,rgba(var(--red-rgb),.13),#0000 65%);pointer-events:none}
-.cta h2{position:relative;font-size:clamp(44px,7vw,100px);font-weight:900;letter-spacing:-.045em;line-height:.98}
+.cta h2{position:relative;font-size:clamp(38px,5.6vw,80px);font-weight:900;letter-spacing:-.045em;line-height:.98}
 .cta p{position:relative;margin:26px auto 40px;font-size:17px;color:var(--muted);max-width:36ch;line-height:1.6}
 .cta .btn{position:relative;font-size:17px;padding:12px 12px 12px 30px}
 .cta .btn .ic{width:40px;height:40px}
@@ -463,10 +466,10 @@ html{scroll-behavior:smooth}
 #product,#about,#contact{scroll-margin-top:92px}
 
 /* ===== About ===== */
-.about{background:var(--sand-3);color:var(--ink);padding:130px 0;border-top:1px solid var(--sand-5);border-bottom:1px solid var(--sand-5)}
+.about{background:var(--sand-3);color:var(--ink);padding:120px 0;border-top:1px solid var(--sand-5);border-bottom:1px solid var(--sand-5)}
 .about .ain{max-width:1160px;margin:0 auto;padding:0 40px}
 .about .akick{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.2em;color:var(--red);margin-bottom:20px}
-.about h2{font-size:clamp(34px,5vw,68px);font-weight:900;letter-spacing:-.04em;line-height:1.02}
+.about h2{font-size:clamp(34px,4.8vw,64px);font-weight:900;letter-spacing:-.04em;line-height:1.02}
 .about h2 em{font-style:normal;color:var(--red)}
 .about .alede{margin-top:26px;font-size:18px;line-height:1.7;color:var(--muted);max-width:60ch}
 .about .atrust{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
@@ -588,7 +591,7 @@ body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
    替换掉原来的 chat.oemmart.com 旧截图。每一分都挂在某一条上，点开就是理由。
    红只留给「痛」：唯一一条拉分的 Delivery capacity。
    ══════════════════════════════════════════════════════════════════════ */
-.proof .attrib{max-width:820px;margin:44px auto 0;padding:20px 22px 18px;
+.proof .attrib{max-width:820px;margin:44px auto 0 max(40px,calc(50% - 540px));padding:20px 22px 18px;
   background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(247,246,243,.86));
   border:1px solid var(--sand-5);border-radius:var(--r-lg);
   box-shadow:inset 0 1px 0 var(--lift-3),0 1px 3px rgba(var(--warm-sh),.05),0 22px 48px rgba(var(--warm-sh),.13)}
@@ -645,13 +648,13 @@ body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
    框内是 demo/modules.html（产品自己的 CSS，iframe 隔离）。
    无左侧色条；层次沿用既有语法：浮起的面、白色上缘、暖阴影。
    ══════════════════════════════════════════════════════════════════════ */
-.sfdemo{background:var(--sand-4);padding:104px 0}
+.sfdemo{background:var(--sand-4);padding:120px 0}
 .sfdemo .sfd-in{max-width:1160px;margin:0 auto;padding:0 40px;display:flex;flex-direction:column}
 
 /* 段落抬头：给这一段一个出现在这里的理由 */
-.sfdemo .sfd-head{text-align:center;margin-bottom:34px}
+.sfdemo .sfd-head{margin-bottom:34px}
 .sfdemo .sfd-head .kick{margin-bottom:16px}
-.sfdemo .sfd-head h2{font-size:clamp(34px,5vw,60px);font-weight:900;letter-spacing:-.038em;line-height:1.02}
+.sfdemo .sfd-head h2{font-size:clamp(34px,4.8vw,64px);font-weight:900;letter-spacing:-.038em;line-height:1.02}
 .sfdemo .sfd-head h2 em{font-style:normal;color:var(--red)}
 
 /* 框子用网站自带的 .shell（padding + 白色上缘 + 暖阴影 + 纸纹），.core 负责裁切。
@@ -709,4 +712,10 @@ body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
 }
 @media (prefers-reduced-motion:reduce){
   .sfdemo .sfd-pill.on::before{transition:none}
+}
+
+/* 窄屏取消左轴对齐：容器已经贴边，再算左缘只会把块推歪 */
+@media (max-width:1240px){
+  .sheetwrap{margin-left:auto}
+  .proof .attrib{margin-left:auto}
 }
