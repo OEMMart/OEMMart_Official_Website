@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/landing.css?v=19">
+<link rel="stylesheet" href="css/landing.css?v=22">
 <script>
   // Apollo visitor tracking (ported from previous site)
   function initApollo() {
@@ -137,101 +137,35 @@
   </div>
 </section>
 
-<!-- ============ 产品剧场：钉住 + 竖滚驱动横移，四块真实界面 ============
-     内容逐字取自产品仓已批准的 mockup detail-v2-radar.html。
-     kicker "YOUR JOURNEY" 是产品自己的组件名，不是新写的营销文案。
-     指挥中心一屏按 spec §6 收窄为只含招标行（真子集，不误述）。 -->
-<section class="theatre" id="theatre">
-  <div class="tkick rv"><span class="kick">YOUR JOURNEY</span><span class="tnote">One tender, end to end. Scroll.</span></div>
+<!-- ============ 产品演示：真模块、真交互、假数据 ============
+     框内是 demo/modules.html —— 产品自己的样式表 + 照 .tsx 复刻的 DOM，跑在 iframe 里
+     （产品 CSS 200KB 全局选择器，与 landing.css 大面积撞名，只能隔离）。
+     解说与药丸留在这一侧，用 landing.css：产品归产品的设计系统，营销归营销的。
+     参考 vibeisland.app 的做法：产品界面始终全亮，解说退到框外，当前那颗药丸自己填充成进度条。 -->
+<section class="sfdemo" id="sfdemo">
+  <div class="sfd-in">
+    <div class="kick rv">SEE IT WORK</div>
 
-  <div class="track" id="track">
-    <div class="panels" id="panels">
+    <div class="sfd-frame rv">
+      <div class="sfd-chrome">
+        <span class="sfd-dots"><i></i><i></i><i></i></span>
+        <span class="sfd-app">SignalForge</span>
+      </div>
+      <div class="sfd-screen">
+        <iframe id="sfdFrame" src="demo/modules.html" title="SignalForge, running" loading="lazy"></iframe>
+      </div>
+    </div>
 
-      <!-- 1 · 指挥中心 -->
-      <article class="tp" data-tp="1">
-        <div class="tpk"><b>01</b> Command Center</div>
-        <div class="tpbody">
-          <div class="kpis">
-            <div class="kpi"><span class="kn" data-cnt="18">0</span><span class="kl">Open tenders</span></div>
-            <div class="kpi"><span class="kn">$<em data-cnt="8.4">0</em>M</span><span class="kl">Tender pipeline</span></div>
-            <div class="kpi hot"><span class="kn" data-cnt="3">0</span><span class="kl">Closing &le; 14 days</span><span class="kflag">ACT NOW</span></div>
-          </div>
-          <div class="tsub">Top opportunities</div>
-          <div class="oprow"><span class="av">PW</span><span class="opt">HVAC Replacement — Federal Building<small>Public Works Canada · $1.2M · closes in 12 days</small></span><span class="sc hi">88</span></div>
-          <div class="oprow"><span class="av">DO</span><span class="opt">Rotating Equipment Maintenance<small>US Army Corps of Engineers · $2.7M · closes in 34 days</small></span><span class="sc hi">84</span></div>
-          <div class="tsub">Closing soon</div>
-          <div class="cs"><b>12D</b><span>HVAC Replacement — Federal Building<small>$1.2M · pursuing · site visit Jul 22</small></span></div>
-          <div class="cs"><b>21D</b><span>Industrial Air Compressors<small>$480K · undecided</small></span></div>
-          <div class="cs"><b>34D</b><span>Rotating Equipment Maintenance<small>$2.7M · undecided</small></span></div>
-        </div>
-      </article>
-
-      <!-- 2 · 招标详情 -->
-      <article class="tp" data-tp="2">
-        <div class="tpk"><b>02</b> The tender</div>
-        <div class="tpbody">
-          <div class="thd">
-            <span class="av lg">PW</span>
-            <div class="thdt"><b>HVAC Replacement — Federal Building Complex</b>
-              <small>Public Works &amp; Government Services Canada <i class="tg">EW527-241338</i> <i class="tg">Tender</i> Published Jun 28, 2026</small></div>
-            <div class="msc"><span data-cnt="88">0</span><small>match<br>score</small></div>
-          </div>
-          <p class="tov">Replacement of aging HVAC systems across three federal office buildings in Winnipeg, including design, supply, installation and 2-year maintenance.</p>
-          <div class="tgs"><i class="tg">Government Tender</i><i class="tg">Canada · MB</i><i class="tg">MERX</i><i class="tg red">$1.2M CAD est.</i></div>
-          <div class="tsub">Key dates, extracted for you</div>
-          <div class="dt"><b>JUN 28</b><span>Published <small>on MERX / CanadaBuys</small></span></div>
-          <div class="dt"><b>JUL 22</b><span>Mandatory site visit <small>— Winnipeg, 10:00 CDT</small></span></div>
-          <div class="dt"><b>JUL 27</b><span>Closing date <small>— submissions due 14:00 CDT</small></span></div>
-        </div>
-      </article>
-
-      <!-- 3 · 标书文档 -->
-      <article class="tp" data-tp="3">
-        <div class="tpk"><b>03</b> Every attachment</div>
-        <div class="tpbody">
-          <div class="dhead"><span class="tsub nom">Source documents (4)</span>
-            <button class="zip" id="zipbtn" type="button">↓ Download all (ZIP)</button></div>
-          <div class="fl" data-mb="2.4"><span class="fi">PDF</span><span class="fn">RFP_EW527-241338_Main.pdf</span><span class="fs">2.4 MB</span></div>
-          <div class="fl" data-mb="8.1"><span class="fi">PDF</span><span class="fn">Technical_Specifications.pdf</span><span class="fs">8.1 MB</span></div>
-          <div class="fl" data-mb="31"><span class="fi">PDF</span><span class="fn">Drawings_Package_B1-B3.pdf</span><span class="fs">31 MB</span></div>
-          <div class="fl" data-mb="0.3"><span class="fi">PDF</span><span class="fn">Amendment_001.pdf</span><span class="fs">0.3 MB</span></div>
-          <div class="zipout" id="zipout"></div>
-          <div class="tsub">Tender facts</div>
-          <div class="fx"><span>Est. value</span><b>$1.2M CAD</b></div>
-          <div class="fx"><span>Closes</span><b>Jul 27 · in 12 days</b></div>
-          <div class="fx"><span>Agency</span><b>PSPC</b></div>
-          <div class="fx"><span>Source</span><b>MERX</b></div>
-        </div>
-      </article>
-
-      <!-- 4 · 草稿与决策 -->
-      <article class="tp" data-tp="4">
-        <div class="tpk"><b>04</b> The draft, and the call</div>
-        <div class="tpbody">
-          <div class="tsub">Your journey</div>
-          <ol class="jy" id="journey">
-            <li class="done">Company intelligence</li>
-            <li class="done">AI opportunity select</li>
-            <li class="now">Review &amp; decision</li>
-            <li>Proposal generation</li>
-            <li>Compliance &amp; final review</li>
-            <li>Submission</li>
-          </ol>
-          <div class="tsub">Draft proposal</div>
-          <div class="dr"><span class="drv">V2 · JUL 10</span><span class="drn">Draft_Response_v2.docx</span><span class="drr">ready ↓</span></div>
-          <div class="dr old"><span class="drv">V1 · JUL 08</span><span class="drn">Draft_Response_v1.docx</span><span class="drr">superseded</span></div>
-          <div class="dec">
-            <button class="btn red" id="pursue" type="button"><span>Pursue</span><span class="ic">→</span></button>
-            <button class="btn ghost" id="decline" type="button">Decline</button>
-          </div>
-          <p class="decn" id="decnote">Deciding moves this tender into your pursued pipeline and notifies the OEMMart team.</p>
-        </div>
-      </article>
-
+    <div class="sfd-bar rv">
+      <div class="sfd-pills" id="sfdPills" role="tablist" aria-label="Demo chapters">
+        <button class="sfd-pill on" type="button" role="tab" aria-selected="true"  data-scene="rank">Rank</button>
+        <button class="sfd-pill"    type="button" role="tab" aria-selected="false" data-scene="explain">Explain</button>
+        <button class="sfd-pill"    type="button" role="tab" aria-selected="false" data-scene="reach">Reach</button>
+      </div>
+      <h3 class="sfd-title" id="sfdTitle"></h3>
+      <p class="sfd-desc" id="sfdDesc"></p>
     </div>
   </div>
-
-  <div class="tprog" id="tprog"><i class="on"></i><i></i><i></i><i></i></div>
 </section>
 
 <!-- ============ AI 初稿：自己写字的标书纸 ============ -->
@@ -487,7 +421,7 @@
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script src="js/landing.js?v=19"></script>
+<script src="js/landing.js?v=22"></script>
 <!-- HubSpot embed form (portal 341778708, region na3, new forms tool).
      Handles reCAPTCHA, file upload and consent natively. Renders in an iframe. -->
 <script src="https://js-na3.hsforms.net/forms/embed/341778708.js" defer></script>
