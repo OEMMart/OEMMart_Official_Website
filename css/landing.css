@@ -297,8 +297,6 @@ body.static .sheet .w{opacity:1}
 /* ===== 覆盖数字 ===== */
 .coverage{padding:120px 0 0}
 .coverage .nums{max-width:1160px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;text-align:center}
-/* 联邦并进州数之后只剩两格；三格栅格会把它们推到左右两端 */
-.coverage .nums.two{grid-template-columns:1fr 1fr;max-width:860px}
 .coverage .n{font-size:clamp(64px,9vw,140px);font-weight:900;letter-spacing:-.05em;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
 .coverage .n em{font-style:normal;color:var(--red)}
 .coverage .lab{margin-top:10px;font-size:15px;color:var(--muted)}
