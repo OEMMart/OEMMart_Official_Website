@@ -269,8 +269,8 @@
   /* ══════════════════════════════════════════════════════════════════
      产品演示的幕次驱动
      框内（iframe）是产品自己的界面与交互；这里只负责换幕、走进度、收点击。
-     自动循环，任何一次点击就交出控制权（进度条随即填满，不再自走）。
-     只有滚进视口的时候才播 —— 页面上不该有一个没人在看却一直在动的东西。
+     永远自动循环；点击只是跳到那一幕，不会停播。
+     滚出视口时暂停 —— 页面上不该有一个没人在看却一直在动的东西。
      ══════════════════════════════════════════════════════════════════ */
   (function(){
     const wrap = document.getElementById("sfdemo");
@@ -298,7 +298,9 @@
       },
     };
 
-    let i = 0, timer = null, held = false, ready = false, visible = false;
+    // visible 默认为 true：启动权不能交给 IntersectionObserver —— 它在未渲染的标签页里
+    // 一次都不触发，那样 arm() 会永远提前返回，这一块就再也不动。IO 只负责"滚出视口时暂停"。
+    let i = 0, timer = null, ready = false, visible = true;
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     function paint(){
@@ -306,7 +308,7 @@
       pills.forEach((p, k) => {
         const on = k === i;
         p.classList.toggle("on", on);
-        p.classList.toggle("held", on && (held || reduce));
+        p.classList.toggle("held", on && reduce);
         p.setAttribute("aria-selected", String(on));
       });
       elTitle.textContent = sc.title;
@@ -326,17 +328,15 @@
       arm();
     }
 
+    /* 永远自动循环。点击只是跳到那一幕，计时器随即重新起跑 —— 之前点一下会把 held 置真，
+       arm() 从此永远提前返回，于是访客点过一次这块就再也不动了。 */
     function arm(){
       clearTimeout(timer);
-      if(held || reduce || !visible) return;
+      if(reduce || !visible) return;
       timer = setTimeout(() => go(i + 1), DWELL);
     }
 
-    pills.forEach((p, k) => p.addEventListener("click", () => {
-      held = true;                 // 一旦有人动手，就不再自动往下走
-      clearTimeout(timer);
-      go(k);
-    }));
+    pills.forEach((p, k) => p.addEventListener("click", () => go(k)));   // go() 内部会重新起计时
 
     // 只播看得见的那一个
     const io = new IntersectionObserver((es) => {

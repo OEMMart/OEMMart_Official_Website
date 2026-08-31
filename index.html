@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/landing.css?v=39">
+<link rel="stylesheet" href="css/landing.css?v=41">
 <script>
   // Apollo visitor tracking (ported from previous site)
   function initApollo() {
@@ -295,12 +295,14 @@
 
 <!-- ============ 覆盖数字 ============ -->
 <section class="coverage">
-  <div class="nums">
-    <div class="rv"><div class="n" data-count="1">0</div><div class="lab">federal source, SAM.gov</div></div>
-    <div class="rv"><div class="n"><em data-count="20">0</em><em>+</em></div><div class="lab">U.S. state portals</div></div>
+  <!-- 按 Mike 的说明改：联邦不再单拎一格，并进"40+ 个州，含 SAM.gov"；第三方门户
+       （BidsAndTenders / BidNetDirect）没有可引用的计数，所以只在下面的名单里点名，
+       不编一个数字出来。省份数仍是旧的 2，等确认。 -->
+  <div class="nums two">
+    <div class="rv"><div class="n"><em data-count="40">0</em><em>+</em></div><div class="lab">U.S. state portals, SAM.gov included</div></div>
     <div class="rv"><div class="n" data-count="2">0</div><div class="lab">Canadian provinces</div></div>
   </div>
-  <div class="marq rv"><div class="in" id="marq"><b>Watched every morning:</b> SAM.gov · Ohio Procurement · Texas SmartBuy · Ontario Tenders · Alberta Purchasing · Pennsylvania eMarketplace · California eProcure · New York Contract Reporter · Florida MFMP · Georgia Procurement Registry &nbsp;&nbsp;&nbsp;</div></div>
+  <div class="marq rv"><div class="in" id="marq"><b>Watched every morning:</b> SAM.gov · Ohio Procurement · Texas SmartBuy · Ontario Tenders · Alberta Purchasing · Pennsylvania eMarketplace · California eProcure · New York Contract Reporter · Florida MFMP · Georgia Procurement Registry · BidsAndTenders · BidNetDirect &nbsp;&nbsp;&nbsp;</div></div>
 </section>
 
 <!-- ============ 截图证据 ============ -->
@@ -433,7 +435,7 @@
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script src="js/landing.js?v=39"></script>
+<script src="js/landing.js?v=41"></script>
 <!-- HubSpot embed form (portal 341778708, region na3, new forms tool).
      Handles reCAPTCHA, file upload and consent natively. Renders in an iframe. -->
 <script src="https://js-na3.hsforms.net/forms/embed/341778708.js" defer></script>
