@@ -280,6 +280,8 @@
     const elTitle = document.getElementById("sfdTitle");
     const elDesc  = document.getElementById("sfdDesc");
     const DWELL = 9000;
+    // 描边环的时长由 CSS 的 --dwell 控制。写进去，别让 CSS 里的兜底值和这里各走各的。
+    wrap.style.setProperty("--dwell", DWELL + "ms");
 
     /* 解说文字取自产品自己的 client/src/tour/steps.ts 与已批准的 brochure Plate 10，
        不是为官网新写的营销主张。 */
