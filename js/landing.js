@@ -352,12 +352,13 @@
        宽度也不缩放：缩到手机宽会把 11px 的表格文字压成 4px，窄屏改为少渲染几列。 */
     // 三条路都能让它进入就绪：iframe 主动报到、iframe onload、以及父页面自己 load 完。
     // 任何一条先到都行，重复触发是幂等的。
-    function markReady(){ if(ready) return; ready = true; paint(); arm(); }
+    function markReady(){ if(ready) return; ready = true; go(i); }
     addEventListener("message", (e) => { if(e.data && e.data.sfReady) markReady(); });
     frame.addEventListener("load", markReady);
     if(frame.contentDocument && frame.contentDocument.readyState === "complete") markReady();
 
-    paint();
+    go(0);   // 不能用 paint()：标记里首颗药丸自带 .on，首帧宽度直接算成 100%，
+             // 没有可过渡的起点，进度条一上来就是满的
   })();
 
   /* ===== 评分归因：点开任意一行看那几分的理由 =====
