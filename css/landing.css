@@ -407,6 +407,8 @@ body.static .sheet .w{opacity:1}
 .cta{position:relative;padding:140px 40px;text-align:center;overflow:hidden}
 .cta .glow{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);width:560px;height:560px;border-radius:50%;background:radial-gradient(circle,rgba(var(--red-rgb),.13),#0000 65%);pointer-events:none}
 .cta h2{position:relative;font-size:clamp(38px,5.6vw,80px);font-weight:900;letter-spacing:-.045em;line-height:.98}
+/* 与其余段落标题同一套强调：em 去斜体、上品牌红。CTA 此前是唯一没有强调的一个。 */
+.cta h2 em{font-style:normal;color:var(--red)}
 .cta p{position:relative;margin:26px auto 40px;font-size:17px;color:var(--muted);max-width:36ch;line-height:1.6}
 .cta .btn{position:relative;font-size:17px;padding:12px 12px 12px 30px}
 .cta .btn .ic{width:40px;height:40px}
