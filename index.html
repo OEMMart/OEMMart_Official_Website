@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/landing.css?v=48">
+<link rel="stylesheet" href="css/landing.css?v=50">
 <script>
   // Apollo visitor tracking (ported from previous site)
   function initApollo() {
@@ -163,13 +163,15 @@
           <span class="sfd-sample">Sample data</span>
         </div>
         <div class="sfd-screen">
-          <iframe id="sfdFrame" src="demo/modules.html?v=48" title="SignalForge, running" loading="lazy"></iframe>
+          <iframe id="sfdFrame" src="demo/modules.html?v=50" title="SignalForge, running" loading="lazy"></iframe>
         </div>
       </div>
     </div>
 
     <div class="sfd-bar rv">
       <div class="sfd-pills" id="sfdPills" role="tablist" aria-label="Demo chapters">
+        <!-- 滑动 puck：与产品 .tabs.seg 的 .tpuck 同一套做法；内部那条是进度 -->
+        <span class="sfd-puck" id="sfdPuck" aria-hidden="true"><i></i></span>
         <button class="sfd-pill on" type="button" role="tab" aria-selected="true"  data-scene="rank">Rank</button>
         <button class="sfd-pill"    type="button" role="tab" aria-selected="false" data-scene="explain">Explain</button>
         <button class="sfd-pill"    type="button" role="tab" aria-selected="false" data-scene="reach">Reach</button>
@@ -438,7 +440,7 @@
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script src="js/landing.js?v=48"></script>
+<script src="js/landing.js?v=50"></script>
 <!-- HubSpot embed form (portal 341778708, region na3, new forms tool).
      Handles reCAPTCHA, file upload and consent natively. Renders in an iframe. -->
 <script src="https://js-na3.hsforms.net/forms/embed/341778708.js" defer></script>

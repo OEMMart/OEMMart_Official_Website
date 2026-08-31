@@ -310,7 +310,6 @@
       pills.forEach((p, k) => {
         const on = k === i;
         p.classList.toggle("on", on);
-        p.classList.toggle("held", on && reduce);
         p.setAttribute("aria-selected", String(on));
       });
       elTitle.textContent = sc.title;
@@ -321,14 +320,32 @@
       try { frame.contentWindow.postMessage({ sfScene: id }, "*"); } catch(_){}
     }
 
+    const puck = document.getElementById("sfdPuck");
+
+    /* puck 落位。字体落地前量到的是 fallback 字体的宽度，所以 fonts.ready 和 resize 都要重量 ——
+       同一个坑在框内那个两极开关上踩过一次。 */
+    function placePuck(){
+      const p = pills[i];
+      if(!puck || !p || !p.offsetWidth) return;
+      puck.style.width = p.offsetWidth + "px";
+      puck.style.transform = "translateX(" + p.offsetLeft + "px)";
+    }
+
     function go(next){
       i = ((next % pills.length) + pills.length) % pills.length;
-      // 进度条要从 0 重新走：先撤 .on 让 width 归零并强制回流，再上 .on 起动过渡
-      pills.forEach(p => p.classList.remove("on"));
-      void pills[i].offsetWidth;
       paint();
+      placePuck();
+      // 进度从 0 重走：先摘 .run 让宽度归零并强制回流，再挂上去起动过渡
+      if(puck){
+        puck.classList.remove("run");
+        void puck.offsetWidth;
+        if(!reduce) puck.classList.add("run");
+      }
       arm();
     }
+
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(placePuck);
+    addEventListener("resize", placePuck);
 
     /* 永远自动循环。点击只是跳到那一幕，计时器随即重新起跑 —— 之前点一下会把 held 置真，
        arm() 从此永远提前返回，于是访客点过一次这块就再也不动了。 */

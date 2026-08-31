@@ -681,34 +681,26 @@ body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
 .sfdemo .sfd-bar{margin-top:26px;margin-left:auto;margin-right:auto;text-align:center;max-width:640px}
 .sfdemo .sfd-pills{display:inline-flex;gap:5px;padding:4px;border-radius:var(--r-pill);
   background:var(--sand-3);box-shadow:inset 0 1px 2px rgba(var(--warm-sh),.10),0 1px 0 var(--lift-2)}
-.sfdemo .sfd-pill{position:relative;overflow:hidden;isolation:isolate;
+.sfdemo .sfd-pill{position:relative;
   padding:7px 20px;border-radius:var(--r-pill);border:0;background:none;cursor:pointer;
   font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
   color:var(--muted);transition:color .3s}
 .sfdemo .sfd-pill:hover{color:var(--ink)}
 .sfdemo .sfd-pill.on{color:#fff}
-/* 选中态是「整颗立刻变红」，进度交给一圈描边走。
-   之前是让红色填充本身当进度条：前几秒药丸只红了一小截，既看不出选中了哪颗，
-   白字还压在浅色轨道上。填充与计时是两件事，不该共用一个通道。 */
-@property --ang{syntax:'<angle>';inherits:true;initial-value:0deg}
-.sfdemo .sfd-pill::before{content:"";position:absolute;inset:0;z-index:-1;
-  border-radius:var(--r-pill);background:var(--red);opacity:0;transition:opacity .22s}
-.sfdemo .sfd-pill.on::before{opacity:1}
-/* 描边环：conic 扇形 + 双层遮罩异或，只留 2px 的一圈 */
-.sfdemo .sfd-pill::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;
-  background:conic-gradient(from -90deg,rgba(255,255,255,.92) var(--ang),transparent 0);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  mask-composite:exclude;pointer-events:none;opacity:0;transition:opacity .2s}
-.sfdemo .sfd-pill.on::after{opacity:1}
-.sfdemo .sfd-pill.on{--ang:360deg;transition:color .3s,--ang var(--dwell,9s) linear}
-.sfdemo .sfd-pill.on.held{transition:color .3s}    /* reduced-motion：环直接满圈，不走 */
+/* 选中态是一颗滑动的 puck —— 与产品 .tabs.seg 的 .tpuck 同一套语法，
+   分段开关的意义就在这个滑动上。进度是 puck 内部从左到右的一层浅色推进：
+   之前让红色填充本身当进度（前几秒看不出选中哪颗），后来改成绕行一周的描边
+   （2px 太细、圆角处有锯齿，而且绕圈不符合"时间往前走"的直觉）。 */
+.sfdemo .sfd-pills{position:relative}
+.sfdemo .sfd-puck{position:absolute;left:0;top:4px;bottom:4px;width:0;
+  border-radius:var(--r-pill);background:var(--red);overflow:hidden;pointer-events:none;
+  box-shadow:0 6px 16px rgba(var(--red-rgb),.26);
+  transition:transform .38s var(--spring),width .38s var(--spring)}
+.sfdemo .sfd-puck i{position:absolute;left:0;top:0;bottom:0;width:0;
+  background:rgba(255,255,255,.26)}
+.sfdemo .sfd-puck.run i{width:100%;transition:width var(--dwell,9s) linear}
+.sfdemo .sfd-pill{position:relative;z-index:1}
 .sfdemo .sfd-pill:focus-visible{outline:2px solid var(--red);outline-offset:3px}
-/* @property 不可用时退化成静态实心药丸：选中依然看得出，只是没有描边进度 */
-@supports not (background:conic-gradient(from 0deg,#000 0deg,transparent 0)){
-  .sfdemo .sfd-pill::after{display:none}
-}
-
 .sfdemo .sfd-title{margin-top:20px;font-size:clamp(21px,2.4vw,27px);font-weight:800;
   letter-spacing:-.025em;line-height:1.2;color:var(--ink)}
 .sfdemo .sfd-desc{margin-top:11px;font-size:15px;line-height:1.62;color:var(--muted)}
@@ -727,7 +719,8 @@ body.lit .navmenu a:hover{background:rgba(0,0,0,.05)}
   .sfdemo .sfd-desc{font-size:14px}
 }
 @media (prefers-reduced-motion:reduce){
-  .sfdemo .sfd-pill.on::before{transition:none}
+  .sfdemo .sfd-puck{transition:none}
+  .sfdemo .sfd-puck.run i{transition:none}
 }
 
 /* 窄屏取消左轴对齐：容器已经贴边，再算左缘只会把块推歪 */
