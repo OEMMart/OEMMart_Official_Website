@@ -1,464 +1,566 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OEMMart | AI Demand Intelligence for B2B Suppliers</title>
-<meta name="description" content="OEMMart reads every tender, spec and market signal, scores your fit, drafts your response and tells you where your market is heading. AI demand intelligence for OEMs and B2B suppliers.">
-<link rel="canonical" href="https://oemmart.com/">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://oemmart.com/">
-<meta property="og:title" content="OEMMart | AI Demand Intelligence for B2B Suppliers">
-<meta property="og:description" content="Every deal you're missing is public. Ollie reads it all: matched tenders, fit scores, cited answers and first drafts, every morning.">
-<meta property="og:image" content="https://oemmart.com/images/screenshot-202025-08-27-20at-2011.48.41-e2-80-afam-p-1080.png">
-<meta name="twitter:card" content="summary_large_image">
-<link href="images/oemmart.ico" rel="shortcut icon">
-<link href="images/oemmart.ico" rel="apple-touch-icon">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/landing.css?v=51">
-<script>
-  // Apollo visitor tracking (ported from previous site)
-  function initApollo() {
-    var n = Math.random().toString(36).substring(7),
-      o = document.createElement("script");
-    (o.src = "https://assets.apollo.io/micro/website-tracker/tracker.iife.js?nocache=" + n),
-      (o.async = !0), (o.defer = !0),
-      (o.onload = function () {
-        window.trackingFunctions.onLoad({ appId: "682f281424e6360015a48cfa" });
-      }),
-      document.head.appendChild(o);
-  }
-  initApollo();
-</script>
-<script src="https://datadoors.aws53.cloud/p/a2852d61-0844-4c0b-9b02-4a7fcfb1888c.js" async></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OEMMart | AI Demand Intelligence for B2B Suppliers</title>
+  <meta name="description"
+    content="OEMMart reads every tender, spec and market signal, scores your fit, drafts your response and tells you where your market is heading. AI demand intelligence for OEMs and B2B suppliers.">
+  <link rel="canonical" href="https://oemmart.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://oemmart.com/">
+  <meta property="og:title" content="OEMMart | AI Demand Intelligence for B2B Suppliers">
+  <meta property="og:description"
+    content="Every deal you're missing is public. Ollie reads it all: matched tenders, fit scores, cited answers and first drafts, every morning.">
+  <meta property="og:image"
+    content="https://oemmart.com/images/screenshot-202025-08-27-20at-2011.48.41-e2-80-afam-p-1080.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link href="images/oemmart.ico" rel="shortcut icon">
+  <link href="images/oemmart.ico" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/landing.css?v=51">
+  <script>
+    // Apollo visitor tracking (ported from previous site)
+    function initApollo() {
+      var n = Math.random().toString(36).substring(7),
+        o = document.createElement("script");
+      (o.src = "https://assets.apollo.io/micro/website-tracker/tracker.iife.js?nocache=" + n),
+        (o.async = !0), (o.defer = !0),
+        (o.onload = function () {
+          window.trackingFunctions.onLoad({ appId: "682f281424e6360015a48cfa" });
+        }),
+        document.head.appendChild(o);
+    }
+    initApollo();
+  </script>
 </head>
+
 <body>
-<nav class="nav">
-  <a href="#"><img class="logoimg" src="images/oemmart-20logo-20no-20inc.png" alt="OEMMart"></a>
-  <div class="links"><a href="#product">Product</a><a href="#about">About</a><a href="#contact">Contact</a></div>
-  <a class="btn red" href="#contact"><span>Book a demo</span><span class="ic">→</span></a>
-  <button class="navtoggle" id="navtoggle" type="button" aria-expanded="false" aria-controls="navmenu" aria-label="Menu"><span class="bars"><i></i><i></i><i></i></span></button>
-</nav>
-<!-- 手机上 .nav .links 被隐藏，这个面板是它唯一的替代。链接与上面同源，无新增文案。 -->
-<div class="navmenu" id="navmenu"><a href="#product">Product</a><a href="#about">About</a><a href="#contact">Contact</a></div>
+  <nav class="nav">
+    <a href="#"><img class="logoimg" src="images/oemmart-20logo-20no-20inc.png" alt="OEMMart"></a>
+    <div class="links"><a href="#product">Product</a><a href="#about">About</a><a href="#contact">Contact</a></div>
+    <a class="btn red" href="#contact"><span>Book a demo</span><span class="ic">→</span></a>
+    <button class="navtoggle" id="navtoggle" type="button" aria-expanded="false" aria-controls="navmenu"
+      aria-label="Menu"><span class="bars"><i></i><i></i><i></i></span></button>
+  </nav>
+  <!-- 手机上 .nav .links 被隐藏，这个面板是它唯一的替代。链接与上面同源，无新增文案。 -->
+  <div class="navmenu" id="navmenu"><a href="#product">Product</a><a href="#about">About</a><a
+      href="#contact">Contact</a></div>
 
-<!-- ============ 变身舞台 ============ -->
-<section class="stage" id="stage">
-  <div class="light" id="light"></div>
+  <!-- ============ 变身舞台 ============ -->
+  <section class="stage" id="stage">
+    <div class="light" id="light"></div>
 
-  <div class="docf" style="left:6%;top:12%"><div class="doc" style="transform:rotate(-8deg)">
-    <div class="fn">NEW_CUMBERLAND_Comp_on.pdf</div><div class="tx"></div>
-    <div class="meta"><span>355 pages</span><span>federal</span></div>
-    <div class="due">DUE IN 12 DAYS</div>
-  </div></div>
-  <div class="docf" style="left:74%;top:8%"><div class="doc" style="transform:rotate(7deg)">
-    <div class="fn">Roseville_Power_Plant_2_Repower_RFP_Bid.pdf</div><div class="tx short"></div>
-    <div class="meta"><span>212 pages</span><span>municipal</span></div>
-  </div></div>
-  <div class="docf" style="left:14%;top:58%"><div class="doc" style="transform:rotate(5deg)">
-    <div class="fn">City_of_Palo_Alto_Advanced_Water_Purification_System.pdf</div><div class="tx"></div>
-    <div class="meta"><span>178 pages</span><span>municipal</span></div>
-    <div class="due">DUE IN 6 DAYS</div>
-  </div></div>
-  <div class="docf" style="left:80%;top:52%"><div class="doc sigdoc" style="transform:rotate(-6deg)">
-    <div class="fn">INDUSTRY WIRE</div><div class="tx short"></div>
-    <div class="meta"><span>Competitor exits Texas</span><span>5h ago</span></div>
-  </div></div>
-  <div class="docf" style="left:38%;top:4%"><div class="doc sigdoc" style="transform:rotate(3deg)">
-    <div class="fn">FEDERAL REGISTER</div><div class="tx short"></div>
-    <div class="meta"><span>$2.1B water grants</span><span>12m ago</span></div>
-  </div></div>
-  <div class="docf" style="left:55%;top:66%"><div class="doc" style="transform:rotate(9deg)">
-    <div class="fn">Naval_Yard_Compressed_Air_Maintenance_SOW.pdf</div><div class="tx"></div>
-    <div class="meta"><span>240 pages</span><span>federal</span></div>
-    <div class="due">DUE IN 21 DAYS</div>
-  </div></div>
-  <div class="docf" style="left:2%;top:36%"><div class="doc" style="transform:rotate(6deg)">
-    <div class="fn">Texas_Standing_Offer_Industrial_Equipment.pdf</div><div class="tx short"></div>
-    <div class="meta"><span>124 pages</span><span>state</span></div>
-  </div></div>
-  <div class="docf" style="left:86%;top:30%"><div class="doc" style="transform:rotate(-4deg)">
-    <div class="fn">Alberta_Infrastructure_Mechanical_RFQ.pdf</div><div class="tx short"></div>
-    <div class="meta"><span>88 pages</span><span>provincial</span></div>
-  </div></div>
-
-  <div class="orb" id="orb"></div>
-
-  <div class="copy before" id="before">
-    <h1>Every deal you're missing is public.</h1>
-    <p>Buyers publish what they need. Standards shift. Competitors move. It all lands somewhere, faster than any team can read.</p>
-  </div>
-
-  <div class="copy after" id="after">
-    <img class="mark" src="images/oemmart-20logo-20no-20inc.png" alt="OEMMart">
-    <h1>Ollie turns it all into <em>demand intelligence.</em></h1>
-    <p>Find the deals, score your fit, draft the response, see where your market is heading. One AI, every morning.</p>
-    <div class="ctas">
-      <a class="btn red" href="#contact"><span>Book a demo</span><span class="ic">→</span></a>
-      <a class="btn dark plain" href="#product">See it work</a>
-    </div>
-  </div>
-</section>
-
-<!-- ============ Before/After 滑块 ============ -->
-<section class="sec">
-  <div class="kick rv">MOVE TO COMPARE</div>
-  <h2 class="rv">Monday, 8:02 AM.</h2>
-  <div class="cmp-wrap shell rv">
-    <div class="core">
-    <div class="cmp" id="cmp">
-      <div class="side b4">
-        <span class="label">WITHOUT OEMMART</span>
-        <h3>Six portals. 361 new postings. Good luck.</h3>
-        <div class="portal"><b>SAM.gov</b><span>214 new postings</span></div>
-        <div class="portal"><b>Ohio Procurement Portal</b><span>37 new postings</span></div>
-        <div class="portal"><b>Texas SmartBuy</b><span>41 new postings</span></div>
-        <div class="portal"><b>Ontario Tenders Portal</b><span>18 new postings</span></div>
-        <div class="portal"><b>Alberta Purchasing Connection</b><span>22 new postings</span></div>
-        <div class="portal"><b>Pennsylvania eMarketplace</b><span>29 new postings</span></div>
+    <div class="docf" style="left:6%;top:12%">
+      <div class="doc" style="transform:rotate(-8deg)">
+        <div class="fn">NEW_CUMBERLAND_Comp_on.pdf</div>
+        <div class="tx"></div>
+        <div class="meta"><span>355 pages</span><span>federal</span></div>
+        <div class="due">DUE IN 12 DAYS</div>
       </div>
-      <div class="side af">
-        <div class="afin">
-        <span class="label">WITH OEMMART</span>
-        <h3>One email. Three worth your time.</h3>
-        <div class="mail">
-          <div class="mh"><b>Your matches this morning</b><span>from Ollie, 6:00 AM</span></div>
-          <div class="match"><div class="t">Rotary screw air compressors, wastewater plant retrofit<small>State of Ohio · closes in 21 days</small></div><span class="sc hi">92</span></div>
-          <div class="match"><div class="t">Compressed air system, naval yard maintenance<small>SAM.gov · closes in 34 days</small></div><span class="sc hi">88</span></div>
-          <div class="match"><div class="t">HVAC and air treatment, school district<small>Ontario · closes in 12 days</small></div><span class="sc mid">61</span></div>
-        </div>
+    </div>
+    <div class="docf" style="left:74%;top:8%">
+      <div class="doc" style="transform:rotate(7deg)">
+        <div class="fn">Roseville_Power_Plant_2_Repower_RFP_Bid.pdf</div>
+        <div class="tx short"></div>
+        <div class="meta"><span>212 pages</span><span>municipal</span></div>
+      </div>
+    </div>
+    <div class="docf" style="left:14%;top:58%">
+      <div class="doc" style="transform:rotate(5deg)">
+        <div class="fn">City_of_Palo_Alto_Advanced_Water_Purification_System.pdf</div>
+        <div class="tx"></div>
+        <div class="meta"><span>178 pages</span><span>municipal</span></div>
+        <div class="due">DUE IN 6 DAYS</div>
+      </div>
+    </div>
+    <div class="docf" style="left:80%;top:52%">
+      <div class="doc sigdoc" style="transform:rotate(-6deg)">
+        <div class="fn">INDUSTRY WIRE</div>
+        <div class="tx short"></div>
+        <div class="meta"><span>Competitor exits Texas</span><span>5h ago</span></div>
+      </div>
+    </div>
+    <div class="docf" style="left:38%;top:4%">
+      <div class="doc sigdoc" style="transform:rotate(3deg)">
+        <div class="fn">FEDERAL REGISTER</div>
+        <div class="tx short"></div>
+        <div class="meta"><span>$2.1B water grants</span><span>12m ago</span></div>
+      </div>
+    </div>
+    <div class="docf" style="left:55%;top:66%">
+      <div class="doc" style="transform:rotate(9deg)">
+        <div class="fn">Naval_Yard_Compressed_Air_Maintenance_SOW.pdf</div>
+        <div class="tx"></div>
+        <div class="meta"><span>240 pages</span><span>federal</span></div>
+        <div class="due">DUE IN 21 DAYS</div>
+      </div>
+    </div>
+    <div class="docf" style="left:2%;top:36%">
+      <div class="doc" style="transform:rotate(6deg)">
+        <div class="fn">Texas_Standing_Offer_Industrial_Equipment.pdf</div>
+        <div class="tx short"></div>
+        <div class="meta"><span>124 pages</span><span>state</span></div>
+      </div>
+    </div>
+    <div class="docf" style="left:86%;top:30%">
+      <div class="doc" style="transform:rotate(-4deg)">
+        <div class="fn">Alberta_Infrastructure_Mechanical_RFQ.pdf</div>
+        <div class="tx short"></div>
+        <div class="meta"><span>88 pages</span><span>provincial</span></div>
+      </div>
+    </div>
+
+    <div class="orb" id="orb"></div>
+
+    <div class="copy before" id="before">
+      <h1>Every deal you're missing is public.</h1>
+      <p>Buyers publish what they need. Standards shift. Competitors move. It all lands somewhere, faster than any team
+        can read.</p>
+    </div>
+
+    <div class="copy after" id="after">
+      <img class="mark" src="images/oemmart-20logo-20no-20inc.png" alt="OEMMart">
+      <h1>Ollie turns it all into <em>demand intelligence.</em></h1>
+      <p>Find the deals, score your fit, draft the response, see where your market is heading. One AI, every morning.
+      </p>
+      <div class="ctas">
+        <a class="btn red" href="#contact"><span>Book a demo</span><span class="ic">→</span></a>
+        <a class="btn dark plain" href="#product">See it work</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Before/After 滑块 ============ -->
+  <section class="sec">
+    <div class="kick rv">MOVE TO COMPARE</div>
+    <h2 class="rv">Monday, 8:02 AM.</h2>
+    <div class="cmp-wrap shell rv">
+      <div class="core">
+        <div class="cmp" id="cmp">
+          <div class="side b4">
+            <span class="label">WITHOUT OEMMART</span>
+            <h3>Six portals. 361 new postings. Good luck.</h3>
+            <div class="portal"><b>SAM.gov</b><span>214 new postings</span></div>
+            <div class="portal"><b>Ohio Procurement Portal</b><span>37 new postings</span></div>
+            <div class="portal"><b>Texas SmartBuy</b><span>41 new postings</span></div>
+            <div class="portal"><b>Ontario Tenders Portal</b><span>18 new postings</span></div>
+            <div class="portal"><b>Alberta Purchasing Connection</b><span>22 new postings</span></div>
+            <div class="portal"><b>Pennsylvania eMarketplace</b><span>29 new postings</span></div>
+          </div>
+          <div class="side af">
+            <div class="afin">
+              <span class="label">WITH OEMMART</span>
+              <h3>One email. Three worth your time.</h3>
+              <div class="mail">
+                <div class="mh"><b>Your matches this morning</b><span>from Ollie, 6:00 AM</span></div>
+                <div class="match">
+                  <div class="t">Rotary screw air compressors, wastewater plant retrofit<small>State of Ohio · closes in
+                      21 days</small></div><span class="sc hi">92</span>
+                </div>
+                <div class="match">
+                  <div class="t">Compressed air system, naval yard maintenance<small>SAM.gov · closes in 34 days</small>
+                  </div><span class="sc hi">88</span>
+                </div>
+                <div class="match">
+                  <div class="t">HVAC and air treatment, school district<small>Ontario · closes in 12 days</small></div>
+                  <span class="sc mid">61</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="handle"></div>
         </div>
       </div>
-      <div class="handle"></div>
     </div>
-    </div>
-  </div>
-</section>
+  </section>
 
-<!-- ============ 产品演示：真模块、真交互、假数据 ============
+  <!-- ============ 产品演示：真模块、真交互、假数据 ============
      框内是 demo/modules.html —— 产品自己的样式表 + 照 .tsx 复刻的 DOM，跑在 iframe 里
      （产品 CSS 200KB 全局选择器，与 landing.css 大面积撞名，只能隔离）。
      解说与药丸留在这一侧，用 landing.css：产品归产品的设计系统，营销归营销的。
      参考 vibeisland.app 的做法：产品界面始终全亮，解说退到框外，当前那颗药丸自己填充成进度条。 -->
-<section class="sfdemo" id="sfdemo">
-  <div class="sfd-in">
-    <!-- 标题解决"它为什么突然出现在这里"。用的是 brochure Plate 03 已批准的那句
+  <section class="sfdemo" id="sfdemo">
+    <div class="sfd-in">
+      <!-- 标题解决"它为什么突然出现在这里"。用的是 brochure Plate 03 已批准的那句
          "The instrument, at a glance." —— 不是为官网新写的。 -->
-    <div class="sfd-head rv">
-      <div class="kick">SEE IT WORK</div>
-      <h2>The instrument, <em>at a glance.</em></h2>
-    </div>
+      <div class="sfd-head rv">
+        <div class="kick">SEE IT WORK</div>
+        <h2>The instrument, <em>at a glance.</em></h2>
+      </div>
 
-    <!-- 用网站自己的 .shell > .core（上面那个对比滑块同款）把它收成一个物件。
+      <!-- 用网站自己的 .shell > .core（上面那个对比滑块同款）把它收成一个物件。
          之前我另造了一个凹槽，那套语法这站上没有，读起来是外来的。 -->
-    <div class="sfd-frame shell rv">
-      <div class="core">
-        <div class="sfd-chrome">
-          <span class="sfd-dots"><i></i><i></i><i></i></span>
-          <span class="sfd-app">SignalForge</span>
-          <!-- 数据全是虚构的，就该在图上说出来 —— brochure 每张界面图都带
+      <div class="sfd-frame shell rv">
+        <div class="core">
+          <div class="sfd-chrome">
+            <span class="sfd-dots"><i></i><i></i><i></i></span>
+            <span class="sfd-app">SignalForge</span>
+            <!-- 数据全是虚构的，就该在图上说出来 —— brochure 每张界面图都带
                "shown with sample data" 的说明，沿用同一条纪律。 -->
-          <span class="sfd-sample">Sample data</span>
+            <span class="sfd-sample">Sample data</span>
+          </div>
+          <div class="sfd-screen">
+            <iframe id="sfdFrame" src="demo/modules.html?v=51" title="SignalForge, running" loading="lazy"></iframe>
+          </div>
         </div>
-        <div class="sfd-screen">
-          <iframe id="sfdFrame" src="demo/modules.html?v=51" title="SignalForge, running" loading="lazy"></iframe>
+      </div>
+
+      <div class="sfd-bar rv">
+        <div class="sfd-pills" id="sfdPills" role="tablist" aria-label="Demo chapters">
+          <!-- 滑动 puck：与产品 .tabs.seg 的 .tpuck 同一套做法；内部那条是进度 -->
+          <span class="sfd-puck" id="sfdPuck" aria-hidden="true"><i></i></span>
+          <button class="sfd-pill on" type="button" role="tab" aria-selected="true" data-scene="rank">Rank</button>
+          <button class="sfd-pill" type="button" role="tab" aria-selected="false" data-scene="explain">Explain</button>
+          <button class="sfd-pill" type="button" role="tab" aria-selected="false" data-scene="reach">Reach</button>
         </div>
+        <h3 class="sfd-title" id="sfdTitle"></h3>
+        <p class="sfd-desc" id="sfdDesc"></p>
       </div>
     </div>
+  </section>
 
-    <div class="sfd-bar rv">
-      <div class="sfd-pills" id="sfdPills" role="tablist" aria-label="Demo chapters">
-        <!-- 滑动 puck：与产品 .tabs.seg 的 .tpuck 同一套做法；内部那条是进度 -->
-        <span class="sfd-puck" id="sfdPuck" aria-hidden="true"><i></i></span>
-        <button class="sfd-pill on" type="button" role="tab" aria-selected="true"  data-scene="rank">Rank</button>
-        <button class="sfd-pill"    type="button" role="tab" aria-selected="false" data-scene="explain">Explain</button>
-        <button class="sfd-pill"    type="button" role="tab" aria-selected="false" data-scene="reach">Reach</button>
-      </div>
-      <h3 class="sfd-title" id="sfdTitle"></h3>
-      <p class="sfd-desc" id="sfdDesc"></p>
+  <!-- ============ AI 初稿：自己写字的标书纸 ============ -->
+  <section class="draftsec">
+    <div class="head">
+      <h2 class="rv">The first draft <em>writes itself.</em></h2>
+      <p class="dsub rv">Ask for changes in plain English. Only that paragraph rewrites. Hand edits welcome.</p>
     </div>
-  </div>
-</section>
-
-<!-- ============ AI 初稿：自己写字的标书纸 ============ -->
-<section class="draftsec">
-  <div class="head">
-    <h2 class="rv">The first draft <em>writes itself.</em></h2>
-    <p class="dsub rv">Ask for changes in plain English. Only that paragraph rewrites. Hand edits welcome.</p>
-  </div>
-  <div class="sheetwrap rv">
-    <div class="sidechip c1">pulled from tender · pg. 355</div>
-    <div class="sidechip c2">from your catalogue</div>
-    <div class="shell"><div class="core">
-      <div class="sheet" id="sheet">
-        <div class="dt">Response to RFP: Wastewater Plant Retrofit</div>
-        <div class="dm">Draft 1 · generated from NEW_CUMBERLAND_Comp_on.pdf</div>
-        <p class="para"><b>3.2 Technical Approach.</b> Kaeser Compressors USA proposes two <span class="tok">CSD 125 rotary screw units</span> with integrated variable-speed drives, sized to the peak demand stated in <span class="tok">Section 2.4, pg. 41</span> of the specification.</p>
-        <p class="para"><b>3.3 Compliance.</b> Shutoff valves are omitted on emergency equipment supply lines where prohibited by the authority having jurisdiction, per <span class="tok">Source: pg. 355</span>. All substituted materials will be submitted for review in advance.</p>
-        <p class="para" id="p34"><b>3.4 Exceptions.</b> Our equipment meets the stated requirements with one exception, documented below with supporting data from <span class="tok">your product catalogue</span>.</p>
-      </div>
-    </div></div>
-    <div class="bubble" id="bubble">
-      <div class="who">YOU · JUST NOW</div>
-      Cite our ISO 8573-1 Class 2 rating in the exception.
-    </div>
-  </div>
-</section>
-
-<!-- ============ Signal：三件对不上的事，被接成一条记录 ============ -->
-<section class="signal" id="product">
-  <div class="in">
-    <h2 class="rv">Every opportunity arrives with <em>the person who signs it.</em></h2>
-    <p class="sub rv">A tender tells you what. A contact list tells you who. <b>Neither tells you which of them is worth a call.</b></p>
-
-    <div class="joinwrap" id="joinwrap">
-      <div class="feeders">
-        <span class="fchip f1">What is being bought</span>
-        <span class="fchip f2">Who is buying it</span>
-        <span class="fchip f3">What you sell</span>
-      </div>
-
-      <svg class="feedline" viewBox="0 0 760 26" aria-hidden="true" focusable="false">
-        <path d="M150 2 C150 16 380 10 380 24"/>
-        <path d="M380 2 L380 24"/>
-        <path d="M610 2 C610 16 380 10 380 24"/>
-      </svg>
-
-      <div class="record">
-        <div class="rrow r1">
-          <div class="rlab">THE OPPORTUNITY</div>
-          <div class="rval">Compressed air system, wastewater plant retrofit</div>
+    <div class="sheetwrap rv">
+      <div class="sidechip c1">pulled from tender · pg. 355</div>
+      <div class="sidechip c2">from your catalogue</div>
+      <div class="shell">
+        <div class="core">
+          <div class="sheet" id="sheet">
+            <div class="dt">Response to RFP: Wastewater Plant Retrofit</div>
+            <div class="dm">Draft 1 · generated from NEW_CUMBERLAND_Comp_on.pdf</div>
+            <p class="para"><b>3.2 Technical Approach.</b> Kaeser Compressors USA proposes two <span class="tok">CSD 125
+                rotary screw units</span> with integrated variable-speed drives, sized to the peak demand stated in
+              <span class="tok">Section 2.4, pg. 41</span> of the specification.</p>
+            <p class="para"><b>3.3 Compliance.</b> Shutoff valves are omitted on emergency equipment supply lines where
+              prohibited by the authority having jurisdiction, per <span class="tok">Source: pg. 355</span>. All
+              substituted materials will be submitted for review in advance.</p>
+            <p class="para" id="p34"><b>3.4 Exceptions.</b> Our equipment meets the stated requirements with one
+              exception, documented below with supporting data from <span class="tok">your product catalogue</span>.</p>
+          </div>
         </div>
-        <div class="rrow r2 hero">
-          <div class="rlab">THE PERSON WHO SIGNS IT</div>
-          <!-- 计费模型就是产品里的规则，逐条对应：找到=免费、点击才扣、先邮箱后电话、
+      </div>
+      <div class="bubble" id="bubble">
+        <div class="who">YOU · JUST NOW</div>
+        Cite our ISO 8573-1 Class 2 rating in the exception.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Signal：三件对不上的事，被接成一条记录 ============ -->
+  <section class="signal" id="product">
+    <div class="in">
+      <h2 class="rv">Every opportunity arrives with <em>the person who signs it.</em></h2>
+      <p class="sub rv">A tender tells you what. A contact list tells you who. <b>Neither tells you which of them is
+          worth a call.</b></p>
+
+      <div class="joinwrap" id="joinwrap">
+        <div class="feeders">
+          <span class="fchip f1">What is being bought</span>
+          <span class="fchip f2">Who is buying it</span>
+          <span class="fchip f3">What you sell</span>
+        </div>
+
+        <svg class="feedline" viewBox="0 0 760 26" aria-hidden="true" focusable="false">
+          <path d="M150 2 C150 16 380 10 380 24" />
+          <path d="M380 2 L380 24" />
+          <path d="M610 2 C610 16 380 10 380 24" />
+        </svg>
+
+        <div class="record">
+          <div class="rrow r1">
+            <div class="rlab">THE OPPORTUNITY</div>
+            <div class="rval">Compressed air system, wastewater plant retrofit</div>
+          </div>
+          <div class="rrow r2 hero">
+            <div class="rlab">THE PERSON WHO SIGNS IT</div>
+            <!-- 计费模型就是产品里的规则，逐条对应：找到=免费、点击才扣、先邮箱后电话、
                同一条不会扣第二次。说明文字取自已批准的 brochure Plate 10 与产品 README。
                只出现职位，不出现任何具名个人。 -->
-          <div class="person">
-            <span class="who">Director of Procurement</span>
-            <span class="contact" id="chEmail">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-              <span class="cht">Email</span>
-            </span>
-            <span class="contact" id="chPhone">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-              <span class="cht">Phone</span>
-            </span>
-            <button class="reveal" id="unsealbtn" type="button">UNLOCK EMAIL · 1 CREDIT</button>
+            <div class="person">
+              <span class="who">Director of Procurement</span>
+              <span class="contact" id="chEmail">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+                  aria-hidden="true">
+                  <rect x="4" y="10" width="16" height="10" rx="2" />
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                </svg>
+                <span class="cht">Email</span>
+              </span>
+              <span class="contact" id="chPhone">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+                  aria-hidden="true">
+                  <rect x="4" y="10" width="16" height="10" rx="2" />
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                </svg>
+                <span class="cht">Phone</span>
+              </span>
+              <button class="reveal" id="unsealbtn" type="button">UNLOCK EMAIL · 1 CREDIT</button>
+            </div>
+            <p class="unote" id="unote">Finding people is free. Only revealing a detail spends, one click at a time.</p>
           </div>
-          <p class="unote" id="unote">Finding people is free. Only revealing a detail spends, one click at a time.</p>
+          <div class="rrow r3">
+            <div class="rlab">WHY THEY TAKE THE CALL</div>
+            <div class="rval">It is a match against your own catalogue.</div>
+          </div>
         </div>
-        <div class="rrow r3">
-          <div class="rlab">WHY THEY TAKE THE CALL</div>
-          <div class="rval">It is a match against your own catalogue.</div>
+
+        <p class="closer">Nobody sells you that row. <b>It has to be assembled, every morning, for every
+            opportunity.</b></p>
+      </div>
+
+
+      <div class="edge rv">
+        <div class="etxt">
+          <div class="ekick">COMPETITIVE EDGE</div>
+          <h3>See what your rivals are chasing. Get there <em>first.</em></h3>
+          <p>Ollie tracks competitor moves, exits and wins across every public source, so you walk into each bid already
+            a step ahead of the field.</p>
+        </div>
+        <div class="ecard">
+          <div class="es">INDUSTRY WIRE · 5h ago</div>
+          <div class="eh">A competitor just exited compressed-air service in Texas.</div>
+          <div class="em">→ 41 active contracts open for rebid. You are positioned for them. They are gone.</div>
         </div>
       </div>
-
-      <p class="closer">Nobody sells you that row. <b>It has to be assembled, every morning, for every opportunity.</b></p>
-    </div>
-
-
-    <div class="edge rv">
-      <div class="etxt">
-        <div class="ekick">COMPETITIVE EDGE</div>
-        <h3>See what your rivals are chasing. Get there <em>first.</em></h3>
-        <p>Ollie tracks competitor moves, exits and wins across every public source, so you walk into each bid already a step ahead of the field.</p>
-      </div>
-      <div class="ecard">
-        <div class="es">INDUSTRY WIRE · 5h ago</div>
-        <div class="eh">A competitor just exited compressed-air service in Texas.</div>
-        <div class="em">→ 41 active contracts open for rebid. You are positioned for them. They are gone.</div>
-      </div>
-    </div>
-    <div class="wheel">
-      <div class="rv">
-        <h3>Every yes and no makes the next match <em>sharper.</em></h3>
-        <p class="wsub">Rate a match once. Ollie retunes what it looks for, and the scores climb.</p>
-      </div>
-      <div class="fwbox rv">
-        <div class="fwring"></div>
-        <div class="fwcard" id="fwcard">
-          <div class="tt" id="fwtt"></div>
-          <div class="rg" id="fwrg"></div>
-          <div class="row">
-            <div class="fscore"><span id="fwsc">61</span><small>FITSCORE</small></div>
-            <div class="fb">
-              <button class="yes" id="fbyes" type="button">✓</button>
-              <button class="no" id="fbno" type="button">✗</button>
+      <div class="wheel">
+        <div class="rv">
+          <h3>Every yes and no makes the next match <em>sharper.</em></h3>
+          <p class="wsub">Rate a match once. Ollie retunes what it looks for, and the scores climb.</p>
+        </div>
+        <div class="fwbox rv">
+          <div class="fwring"></div>
+          <div class="fwcard" id="fwcard">
+            <div class="tt" id="fwtt"></div>
+            <div class="rg" id="fwrg"></div>
+            <div class="row">
+              <div class="fscore"><span id="fwsc">61</span><small>FITSCORE</small></div>
+              <div class="fb">
+                <button class="yes" id="fbyes" type="button">✓</button>
+                <button class="no" id="fbno" type="button">✗</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ============ 覆盖数字 ============ -->
-<section class="coverage">
-  <!-- 按 Mike 的说明：联邦不再单拎一格，并进"40+ 个州，含 SAM.gov"。
+  <!-- ============ 覆盖数字 ============ -->
+  <section class="coverage">
+    <!-- 按 Mike 的说明：联邦不再单拎一格，并进"40+ 个州，含 SAM.gov"。
        第三方门户只给数量、不点名 —— 点名那几家商业聚合站有合规风险。
        下面名单里保留的都是政府采购门户，公开站点，点名无妨。
        CanadaBuys 是加拿大联邦的采购门户（相当于加版 SAM.gov），Tom 8-22 点名要它出现。
        联邦格取消后它没了位置，放进名单既保住这条覆盖，又不用为它单开一格。 -->
-  <div class="nums">
-    <div class="rv"><div class="n"><em data-count="40">0</em><em>+</em></div><div class="lab">U.S. state portals, SAM.gov included</div></div>
-    <div class="rv"><div class="n" data-count="7">0</div><div class="lab">Canadian provinces</div></div>
-    <div class="rv"><div class="n" data-count="4">0</div><div class="lab">third-party tender portals</div></div>
-  </div>
-  <div class="marq rv"><div class="in" id="marq"><b>Watched every morning:</b> SAM.gov · CanadaBuys · Ohio Procurement · Texas SmartBuy · Ontario Tenders · Alberta Purchasing · Pennsylvania eMarketplace · California eProcure · New York Contract Reporter · Florida MFMP · Georgia Procurement Registry &nbsp;&nbsp;&nbsp;</div></div>
-</section>
+    <div class="nums">
+      <div class="rv">
+        <div class="n"><em data-count="40">0</em><em>+</em></div>
+        <div class="lab">U.S. state portals, SAM.gov included</div>
+      </div>
+      <div class="rv">
+        <div class="n" data-count="7">0</div>
+        <div class="lab">Canadian provinces</div>
+      </div>
+      <div class="rv">
+        <div class="n" data-count="4">0</div>
+        <div class="lab">third-party tender portals</div>
+      </div>
+    </div>
+    <div class="marq rv">
+      <div class="in" id="marq"><b>Watched every morning:</b> SAM.gov · CanadaBuys · Ohio Procurement · Texas SmartBuy ·
+        Ontario Tenders · Alberta Purchasing · Pennsylvania eMarketplace · California eProcure · New York Contract
+        Reporter · Florida MFMP · Georgia Procurement Registry &nbsp;&nbsp;&nbsp;</div>
+    </div>
+  </section>
 
-<!-- ============ 截图证据 ============ -->
-<section class="proof">
-  <div class="head">
-    <h2 class="rv">Every answer <em>shows its source.</em></h2>
-  </div>
-  <!-- 原先这里是 chat.oemmart.com 的旧截图：另一个产品、chatbot 形态，且图里最后一行
+  <!-- ============ 截图证据 ============ -->
+  <section class="proof">
+    <div class="head">
+      <h2 class="rv">Every answer <em>shows its source.</em></h2>
+    </div>
+    <!-- 原先这里是 chat.oemmart.com 的旧截图：另一个产品、chatbot 形态，且图里最后一行
        写着 "no exact chunk citation was provided"，正好否定上面那句标题。已下线。
        换成产品真实的评分归因：每一分都记在某一条上，点开就是那几分的理由。
        数值逐字取自已批准的 mockup detail-v2-radar.html。 -->
-  <div class="attrib rv" id="attrib">
-    <div class="ahd">
-      <span class="alab">Why this scored 88</span>
-      <span class="ahint">Open any line</span>
-    </div>
-    <button class="ar" type="button" aria-expanded="false">
-      <span class="arh"><span class="arn">Market relevance</span><span class="arbar"><i style="width:92%"></i></span><span class="arp">23<em>/25</em></span></span>
-      <span class="arw">Your rooftop HVAC line directly matches 11 of 14 specified units.</span>
-    </button>
-    <button class="ar" type="button" aria-expanded="false">
-      <span class="arh"><span class="arn">Capability alignment</span><span class="arbar"><i style="width:88%"></i></span><span class="arp">22<em>/25</em></span></span>
-      <span class="arw">Past federal installs (2 similar contracts) satisfy the mandatory experience clause.</span>
-    </button>
-    <button class="ar" type="button" aria-expanded="false">
-      <span class="arh"><span class="arn">Organizational compatibility</span><span class="arbar"><i style="width:80%"></i></span><span class="arp">16<em>/20</em></span></span>
-      <span class="arw">Bilingual documentation capacity meets PSPC requirements.</span>
-    </button>
-    <button class="ar gap" type="button" aria-expanded="false">
-      <span class="arh"><span class="arn">Delivery capacity</span><span class="arbar"><i style="width:73%"></i></span><span class="arp">11<em>/15</em></span></span>
-      <span class="arw">Winnipeg is outside your service region — subcontractor likely needed.</span>
-    </button>
-    <button class="ar" type="button" aria-expanded="false">
-      <span class="arh"><span class="arn">Competitive advantage</span><span class="arbar"><i style="width:80%"></i></span><span class="arp">12<em>/15</em></span></span>
-      <span class="arw">BAS integration expertise differentiates against the 3 likely incumbents.</span>
-    </button>
-    <p class="afoot">The score is allowed to say no. Delivery capacity is the line that argues against this bid, and it is shown at the same size as the ones that argue for it.</p>
-  </div>
-</section>
-
-<!-- ============ 社会证明：Kaeser + 客户评价 ============ -->
-<section class="proofduo">
-  <div class="shell rv"><div class="core kcard">
-    <div><span class="kplate"><img src="images/kaeser-us-logo.png" alt="Kaeser Compressors"></span></div>
-    <div class="rule"></div>
-    <p><b>Kaeser Compressors USA</b> screens tenders across all 50 states with OEMMart.</p>
-    <div class="stat">PAYING CUSTOMER · SINCE 2025</div>
-  </div></div>
-  <div class="shell rv"><div class="core qcard">
-    <blockquote>"You found some great project that I didn't think any platform could match this deep! <mark>Even my existing subscription was unable to find these projects for me.</mark>"</blockquote>
-    <div class="qattr">
-      <div class="av">JC</div>
-      <div class="nm"><b>Dr. Joseph E. Cater III</b><span>Market Economics</span></div>
-      <a class="lk" href="https://www.linkedin.com/in/joseph-e-cater-iii-ph-d-mba" target="_blank" rel="noopener">LinkedIn</a>
-    </div>
-  </div></div>
-</section>
-
-<!-- ============ About（客户视角：为什么信任我们，非团队履历） ============ -->
-<section class="about" id="about">
-  <div class="ain">
-    <div class="akick rv">WHY OEMMART</div>
-    <h2 class="rv">A system you can hand your <em>pipeline</em> to.</h2>
-    <p class="alede rv">Not a demo, not a deck. A production system that reads public demand every day and already wins work for a paying customer. Here is why teams trust it with their pipeline.</p>
-    <div class="atrust rv">
-      <div class="tcard">
-        <div class="tn">Real, not a pilot</div>
-        <div class="tp">Live in production since 2025, screening tenders for Kaeser Compressors USA every morning.</div>
+    <div class="attrib rv" id="attrib">
+      <div class="ahd">
+        <span class="alab">Why this scored 88</span>
+        <span class="ahint">Open any line</span>
       </div>
-      <div class="tcard">
-        <div class="tn">Your data stays yours</div>
-        <div class="tp">Your catalogue, tenders and drafts stay private to your account. They are never sold, shared, or used to train anyone else's model.</div>
-      </div>
-      <div class="tcard">
-        <div class="tn">Built to stay</div>
-        <div class="tp">Profitable from day one and self-funded. No burn-and-vanish. We are here for the long contracts.</div>
+      <button class="ar" type="button" aria-expanded="false">
+        <span class="arh"><span class="arn">Market relevance</span><span class="arbar"><i
+              style="width:92%"></i></span><span class="arp">23<em>/25</em></span></span>
+        <span class="arw">Your rooftop HVAC line directly matches 11 of 14 specified units.</span>
+      </button>
+      <button class="ar" type="button" aria-expanded="false">
+        <span class="arh"><span class="arn">Capability alignment</span><span class="arbar"><i
+              style="width:88%"></i></span><span class="arp">22<em>/25</em></span></span>
+        <span class="arw">Past federal installs (2 similar contracts) satisfy the mandatory experience clause.</span>
+      </button>
+      <button class="ar" type="button" aria-expanded="false">
+        <span class="arh"><span class="arn">Organizational compatibility</span><span class="arbar"><i
+              style="width:80%"></i></span><span class="arp">16<em>/20</em></span></span>
+        <span class="arw">Bilingual documentation capacity meets PSPC requirements.</span>
+      </button>
+      <button class="ar gap" type="button" aria-expanded="false">
+        <span class="arh"><span class="arn">Delivery capacity</span><span class="arbar"><i
+              style="width:73%"></i></span><span class="arp">11<em>/15</em></span></span>
+        <span class="arw">Winnipeg is outside your service region — subcontractor likely needed.</span>
+      </button>
+      <button class="ar" type="button" aria-expanded="false">
+        <span class="arh"><span class="arn">Competitive advantage</span><span class="arbar"><i
+              style="width:80%"></i></span><span class="arp">12<em>/15</em></span></span>
+        <span class="arw">BAS integration expertise differentiates against the 3 likely incumbents.</span>
+      </button>
+      <p class="afoot">The score is allowed to say no. Delivery capacity is the line that argues against this bid, and
+        it is shown at the same size as the ones that argue for it.</p>
+    </div>
+  </section>
+
+  <!-- ============ 社会证明：Kaeser + 客户评价 ============ -->
+  <section class="proofduo">
+    <div class="shell rv">
+      <div class="core kcard">
+        <div><span class="kplate"><img src="images/kaeser-us-logo.png" alt="Kaeser Compressors"></span></div>
+        <div class="rule"></div>
+        <p><b>Kaeser Compressors USA</b> screens tenders across all 50 states with OEMMart.</p>
+        <div class="stat">PAYING CUSTOMER · SINCE 2025</div>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- ============ CTA + 联系流程（生产版接 HubSpot: portalId 341778708 / formId 90f0e3b8-f6d7-4d19-a872-c69098bc6d91） ============ -->
-<section class="cta" id="contact">
-  <div class="glow"></div>
-  <h2 class="rv">Find your next <em>breakthrough.</em></h2>
-  <p class="rv">A 30-minute demo on your own product line. No slides.</p>
-  <div class="cwrap shell rv"><div class="core cform">
-    <div id="hs-form-target" class="hs-target">
-      <div class="hs-form-frame" data-region="na3" data-form-id="90f0e3b8-f6d7-4d19-a872-c69098bc6d91" data-portal-id="341778708"></div>
-      <div class="hs-loading">Loading form…</div>
-    </div>
-  </div></div>
-  <p class="cphone rv">Prefer to talk? <a href="tel:+19257704587">+1 (925) 770-4587</a></p>
-</section>
-
-<footer class="site-footer">
-  <div class="sf-in">
-    <div class="sf-brand">
-      <img class="sf-logo" src="images/oemmart-20logo-20no-20inc.png" alt="OEMMart">
-      <p>AI demand intelligence for OEMs and B2B suppliers. Find the deals, score your fit, draft the response, see where your market is heading.</p>
-    </div>
-    <nav class="sf-col">
-      <div class="sf-h">Explore</div>
-      <a href="#product">Product</a>
-      <a href="#about">About</a>
-      <a href="#contact">Book a demo</a>
-    </nav>
-    <div class="sf-col">
-      <div class="sf-h">Contact</div>
-      <a href="mailto:hello@oemmart.com">hello@oemmart.com</a>
-      <a href="tel:+19257704587">+1 (925) 770-4587</a>
-    </div>
-    <div class="sf-col">
-      <div class="sf-h">Follow</div>
-      <div class="sf-social">
-        <a class="sf-ic" href="https://www.linkedin.com/company/oemmart" target="_blank" rel="noopener" aria-label="LinkedIn">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
-        </a>
-        <a class="sf-ic" href="#" aria-label="X (coming soon)">
-          <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        </a>
+    <div class="shell rv">
+      <div class="core qcard">
+        <blockquote>"You found some great project that I didn't think any platform could match this deep! <mark>Even my
+            existing subscription was unable to find these projects for me.</mark>"</blockquote>
+        <div class="qattr">
+          <div class="av">JC</div>
+          <div class="nm"><b>Dr. Joseph E. Cater III</b><span>Market Economics</span></div>
+          <a class="lk" href="https://www.linkedin.com/in/joseph-e-cater-iii-ph-d-mba" target="_blank"
+            rel="noopener">LinkedIn</a>
+        </div>
       </div>
-      <span class="sf-muted">More channels soon</span>
     </div>
-  </div>
-  <div class="sf-bottom">
-    <span>© 2026 OEMMart Inc. All rights reserved.</span>
-    <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
-  </div>
-</footer>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script src="js/landing.js?v=51"></script>
-<!-- HubSpot embed form (portal 341778708, region na3, new forms tool).
+  </section>
+
+  <!-- ============ About（客户视角：为什么信任我们，非团队履历） ============ -->
+  <section class="about" id="about">
+    <div class="ain">
+      <div class="akick rv">WHY OEMMART</div>
+      <h2 class="rv">A system you can hand your <em>pipeline</em> to.</h2>
+      <p class="alede rv">Not a demo, not a deck. A production system that reads public demand every day and already
+        wins work for a paying customer. Here is why teams trust it with their pipeline.</p>
+      <div class="atrust rv">
+        <div class="tcard">
+          <div class="tn">Real, not a pilot</div>
+          <div class="tp">Live in production since 2025, screening tenders for Kaeser Compressors USA every morning.
+          </div>
+        </div>
+        <div class="tcard">
+          <div class="tn">Your data stays yours</div>
+          <div class="tp">Your catalogue, tenders and drafts stay private to your account. They are never sold, shared,
+            or used to train anyone else's model.</div>
+        </div>
+        <div class="tcard">
+          <div class="tn">Built to stay</div>
+          <div class="tp">Profitable from day one and self-funded. No burn-and-vanish. We are here for the long
+            contracts.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA + 联系流程（生产版接 HubSpot: portalId 341778708 / formId 90f0e3b8-f6d7-4d19-a872-c69098bc6d91） ============ -->
+  <section class="cta" id="contact">
+    <div class="glow"></div>
+    <h2 class="rv">Find your next <em>breakthrough.</em></h2>
+    <p class="rv">A 30-minute demo on your own product line. No slides.</p>
+    <div class="cwrap shell rv">
+      <div class="core cform">
+        <div id="hs-form-target" class="hs-target">
+          <div class="hs-form-frame" data-region="na3" data-form-id="90f0e3b8-f6d7-4d19-a872-c69098bc6d91"
+            data-portal-id="341778708"></div>
+          <div class="hs-loading">Loading form…</div>
+        </div>
+      </div>
+    </div>
+    <p class="cphone rv">Prefer to talk? <a href="tel:+19257704587">+1 (925) 770-4587</a></p>
+  </section>
+
+  <footer class="site-footer">
+    <div class="sf-in">
+      <div class="sf-brand">
+        <img class="sf-logo" src="images/oemmart-20logo-20no-20inc.png" alt="OEMMart">
+        <p>AI demand intelligence for OEMs and B2B suppliers. Find the deals, score your fit, draft the response, see
+          where your market is heading.</p>
+      </div>
+      <nav class="sf-col">
+        <div class="sf-h">Explore</div>
+        <a href="#product">Product</a>
+        <a href="#about">About</a>
+        <a href="#contact">Book a demo</a>
+      </nav>
+      <div class="sf-col">
+        <div class="sf-h">Contact</div>
+        <a href="mailto:hello@oemmart.com">hello@oemmart.com</a>
+        <a href="tel:+19257704587">+1 (925) 770-4587</a>
+      </div>
+      <div class="sf-col">
+        <div class="sf-h">Follow</div>
+        <div class="sf-social">
+          <a class="sf-ic" href="https://www.linkedin.com/company/oemmart" target="_blank" rel="noopener"
+            aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+              <path
+                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z" />
+            </svg>
+          </a>
+          <a class="sf-ic" href="#" aria-label="X (coming soon)">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true">
+              <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </a>
+        </div>
+        <span class="sf-muted">More channels soon</span>
+      </div>
+    </div>
+    <div class="sf-bottom">
+      <span>© 2026 OEMMart Inc. All rights reserved.</span>
+      <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="js/landing.js?v=51"></script>
+  <!-- HubSpot embed form (portal 341778708, region na3, new forms tool).
      Handles reCAPTCHA, file upload and consent natively. Renders in an iframe. -->
-<script src="https://js-na3.hsforms.net/forms/embed/341778708.js" defer></script>
-<script>
-  (function(){
-    // 表单渲染成功后移除 loading 占位
-    var target = document.getElementById('hs-form-target');
-    if(!target) return;
-    var obs = new MutationObserver(function(){
-      if(target.querySelector('iframe, form')){
-        var l = target.querySelector('.hs-loading');
-        if(l) l.remove();
-        target.classList.add('ready');
-        obs.disconnect();
-      }
-    });
-    obs.observe(target, {childList:true, subtree:true});
-  })();
-</script>
+  <script src="https://js-na3.hsforms.net/forms/embed/341778708.js" defer></script>
+  <script>
+    (function () {
+      // 表单渲染成功后移除 loading 占位
+      var target = document.getElementById('hs-form-target');
+      if (!target) return;
+      var obs = new MutationObserver(function () {
+        if (target.querySelector('iframe, form')) {
+          var l = target.querySelector('.hs-loading');
+          if (l) l.remove();
+          target.classList.add('ready');
+          obs.disconnect();
+        }
+      });
+      obs.observe(target, { childList: true, subtree: true });
+    })();
+  </script>
 </body>
+
 </html>
