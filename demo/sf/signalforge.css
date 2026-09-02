@@ -1,0 +1,858 @@
+/* ==========================================================================
+   SignalForge design system
+   Ported from the approved mockups (pixel truth):
+     docs/superpowers/specs/mockups/radar-v4.html
+     docs/superpowers/specs/mockups/screens-v2.html
+   Palette is tentative — brand/semantic colors flow through the tokens below.
+   backdrop-filter rule: only on fixed/sticky chrome (.rail, .tbar, .toast,
+   .panel used as fixed cards) — never on new scrolling containers.
+   ========================================================================== */
+
+/* 1. tokens ---------------------------------------------------------------- */
+:root{
+  --sand-1:#fdfdfc; --sand-2:#f9f9f8; --sand-3:#f1f0ef; --sand-4:#e9e8e6;
+  --sand-5:#e2e1de; --sand-6:#dad9d6; --sand-7:#cfceca; --sand-8:#bcbbb5;
+  --sand-9:#8d8d86; --sand-10:#82827c; --sand-11:#63635e; --sand-12:#21201c;
+
+  --ink:var(--sand-12); --ink-2:#3e3d38; --muted:var(--sand-11); --soft:var(--sand-9);
+  --red:#ed3f2e; --red-deep:#c6392a;
+  --red-pale:#fdebec; --red-pale-ink:#9f2f2d;
+  --red-pale-bd:#f6d9d8; --red-rgb:237,63,46;
+  --green-pale:#edf3ec; --green-pale-ink:#346538; --green-pale-bd:#d9e7d8; --green-rgb:52,101,56;
+  /* Amber was living as three near-identical hard-coded pairs scattered through the sheet; one
+     family now, so the middle status reads the same everywhere. */
+  --amber-pale:#fbf3e2; --amber-pale-ink:#8a5e17; --amber-pale-bd:#f0dfb8;
+  --amber-ink:#8a5e17;             /* amber text straight on a page surface, no chip behind it */
+  /* Geometry primitives — mode-independent. Radii were a continuum (every step from 3px to 24px was
+     in use, because modules were built separately); these four steps are the scale they now sit on.
+     See docs/theme-system-design.md §3. */
+  --r-sm:8px;      /* inputs, chips, small controls */
+  --r-md:12px;     /* rows, cells, inner cards */
+  --r-lg:20px;     /* panels, dialogs, the outer shell */
+  --r-pill:999px;  /* pills, circles, switches */
+
+  /* Semantic layer — what components should read. Named by role, never by appearance, so the same
+     declaration serves both themes. The palette above and the dark tokens further down become the
+     two sets of values these resolve to. See docs/theme-system-design.md §2.
+
+     Text already had four levels on light (ink / ink-2 / muted / soft) and three on dark
+     (dk-ink / dk-muted / dk-soft); the theme map is what finally joins them into one ladder. */
+  --text-1:var(--ink);        /* primary */
+  --text-2:var(--ink-2);      /* body */
+  --text-3:var(--muted);      /* secondary */
+  --text-4:var(--soft);       /* faint: captions, kickers */
+
+  --surface-page:var(--sand-4);    /* the page itself */
+  --surface-1:var(--sand-1);       /* resting cards and chips */
+  --surface-2:var(--sand-2);       /* subtle fills, hover beds */
+  --surface-3:var(--sand-3);       /* inset wells, track beds */
+
+  --edge-soft:var(--sand-4);       /* hairline dividers */
+  --edge:var(--sand-5);            /* standard borders */
+  --edge-strong:var(--sand-6);     /* emphasised borders */
+  --edge-firm:var(--sand-8);       /* hover borders, strong outlines */
+
+  /* Accent — one red per mode. It had drifted into 19 variants (7 tokens plus 12 hex literals in
+     gradients and hover states) because modules were built separately; these four roles replace the
+     family. Gradient stops shade --accent with --lift/--press instead of inventing new hexes. */
+  --accent:var(--red);                 /* the brand red: buttons, puck, active state */
+  --accent-ink:var(--red-pale-ink);    /* accent text on a neutral surface */
+  --accent-edge:var(--red-pale-bd);    /* accent borders and rules */
+  --accent-wash:var(--red-pale);       /* accent-tinted fills and blooms */
+  --accent-deep:var(--red-deep);       /* pressed and hover states */
+
+  /* Light and shadow — the polarity that flips between themes.
+     Relief is written once and works in both modes because only these resolve differently:
+       raised → inset 0 1px 0 var(--lift-2), 0 2px 6px var(--press-1)
+       sunken → inset 0 2px 4px var(--press-2), inset 0 -1px 0 var(--lift-1)
+     The audit found the top-edge highlight to be bimodal — ~.14 where it sat on a dark surface,
+     ~.9 where it sat on a light one. That split is exactly what a theme swap is. §2 of the design. */
+  --lift-1:rgba(255,255,255,.55);   /* faint: bottom lips, inner edges */
+  --lift-2:rgba(255,255,255,.9);    /* standard: the raised top edge */
+  --lift-3:rgba(255,255,255,1);     /* strong: crisp rims on pale surfaces */
+  --press-1:rgba(36,32,22,.06);     /* faint: resting cards */
+  --press-2:rgba(36,32,22,.16);     /* standard: sunken wells */
+  --press-3:rgba(36,32,22,.28);     /* strong: floating elements */
+
+  /* The anchor: the most emphasised surface, not "the dark one". In light mode it is the whitest
+     thing on the page with the strongest relief; in dark mode it is the deepest. Its subtree gets
+     its own token values (below), so the panels built on it need no per-child theme rules. */
+  --surface-anchor:#fff;
+  --anchor-line:rgba(36,32,22,.1);
+
+  /* Rail: chrome, themed like everything else. Two stops so the tall bar has a luminance drift. */
+  --rail-top:#f7f6f4;
+  --rail-bottom:#eceae6;
+  --rail-ink:var(--text-3);
+  --rail-ink-on:var(--text-1);
+  --rail-active:rgba(36,32,22,.07);
+  --mark-invert:invert(.42);   /* mid-grey silhouette: a black mark shouts on the pale rail */
+  --panel-bg:rgba(253,253,252,.6);
+  --panel-edge:rgba(255,255,255,.72);
+  --env-glow:rgba(255,255,255,.92);
+  --env-warm:rgba(120,112,96,.16);
+  --env-cool:rgba(120,112,96,.13);
+  --env-base-1:var(--sand-3);
+  --env-base-2:var(--sand-5);
+  --env-blob-warm:rgba(253,235,230,.5);
+  --env-blob-cool:rgba(233,228,218,.7);
+  --surface-glassy:rgba(255,255,255,.5);   /* translucent fill over the field */
+  --on-invert:var(--sand-1);       /* ink that reads on top of a --text-1 fill */
+  --surface-scrim:rgba(36,32,22,.28);  /* modal scrim */
+  /* The anchor's elevation, tuned per theme rather than shared. The old shadow was drawn for a
+     dark card sitting on a sand page and needed to be heavy to lift it; the anchor is a pale card
+     now, and that same weight read as a smudge with a red bloom under it. In dark the anchor rises
+     by being lighter than the field, so the shadow separates rather than lifts. */
+  --anchor-lift:0 1px 2px rgba(var(--warm-sh),.05),0 14px 34px rgba(var(--warm-sh),.10),
+    0 4px 16px rgba(var(--red-rgb),.045);
+  --mark-faint:var(--sand-7);      /* dots, meter fills, hairline rules — a mark, not a border */
+  --sb-track:rgba(36,32,22,.05);
+  --sb-thumb:rgba(36,32,22,.22);
+  --sb-thumb-hover:rgba(36,32,22,.4);
+  --surface-lift:#fff;             /* hover bed that should read as lifted off its container */
+  --card-face-1:#fff;              /* contact/entity card face, top stop */
+  --card-face-2:var(--surface-1);  /* contact/entity card face, bottom stop */
+  --panel-sub-1:rgba(249,249,247,.88);     /* nested sub-panel, top stop */
+  --panel-sub-2:rgba(241,240,237,.8);      /* nested sub-panel, bottom stop */
+  --panel-solid:rgba(253,253,252,.94);     /* panel where backdrop-filter is unsupported */
+  --panel-face-1:rgba(255,255,255,.95);    /* panel face, top stop */
+  --panel-face-2:rgba(247,246,243,.8);     /* panel face, bottom stop */
+  --thead-bg:#fdfdfc;      /* sticky header: opaque on purpose — see the rule at the bottom */
+
+  --spring:cubic-bezier(.32,.72,0,1);
+  color-scheme:light;  /* scrollbars, select popups, date pickers and autofill are the browser's
+                          to paint; this is the only thing they read from us */
+  --warm-sh:36,32,22; /* warm shadow rgb */
+  --warm-sh-2:94,84,66;  /* the lighter, browner shadow the component sheet uses */
+  --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+}
+
+/* ---- Theme: dark ---------------------------------------------------------
+   Only the assignments change. Every relief recipe, grain overlay and groove written against
+   the lift, press, text and surface roles keeps its form and simply resolves the other way. */
+:root[data-theme="dark"]{
+  /* Warm space grey, not black. Pure black causes halation and collapses the elevation ladder;
+     a warm-tinted base keeps the app's character and lets four surface levels stay legible.
+     In dark mode depth comes from surfaces getting *lighter* as they rise — shadows alone do
+     not read against a dark field. */
+  --surface-page:#1c1a18;      /* base field */
+  --surface-1:#262320;         /* resting cards */
+  --surface-2:#2e2b27;         /* raised: hover beds, nested cards */
+  --surface-3:#211f1c;         /* sunken: wells and track beds */
+
+  --text-1:#f2efe9;
+  --text-2:#d6d1c8;
+  --text-3:#a8a29a;
+  --text-4:#847e76;
+
+  --edge-soft:rgba(255,255,255,.05);
+  --edge:rgba(255,255,255,.09);
+  --edge-strong:rgba(255,255,255,.14);
+  --edge-firm:rgba(255,255,255,.22);
+
+  /* One softer red: full-saturation #ed3f2e vibrates against a dark field. */
+  --accent:#f4614f;
+  --accent-deep:#d8442f;
+  --accent-ink:#ffb0a2;
+  --accent-edge:rgba(244,97,79,.3);
+  --accent-wash:rgba(244,97,79,.12);
+  --red-rgb:244,97,79;
+
+  /* Polarity flip. Highlights thin to a rim; shadows deepen but do most of their work as
+     separation, since elevation is carried by the surface tones above. */
+  --lift-1:rgba(255,255,255,.04);
+  --lift-2:rgba(255,255,255,.08);
+  --lift-3:rgba(255,255,255,.13);
+  --press-1:rgba(0,0,0,.24);
+  --press-2:rgba(0,0,0,.38);
+  --press-3:rgba(0,0,0,.52);
+  color-scheme:dark;
+  --warm-sh:0,0,0;
+  --warm-sh-2:0,0,0;
+
+  /* The anchor rises rather than sinks: it is the emphasised surface, so in dark mode it is the
+     lightest of the family, not the darkest. */
+  --surface-anchor:#332f2a;
+  --anchor-line:rgba(255,255,255,.09);
+
+  --rail-top:#2b2825;
+  --rail-bottom:#211f1c;
+  --rail-ink:#a8a29a;
+  --rail-ink-on:#f2efe9;
+  --rail-active:rgba(255,255,255,.09);
+  --mark-invert:invert(1);     /* white silhouette on the dark rail */
+
+  /* Glass survives the swap: a translucent warm grey over the blurred field, with a rim light.
+     Losing the frosted quality was the biggest regression of the first dark pass. */
+  --panel-bg:rgba(45,42,38,.62);
+  --panel-edge:rgba(255,255,255,.09);
+
+  /* Ambient field: the light source dims rather than disappears, so the page keeps its luminance
+     drift instead of going flat. */
+  --env-glow:rgba(255,255,255,.05);
+  --env-warm:rgba(255,222,205,.05);
+  --env-cool:rgba(120,140,170,.06);
+  --env-base-1:#211f1c;
+  --env-base-2:#171514;
+  --env-blob-warm:rgba(244,97,79,.05);
+  --env-blob-cool:rgba(120,140,170,.045);
+  --surface-glassy:rgba(255,255,255,.05);
+  /* Pale chips invert: a tinted film over the dark field, with the ink lightened to sit on it.
+     Keeping the light fills here was what turned every status chip into a glowing white card. */
+  --red-pale:rgba(244,97,79,.15); --red-pale-ink:#ffb0a2; --red-pale-bd:rgba(244,97,79,.3);
+  --green-pale:rgba(150,211,160,.14); --green-pale-ink:#96d3a0; --green-pale-bd:rgba(150,211,160,.28);
+  --green-rgb:150,211,160;
+  --amber-pale:rgba(226,180,90,.14); --amber-pale-ink:#e8c286; --amber-pale-bd:rgba(226,180,90,.28);
+  --amber-ink:#dfb35e;
+
+  --on-invert:#1c1a18;
+  --surface-scrim:rgba(0,0,0,.55);   /* a warm veil cannot separate dark from dark */
+  --anchor-lift:0 1px 2px rgba(var(--warm-sh),.4),0 26px 60px rgba(var(--warm-sh),.55),
+    0 12px 32px rgba(var(--red-rgb),.07);
+  --mark-faint:rgba(255,255,255,.2);
+  --sb-track:rgba(0,0,0,.24);
+  --sb-thumb:rgba(255,255,255,.16);
+  --sb-thumb-hover:rgba(255,255,255,.3);
+  --surface-lift:rgba(255,255,255,.07);
+  --card-face-1:rgba(56,52,47,.72);
+  --card-face-2:rgba(42,39,35,.72);
+  --panel-sub-1:rgba(46,43,39,.7);
+  --panel-sub-2:rgba(36,33,30,.66);
+  --panel-solid:rgba(38,35,32,.96);
+  --panel-face-1:rgba(48,45,41,.72);
+  --panel-face-2:rgba(38,35,32,.66);
+  --thead-bg:#262320;
+}
+
+
+/* 2. reset+base ------------------------------------------------------------ */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scrollbar-gutter:stable} /* reserve the scrollbar gutter so page width never shifts between sections */
+/* One scrollbar for every scrolling surface — page, table, dropdown, modal, rail — built the same
+   way as everything else here: the track is a groove sunk into its container, the thumb a pill
+   floating in it. The transparent border plus padding-box clip is what holds the thumb off the
+   track walls; without it the pill fills the gutter edge to edge and reads as a slab. */
+*{scrollbar-width:thin;scrollbar-color:var(--sb-thumb) var(--sb-track)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:var(--sb-track);border-radius:var(--r-pill)}
+::-webkit-scrollbar-thumb{background:var(--sb-thumb);border-radius:var(--r-pill);
+  border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:var(--sb-thumb-hover);background-clip:padding-box}
+::-webkit-scrollbar-corner{background:transparent}
+body{font-family:'Inter',-apple-system,'Segoe UI',sans-serif;background:var(--surface-page);color:var(--text-1);
+  -webkit-font-smoothing:antialiased;overflow-y:auto}
+.mono{font-family:var(--mono)}
+button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
+
+/* 3. environment: warm luminance field ------------------------------------- */
+.env{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(120% 90% at 50% -12%, var(--env-glow), transparent 55%),
+    radial-gradient(90% 70% at 82% 108%, var(--env-warm), transparent 60%),
+    radial-gradient(80% 66% at -6% 104%, var(--env-cool), transparent 55%),
+    linear-gradient(180deg, var(--env-base-1), var(--env-base-2))}
+.env .blob{position:absolute;border-radius:50%;filter:blur(85px)}
+.env .b1{width:700px;height:520px;top:-180px;left:14%;background:var(--env-glow)}
+.env .b2{width:460px;height:460px;top:24%;right:14%;background:var(--env-blob-warm)}
+.env .b3{width:520px;height:420px;bottom:-140px;left:30%;background:var(--env-blob-cool)}
+.grain{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.02;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* 4. materials: 3-tier depth ladder ---------------------------------------- */
+/* tier 2 — white glass panel */
+.panel{position:relative;border-radius:var(--r-lg);
+  background:var(--panel-bg);
+  border:1px solid var(--panel-edge);
+  box-shadow:inset 0 1px 0 var(--lift-2),0 1px 2px rgba(var(--warm-sh),.04),0 20px 48px rgba(var(--warm-sh),.09);
+  backdrop-filter:blur(22px) saturate(1.35);-webkit-backdrop-filter:blur(22px) saturate(1.35)}
+/* dark anchor — warm graphite glass */
+/* no backdrop-filter here: over the near-uniform env the blur was invisible on this dark surface,
+   and Chromium's glass re-rasterization made the pill's shadows flicker on hover/navigation.
+   A slightly higher alpha reproduces the approved tone with plain, stable painting. */
+/* The chrome rail. It used to be the one dark object on a pale page; now it follows the theme like
+   everything else, taking its presence from elevation and edge instead of from being dark. The
+   vertical gradient is deliberate — a flat bar this tall reads as dead, a slight luminance drift
+   gives it material. Icon colours inside it read --rail-ink, so they invert with it. */
+.dglass{
+  background:linear-gradient(180deg,var(--rail-top),var(--rail-bottom));
+  border:1px solid var(--edge);
+  box-shadow:inset 0 1px 0 var(--lift-2),0 16px 40px rgba(var(--warm-sh),.14)}
+/* tier 3 — solid content chip on panel */
+.chipcard{background:var(--surface-1);border:1px solid var(--edge);border-radius:var(--r-lg);
+  box-shadow:0 1px 2px rgba(var(--warm-sh),.05)}
+a.chipcard{display:grid;gap:8px;align-content:start;padding:14px 16px;color:var(--text-1);text-decoration:none;transition:border-color .3s}
+a.chipcard:hover{border-color:var(--edge-firm)}
+.chipcard .top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.chipcard h3{font-size:13px;font-weight:600;letter-spacing:-.01em}
+.chipcard p{font-size:11.5px;color:var(--text-3);line-height:1.55}
+.chipcard .act{font-size:12px;font-weight:600;color:var(--accent-deep)}
+
+/* 5. atoms ------------------------------------------------------------------ */
+/* The kick owns the space beneath it, so every section opens on the same rhythm. It owned none,
+   and each screen patched the gap where someone noticed — 4, 5, 6 and 9px in four places — while
+   the panels whose kick sits straight on the content got nothing at all. */
+.kick{display:block;margin-bottom:12px;
+  font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--text-4)}
+/* Where the kick is one item in a row rather than a heading over a block, the row's own gap does
+   the spacing and this margin would push the row out of line. */
+.dptoggle .kick,.deyebrow .kick,.intake-head .kick,.chead2 .kick,.contactstate .kick,
+.price-hero .kick{margin-bottom:0}
+/* A title continues the heading; it is not content sitting under it. */
+.dpanel > .kick + h3{margin-top:0}
+/* Tag system — one tone per meaning; see the Tag component for the vocabulary. The unmarked chip
+   is an attribute and carries body ink on a firm edge rather than the muted grey it used to: an
+   attribute is still information, and at 9px a faint chip on a faint border disappears. */
+.tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;font-weight:500;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--text-2);background:var(--surface-3);
+  border:1px solid var(--edge-strong);padding:3px 8px;border-radius:var(--r-pill);white-space:nowrap}
+.tag.good{color:var(--green-pale-ink);background:var(--green-pale);border-color:var(--green-pale-bd)}
+.tag.bad{color:var(--accent-ink);background:var(--accent-wash);border-color:var(--accent-edge)}
+.tag.warn{color:var(--amber-pale-ink);background:var(--amber-pale);border-color:var(--amber-pale-bd)}
+/* Process states are dashed: the outline says "this will change on its own". `live` callers pass a
+   .pdot, which is animated and used outside tags too; `status` has no such marker, so it draws a
+   static one rather than duplicating the animation. */
+.tag.status,.tag.live{background:none;border-style:dashed}
+.tag.status{color:var(--text-3);border-color:var(--edge-firm)}
+.tag.status::before{content:"";width:4px;height:4px;border-radius:50%;flex:none;background:var(--text-4)}
+.tag.live{color:var(--accent-ink);border-color:var(--accent-edge)}
+/* A tag that is a link carries the accent. On this page the colour means "you can act on this",
+   and every other tag is a label — signal type, urgency — with nothing behind it to click. Hover
+   moves the border only: --accent-deep is darker than --accent-ink in light and lighter in dark,
+   so shifting the text colour would gain contrast on one theme and lose it on the other. */
+a.tag{color:var(--accent-ink);background:var(--accent-wash);border-color:var(--accent-edge);text-decoration:none}
+a.tag:hover{border-color:var(--accent)}
+.score{font-family:var(--mono);font-weight:600;font-size:12px;padding:4px 8px;border-radius:var(--r-sm);
+  letter-spacing:.02em;color:var(--text-2);background:var(--surface-3);border:1px solid var(--edge)}
+.score.hot{color:var(--accent-ink);background:var(--accent-wash);border-color:var(--accent-edge)}
+.i{width:16px;height:16px;stroke:currentColor;stroke-width:1.25;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#a39f95,#7b776c);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;
+  box-shadow:0 4px 12px rgba(var(--warm-sh),.2)}
+.co-mark{width:32px;height:32px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:12.5px;color:var(--text-2);background:var(--surface-3);flex:none;
+  border:1px solid var(--edge);box-shadow:inset 0 1px 0 var(--lift-2)}
+.btn{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:13px;padding:8px 8px 8px 18px;
+  border-radius:var(--r-pill);background:var(--accent);color:#fff;box-shadow:0 10px 24px rgba(var(--red-rgb),.25);
+  text-decoration:none;transition:transform .5s var(--spring),background .35s}
+.btn:hover{background:var(--accent-deep)}
+.btn:active{transform:scale(.97)}
+/* disabled keeps pointer-events so native tooltips still show; the browser already ignores clicks */
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn .ic{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;transition:transform .5s var(--spring)}
+.btn .ic .i{width:12px;height:12px}
+.btn:hover .ic{transform:translate(2px,-1px) scale(1.08)}
+.btn.ghost{background:var(--surface-glassy);color:var(--text-3);border:1px solid var(--edge-strong);box-shadow:none;padding:8px 16px}
+.btn.ghost:hover{color:var(--text-1);border-color:var(--edge-firm);background:var(--surface-1)}
+/* destructive ghost */
+.btn.ghost.errb{color:var(--accent-ink);border-color:var(--accent-edge);background:var(--accent-wash)}
+.btn.ghost.errb:hover{border-color:var(--accent-ink)}
+
+/* 5b. helpers ---------------------------------------------------------------- */
+.muted{color:var(--text-3);font-size:12px;line-height:1.5}
+/* layout-transparent form: lets buttons/controls sit in the parent's flex/grid flow */
+.pform{display:contents}
+.phead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.phead h2,.phead h3{font-size:15px;font-weight:700;letter-spacing:-.015em}
+.phead .kick + h2{margin-top:0}
+/* shared page-header panel (sources, monitor, settings family, history) */
+.pagehead{display:flex;align-items:center;gap:14px;padding:18px 24px;border-radius:var(--r-lg);flex-wrap:wrap}
+.pagehead .who{min-width:0}
+.pagehead h1{font-size:19px;font-weight:700;letter-spacing:-.02em;margin-top:6px;overflow-wrap:anywhere}
+.pagehead .who p{font-size:12px;color:var(--text-3);margin-top:4px;max-width:74ch;line-height:1.5}
+.pagehead .sp{flex:1}
+/* visually hidden, screen-reader only */
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+/* long-content guard: source/user strings can contain unbroken tokens */
+.evlist li,.sigline,.chipcard h3,.chipcard p{overflow-wrap:anywhere}
+
+/* 6. shell ------------------------------------------------------------------ */
+.stage{position:relative;z-index:1;min-height:100dvh;display:flex;gap:22px;padding:26px 30px 26px 24px;max-width:1560px;margin:0 auto}
+
+/* rail */
+/* rail + settings + logout form ONE sticky unit sized to exactly one viewport, so nothing
+   overlaps or trails behind while the page scrolls */
+.railwrap{display:flex;flex-direction:column;gap:12px;align-items:center;flex:none;
+  position:sticky;top:26px;align-self:flex-start;height:calc(100dvh - 52px)}
+/* Radius here is a geometric constraint, not a style step: 58px wide, so half-width makes
+   the capsule. It sits outside the four-step scale deliberately. */
+.rail{width:58px;flex:1;min-height:0;position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 0;border-radius:29px}
+/* brand mark: the OEMMart globe from the official transparent wordmark, rendered
+   monochrome-translucent to sit with the rail icons (homepage's dark-nav filter trick:
+   brightness(0) invert(1) = white silhouette, swoosh cutouts stay transparent) */
+.rail .mark{width:30px;height:30px;margin-bottom:10px;flex:none;
+  background:url("/assets/oemmart-mark.png") center/contain no-repeat;
+  /* brightness(0) flattens the artwork to a silhouette; the invert then decides its colour, so the
+     mark follows the rail instead of being permanently white. */
+  filter:brightness(0) var(--mark-invert);opacity:.7}
+/* The rail reads at a glance and had the same 16px glyph as inline body chrome; it can afford
+   more, and the 40px button still leaves a comfortable margin. The stroke thickens with the box:
+   1.25 was drawn for 16px and goes spindly at 19, and a heavier line is also what lets a filled
+   glyph sit in the same row without reading as a blot. Measured ink at 19px: 58-79px² across the
+   stroked three, with the solid brain at 76.8 — inside their own spread. */
+.rail a .i,.railfoot .i{width:19px;height:19px;stroke-width:1.6}
+/* The brain is denser than the others at any given weight, so it runs a bigger box on a lighter
+   line: 20px at 1.2 measures 69px² against the row's 58-79. */
+.rail a .i-brain,.railfoot .i-brain{width:20px;height:20px;stroke-width:1.2}
+.rail a,.rail button{width:40px;height:40px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;
+  color:var(--rail-ink);position:relative;text-decoration:none;transition:all .35s var(--spring)}
+.rail a:hover,.rail button:hover{color:var(--rail-ink-on)}
+.rail a.on,.rail button.on{color:var(--rail-ink-on);background:var(--rail-active);box-shadow:inset 0 1px 0 var(--lift-2)}
+.rail a.on::after,.rail button.on::after{content:"";position:absolute;right:-9px;width:3px;height:14px;border-radius:var(--r-sm);background:var(--accent)}
+/* sliding highlight puck (created by signalforge.js): carries the pill + red tick between icons */
+.rail .puck{position:absolute;left:9px;top:0;width:40px;height:40px;border-radius:var(--r-md);background:var(--rail-active);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18);transition:transform .4s var(--spring);pointer-events:none}
+.rail .puck::after{content:"";position:absolute;right:-9px;top:50%;transform:translateY(-50%);width:3px;height:14px;border-radius:var(--r-sm);background:var(--accent)}
+.rail.has-puck a.on,.rail.has-puck button.on{background:transparent;box-shadow:none}
+.rail.has-puck a.on::after,.rail.has-puck button.on::after{display:none}
+.rail .grow{flex:1}
+.rail .vtx{writing-mode:vertical-rl;font-family:var(--mono);font-size:8px;letter-spacing:.34em;color:var(--text-4);text-transform:uppercase;margin:10px 0}
+.railfoot{width:58px;height:58px;border-radius:29px;display:flex;align-items:center;justify-content:center;
+  color:var(--rail-ink);flex:none;cursor:pointer;transition:color .3s;position:relative;text-decoration:none}
+.railfoot:hover{color:var(--rail-ink-on)}
+.railfoot.on{color:var(--rail-ink-on);box-shadow:inset 0 1px 0 var(--lift-2),0 16px 40px rgba(var(--warm-sh),.22)}
+.railfoot.on::after{content:"";position:absolute;right:-9px;top:50%;transform:translateY(-50%);width:3px;height:14px;border-radius:var(--r-sm);background:var(--accent)}
+/* logout: form is layout-transparent so the button sits in .railwrap's column; button resets scoped so .dglass border/background still apply */
+.raillogout{display:contents}
+button.railfoot{padding:0;font:inherit}
+
+/* main + top bar */
+.main{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;gap:16px}
+.tbar{display:flex;align-items:center;gap:18px;padding:11px 12px 11px 22px;border-radius:var(--r-lg)}
+.tbar .crumb{color:var(--text-4);font-weight:500} /* kept for sr-only breadcrumb markup */
+/* auto-fit workspace slot: the chip hugs the company name — short names no longer leave
+   dead space, long names ellipsize at max-width instead of wrapping; empty = invisible */
+.tbar .ws{flex:0 1 auto;min-width:0;max-width:400px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-3);padding:5px 12px;
+  border:1px solid var(--edge-strong);border-radius:var(--r-lg);background:var(--surface-glassy);overflow:hidden}
+.tbar .ws.empty{visibility:hidden}
+.tbar .ws .wsname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tbar .ws .kd{width:15px;height:15px;flex:none;border-radius:var(--r-sm);background:#7b776c;color:#fff;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.tbar .tabs{display:flex;flex-wrap:wrap;gap:2px}
+.tbar .tabs a,.tbar .tabs button{font-size:12.5px;font-weight:500;color:var(--text-3);padding:7px 14px;border-radius:var(--r-md);border:1px solid transparent;text-decoration:none;transition:all .3s var(--spring)}
+.tbar .tabs a:hover,.tbar .tabs button:hover{color:var(--text-1)}
+.tbar .tabs a.on,.tbar .tabs button.on{color:#fff;font-weight:600;background:var(--accent);
+  box-shadow:0 6px 16px rgba(var(--red-rgb),.22);border:1px solid transparent}
+/* sliding tab highlight (signalforge.js): the pill glides between tabs of the same section */
+.tbar .tabs{position:relative}
+.tbar .tabs .tpuck{position:absolute;left:0;top:0;height:100%;border-radius:var(--r-md);background:var(--accent);
+  box-shadow:0 6px 16px rgba(var(--red-rgb),.22);
+  transition:transform .35s var(--spring),width .35s var(--spring),height .35s var(--spring);pointer-events:none}
+/* under JS the puck OWNS the highlight: strip the static .on from the very first paint
+   (html.js is set pre-render) so the swap never flashes/fades a server-rendered red pill */
+html.js .tbar .tabs a.on,html.js .tbar .tabs button.on{background:transparent;box-shadow:none;border-color:transparent}
+html.js .tbar .tabs a,html.js .tbar .tabs button{position:relative;z-index:1}
+.tbar .sp{flex:1}
+
+/* 7. radar ------------------------------------------------------------------ */
+.deck{display:flex;gap:18px}
+.stat{flex:1;padding:20px 22px 18px;border-radius:var(--r-lg);position:relative;overflow:hidden}
+.stat .lb{margin-bottom:14px}
+.stat .n{font-size:46px;font-weight:700;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}
+.stat .n .dim{font-size:20px;color:var(--text-4);font-weight:600}
+.stat .sub{margin-top:10px;font-size:11px;color:var(--text-3);display:flex;align-items:center;gap:7px}
+.stat .delta{font-family:var(--mono);font-size:9.5px;font-weight:600;padding:3px 7px;border-radius:var(--r-sm)}
+.stat .delta.up{color:var(--green-pale-ink);background:var(--green-pale)}
+.stat .delta.hot{color:var(--accent-ink);background:var(--accent-wash)}
+.stat .spark{position:absolute;right:18px;top:20px;width:64px;height:26px;opacity:.7}
+.stat .spark polyline{fill:none;stroke:var(--edge-firm);stroke-width:1.5;stroke-linecap:round}
+
+.hero{flex:1;min-height:0;display:flex;gap:18px}
+.opps{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+.opps .ph{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 12px}
+.opps .ph h2{font-size:15px;font-weight:700;letter-spacing:-.015em}
+.opps .ph .more{font-size:11.5px;font-weight:500;color:var(--text-3);display:flex;align-items:center;gap:5px;transition:color .3s}
+.opps .ph .more:hover{color:var(--text-1)}
+.olist{flex:1;overflow:hidden;padding:4px 14px 14px;display:flex;flex-direction:column;gap:7px;list-style:none}
+.opp{display:flex;align-items:center;gap:14px;padding:11px 12px;cursor:pointer;border-radius:var(--r-lg);
+  transition:all .35s var(--spring);border:1px solid transparent}
+.opp:hover{background:var(--surface-1);border-color:var(--edge);box-shadow:0 2px 10px rgba(var(--warm-sh),.06);transform:translateY(-1px)}
+.opp .rk{font-family:var(--mono);font-size:10px;color:var(--text-4);width:16px;text-align:center}
+.opp .body{flex:1;min-width:0}
+.opp .co{font-size:13px;font-weight:600;letter-spacing:-.01em;display:flex;align-items:center;gap:7px}
+.opp .sg{font-size:11.5px;color:var(--text-3);margin-top:2.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.opp .meta{display:flex;align-items:center;gap:10px;flex:none}
+.opp .src{font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;color:var(--text-4);text-transform:uppercase}
+.opp .go{width:28px;height:28px;border-radius:50%;border:1px solid var(--edge-strong);display:flex;align-items:center;justify-content:center;color:var(--text-3);background:var(--surface-1);transition:all .4s var(--spring)}
+.opp:hover .go{background:var(--text-1);border-color:var(--text-1);color:var(--on-invert);transform:translate(1px,-1px)}
+
+.rcol{width:330px;flex:none;display:flex;flex-direction:column;gap:18px;min-height:0}
+.mix{padding:20px 22px 16px}
+.mix h3,.pulse h3{font-size:13px;font-weight:700;letter-spacing:-.01em;margin-bottom:14px}
+.mrow{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--text-3);padding:5px 0}
+.mrow .lb{width:104px;flex:none}
+.mrow .tr{flex:1;height:12px;border-radius:var(--r-pill);background:var(--surface-3);overflow:hidden;box-shadow:inset 0 1px 1px rgba(var(--warm-sh),.05)}
+.mrow .tr i{display:block;height:100%;border-radius:var(--r-pill);background:var(--edge-firm)}
+.mrow .v{font-family:var(--mono);font-size:10px;width:18px;text-align:right;color:var(--text-2)}
+.pulse{padding:20px 22px 12px;flex:1;min-height:0;overflow:hidden}
+.prow{display:flex;gap:11px;padding:9px 0;border-top:1px solid var(--edge-soft);font-size:11.5px}
+.prow:first-of-type{border-top:0}
+.prow .pd{width:6px;height:6px;border-radius:50%;background:var(--edge-firm);margin-top:5px;flex:none}
+.prow.hot .pd{background:var(--accent);box-shadow:0 0 0 3px var(--accent-wash)}
+.prow .pt{color:var(--text-3);line-height:1.5}
+.prow .pt b{color:var(--text-1);font-weight:600}
+.prow .tm{font-family:var(--mono);font-size:8.5px;color:var(--text-4);margin-top:3px;letter-spacing:.04em}
+
+.brief{border-radius:var(--r-lg);padding:20px 22px;color:#fff;flex:none}
+.brief .kick{color:rgba(255,255,255,.48)}
+.brief h3{font-size:14px;font-weight:700;margin:9px 0 6px;letter-spacing:-.01em;color:rgba(255,255,255,.95)}
+.brief p{font-size:11.5px;line-height:1.6;color:rgba(255,255,255,.68)}
+.brief .foot{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.brief .tm{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:rgba(255,255,255,.42)}
+.brief .open{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;color:#fff;transition:all .4s var(--spring);cursor:pointer}
+.brief .open:hover{background:var(--accent);transform:translate(1px,-1px)}
+
+/* 8. table ------------------------------------------------------------------ */
+/* narrow-viewport horizontal scroll for tables inside constrained panels */
+.tblwrap{overflow-x:auto}
+/* truncating URL cell (org/profile tables): a real link, not the uppercase .src label */
+.urlcell{display:inline-block;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  vertical-align:bottom;font-family:var(--mono);font-size:9px;letter-spacing:.02em;color:var(--text-4)}
+/* row-action button cluster (org table consumers) */
+.orgacts{display:flex;gap:8px;flex-wrap:wrap}
+.orgacts .btn.ghost{padding:6px 14px;font-size:12px}
+/* OEM-446: 三段固定分区 —— 搜索 / 筛选 / 读数。搜索有自己的列，宽度固定,位置不再是"前面那些
+   chip 当前值有多宽"的函数;改一个筛选值不会再把搜索框横向推走。只有中段会溢出,而它横向滚动
+   而不换行:双排是这套布局要消灭的东西,而且会换行的栏自己会变高,列表的滚动边界正是按这个高度算的。
+   厚度:9 + 28 + 9 = 46px(原 56)。28px 仍高于 WCAG 2.2 的 24px 最小点击目标。 */
+/* 搜索列可以变窄但左边缘不动 —— 会漂移的是位置,不是宽度,所以这不会把原来的毛病带回来。
+   在 1280 的笔记本上省下 60px,正好让筛选段不必提前进入横向滚动。 */
+.ftr{display:grid;grid-template-columns:clamp(190px,14vw,250px) minmax(0,1fr) auto;align-items:center;
+  gap:14px;padding:9px 14px;border-radius:var(--r-lg)}
+.fzsearch{min-width:0}
+/* 左区装了范围菜单时(联系人页),整列按内容定宽:范围 200 + 搜索 260,两个都是定宽,所以
+   搜索框的横坐标仍是常量。搜索比另外两页更宽而不是更窄——这一页筛选控件少,地方本来就富余。 */
+.ftr:has(.scopemenu){grid-template-columns:auto minmax(0,1fr) auto}
+.ftr:has(.scopemenu) .fzsearch{display:flex;align-items:center;gap:8px}
+.ftr:has(.scopemenu) .fzsearch .fsearch{width:260px}
+/* overflow-x:auto 会把 overflow-y 从 visible 提升成 auto(CSS 规范如此),于是这里也纵向裁切,
+   把 outline-offset 那 2px 的重点圈上下切掉。给它 4px 余量再用负外边距抵消,栏高不变。 */
+.fzfilters{display:flex;align-items:center;gap:7px;flex-wrap:nowrap;overflow-x:auto;
+  min-width:0;padding:4px 0 4px 14px;margin-block:-4px;border-left:1px solid var(--edge-soft);
+  scrollbar-width:none;scroll-padding-inline:6px}
+/* 渐隐只在真的溢出时才有意义。无条件挂着的话,没溢出时也在淡化最右边 20px —— 也就是把一个
+   完好的 chip 和它的重点圈平白抹掉一截。 */
+.fzfilters[data-overflow="true"]{mask-image:linear-gradient(90deg,#000 calc(100% - 20px),transparent)}
+.fzfilters::-webkit-scrollbar{height:0;width:0}
+.fzread{display:flex;align-items:center;gap:8px;padding-left:14px;border-left:1px solid var(--edge-soft)}
+.fclear{flex:none;font:inherit;font-size:11px;font-weight:500;color:var(--accent-ink);
+  background:none;border:0;padding:5px 4px;cursor:pointer;border-radius:var(--r-sm)}
+.fclear:hover{text-decoration:underline}
+.fclear:focus-visible{outline:2px solid var(--accent-ink);outline-offset:2px}
+.ftr form{display:contents}
+.fchip{display:inline-flex;align-items:center;gap:6px;height:28px;flex:none;
+  font-size:12px;font-weight:500;color:var(--text-3);white-space:nowrap;
+  border:1px solid var(--edge-strong);padding:0 11px;border-radius:var(--r-lg);background:var(--surface-glassy);
+  text-decoration:none;transition:all .3s var(--spring)}
+/* 下拉带 caret,开关不带 —— 唯一说得出"点了会展开"的东西。此前两者是同一个胶囊,看不出区别。 */
+.fchip.sel::after{content:"";width:0;height:0;flex:none;margin-left:1px;
+  border-left:3.5px solid transparent;border-right:3.5px solid transparent;
+  border-top:4px solid currentColor;opacity:.55}
+.fchip.tog{padding-left:9px}
+/* 开关的状态点:关是空槽,开是实心 —— 形状上就是个开关,不是又一个下拉。 */
+.fchip.tog::before{content:"";width:6px;height:6px;flex:none;border-radius:50%;
+  border:1px solid currentColor;opacity:.5}
+.fchip.tog.set::before{background:currentColor;opacity:1}
+.fchip:hover{color:var(--text-1);border-color:var(--edge-firm)}
+/* 键盘可见时才画重点圈。原来用的是 :focus-within,鼠标点一下也会亮 —— 而重点圈是给
+   "我现在用键盘,焦点在哪"回答问题的,鼠标用户自己知道点了哪儿。 */
+.fchip:has(:focus-visible),.fchip.tog:focus-visible{outline:2px solid var(--accent-ink);outline-offset:2px}
+.fchip.set{background:var(--text-1);color:var(--on-invert);border-color:var(--text-1);color-scheme:dark}
+/* color-scheme is not a colour, so it cannot ride a token: the native select popup has to be told
+   which way round the chip is, and the chip inverts with the theme. */
+:root[data-theme="dark"] .fchip.set{color-scheme:light}
+.fchip.off{opacity:.55}
+.fchip.err{background:var(--accent-wash);border-color:var(--accent-edge);color:var(--accent-ink)}
+.fchip .x{opacity:.6;font-size:13px;margin-left:2px}
+.fchip svg{width:11px;height:11px}
+/* filter controls embedded in chips */
+.fchip select,.fchip input{background:transparent;border:0;font:inherit;font-size:12px;color:inherit;min-width:0}
+/* 整个 chip 都是命中区,不只是右端那个小箭头。select 铺满并透明,值由 .fval 画出来;
+   顺带原生箭头也跟着隐掉,屏幕上只剩一个 caret。 */
+.fchip.sel{position:relative}
+.fcover{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;
+  -webkit-appearance:none;appearance:none}
+.fval{color:var(--text-1)}
+.fchip.set .fval{color:var(--on-invert)}
+.fchip select option{color:var(--text-1);background:var(--surface-1)}
+.fchip.set select,.fchip.set input{color:var(--on-invert)}
+.fchip input[type=date]{width:118px}
+.fchip input[type=number]{width:44px}
+.fchip input[type=text]{width:150px}
+.ftr .cnt{font-family:var(--mono);font-size:10px;color:var(--text-4);letter-spacing:.05em;white-space:nowrap}
+.tbl{flex:1;min-height:0;display:flex;flex-direction:column}
+/* page scroll canonical; thead sticks to the viewport. Internal x-scroll only below 1280 as narrow fallback (sticky sacrificed there). */
+.tbl .scroll{flex:1;overflow:visible;padding:0 6px}
+@media (max-width:1279px){.tbl .scroll{overflow-x:auto}}
+table{width:100%;border-collapse:collapse}
+/* 不透明，且不用 backdrop blur。表头的职责是压住从它下面滚过去的行；92% 的透光加 8px 模糊
+   并不能遮住文字，只会把它糊成重影（实测：命中测试在表头正中同时命中 TH 和它背后的行）。
+   一旦不透明，blur 就纯属白费 GPU。 */
+thead th{position:sticky;top:0;z-index:2;background:var(--thead-bg);
+  font-family:var(--mono);font-size:8.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--text-4);text-align:left;padding:13px 14px 11px;border-bottom:1px solid var(--edge)}
+/* keep the square thead bg inside the panel's 24px rounded top (overflow is unclipped for viewport sticky) */
+thead th:first-child{border-top-left-radius:18px}
+thead th:last-child{border-top-right-radius:18px}
+thead th.r{text-align:right}
+tbody td{padding:12px 14px;border-bottom:1px solid var(--edge-soft);font-size:12.5px;vertical-align:middle}
+tbody td.r{text-align:right}
+/* row-header cells (key/value ops tables): left-aligned label, not the sticky thead style */
+tbody th{padding:12px 14px;border-bottom:1px solid var(--edge-soft);font-size:12.5px;font-weight:600;text-align:left;vertical-align:middle;color:var(--text-2);white-space:nowrap}
+tbody tr{transition:background .25s}
+[data-keynav] tbody tr,tbody tr[data-href]{cursor:pointer}
+tbody tr:hover{background:var(--surface-2)}
+tbody tr.sel{background:var(--surface-1);box-shadow:inset 2px 0 0 var(--accent)}
+td .cowrap{display:flex;align-items:center;gap:10px}
+td .cowrap .co-mark{width:26px;height:26px;font-size:10.5px;border-radius:var(--r-sm)}
+td .cn{font-weight:600;display:flex;align-items:center;gap:6px}
+/* Equal rows depend on this staying one line. Tenders' sub-line is a city; a signal's can be a
+   whole sentence, which wrapped to four lines and pushed that row far taller than its neighbours. */
+td .loc{font-size:10.5px;color:var(--text-4);margin-top:1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+td .sg{color:var(--text-2);max-width:360px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+td .src{font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--text-4);text-transform:uppercase}
+td .dt{font-family:var(--mono);font-size:10px;color:var(--text-3)}
+td .st{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--text-4)}
+td .st.act{color:var(--green-pale-ink)}
+td .go{width:26px;height:26px;border-radius:50%;border:1px solid var(--edge-strong);display:inline-flex;align-items:center;justify-content:center;color:var(--text-3);background:var(--surface-1);transition:all .35s var(--spring)}
+[data-keynav] tbody tr:hover .go,tbody tr[data-href]:hover .go{background:var(--text-1);border-color:var(--text-1);color:var(--on-invert)}
+.tfoot{display:flex;align-items:center;gap:14px;padding:11px 20px;border-top:1px solid var(--edge)}
+.tfoot .info{font-family:var(--mono);font-size:10px;color:var(--text-4);letter-spacing:.04em}
+.tfoot .pgs{margin-left:auto;display:flex;gap:3px}
+.tfoot .pgs a,.tfoot .pgs button{min-width:26px;height:26px;border-radius:var(--r-sm);font-family:var(--mono);font-size:10.5px;
+  color:var(--text-3);display:flex;align-items:center;justify-content:center;padding:0 7px;text-decoration:none;transition:all .3s}
+.tfoot .pgs a:hover,.tfoot .pgs button:hover{background:var(--surface-3)}
+.tfoot .pgs a.on,.tfoot .pgs button.on{background:var(--text-1);color:var(--on-invert)}
+
+/* 9. detail ------------------------------------------------------------------ */
+/* .dwrap is a flow column in the app (page scrolls; mockup used absolute inset) */
+.dwrap{display:flex;flex-direction:column;gap:16px;padding-bottom:10px}
+.dhead{display:flex;align-items:center;gap:18px;padding:20px 24px;border-radius:var(--r-lg)}
+.dhead .back{width:34px;height:34px;border-radius:50%;border:1px solid var(--edge-strong);background:var(--surface-1);
+  display:flex;align-items:center;justify-content:center;color:var(--text-3);transition:all .35s var(--spring);flex:none}
+.dhead .back:hover{color:var(--text-1);transform:translateX(-2px)}
+.dhead .co-mark{width:46px;height:46px;border-radius:var(--r-md);font-size:18px}
+.dhead .who h1{font-size:19px;font-weight:700;letter-spacing:-.02em}
+.dhead .who .sub{font-size:12px;color:var(--text-3);margin-top:3px;display:flex;align-items:center;gap:8px}
+.dhead .who .sub a{color:var(--text-3);display:inline-flex;align-items:center;gap:4px;text-decoration:none;border-bottom:1px solid var(--edge-strong)}
+.dhead .sp{flex:1}
+.dhead .scorebig{display:flex;align-items:center;gap:14px;padding:8px 16px;border-radius:var(--r-lg);background:var(--accent-wash);border:1px solid var(--accent-edge)}
+.dhead .scorebig .n{font-family:var(--mono);font-size:30px;font-weight:600;color:var(--accent-ink);letter-spacing:-.03em}
+.dhead .scorebig .cap{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:var(--accent-ink);opacity:.75;text-transform:uppercase;line-height:1.5}
+.dcols{display:flex;gap:16px;align-items:flex-start}
+.dmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:16px}
+.dside{width:330px;flex:none;display:flex;flex-direction:column;gap:16px}
+.dpanel{padding:20px 22px;border-radius:var(--r-lg)}
+.dpanel h3{font-size:13px;font-weight:700;letter-spacing:-.01em;margin:8px 0 14px}
+/* The panel's conclusion, not a caption on it: the recommended action was set in muted grey, which
+   put the one thing you are meant to act on below the material supporting it. */
+.dlede{font-size:13.5px;line-height:1.65;color:var(--text-1);margin:0 0 14px}
+.sigline{font-size:15.5px;font-weight:600;letter-spacing:-.015em;line-height:1.45;margin-bottom:10px}
+.metarow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+/* Evidence: a numbered list of supporting facts, sunk into the panel. It used to be one tinted
+   block with an accent bar per excerpt — eight competing shapes down the page, and the accent spent
+   on material that supports the conclusion rather than being it. Depth carries the grouping now:
+   one groove for the whole set, engraved rules between entries, the accent freed for elsewhere. */
+/* One well recipe, shared. Both lists are supporting material the panel's conclusion rests on,
+   so both sink; the panel itself is what rises. */
+.evlist,.prodlist{background:var(--surface-3);border-radius:var(--r-md);
+  box-shadow:inset 0 2px 4px var(--press-1),inset 0 -1px 0 var(--lift-2)}
+.evlist{counter-reset:ev;list-style:none;margin:0;padding:2px 16px}
+.evlist li{counter-increment:ev;display:flex;gap:12px;padding:12px 0;
+  font-size:12.5px;line-height:1.7;color:var(--text-2);
+  border-top:1px solid var(--edge);box-shadow:inset 0 1px 0 var(--lift-2)}
+.evlist li:first-child{border-top:0;box-shadow:none}
+.evlist li::before{content:counter(ev,decimal-leading-zero);flex:none;min-width:15px;padding-top:4px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.04em;color:var(--text-4)}
+.citerow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+/* One attribution for the whole Evidence block. It replaced a chip under every excerpt: the items
+   are bare strings, so each chip was a fallback to the parent signal and the same host repeated
+   down the entire list. */
+.evsource{display:flex;align-items:center;margin:0 0 11px}
+/* Same accent recipe as .tag.err and a.tag rather than a fourth variant of it: this chip is the
+   only route from the Evidence panel out to the article. */
+.cite{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;
+  color:var(--accent-ink);background:var(--accent-wash);border:1px solid var(--accent-edge);
+  padding:4px 9px;border-radius:var(--r-sm);letter-spacing:.04em}
+.cite svg{width:10px;height:10px}
+.cite:hover{border-color:var(--accent);cursor:pointer}
+a.cite{text-decoration:none;color:var(--accent-ink)}
+.preserve{font-size:10.5px;color:var(--text-4);display:flex;align-items:center;gap:6px;margin-top:12px}
+.wbar{display:flex;flex-direction:column;gap:13px}
+.wrow{display:flex;align-items:flex-start;gap:12px}
+.wrow .lb{width:110px;flex:none;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);padding-top:2px}
+.wrow .mid{flex:1}
+.wrow .tr{height:5px;border-radius:var(--r-pill);background:var(--surface-3);overflow:hidden;margin-bottom:6px}
+.wrow .tr i{display:block;height:100%;border-radius:var(--r-pill);background:var(--text-4)}
+.wrow:first-child .tr i{background:var(--accent);opacity:.8}
+.wrow .why{font-size:11px;color:var(--text-3);line-height:1.5}
+.wrow .v{font-family:var(--mono);font-size:11px;color:var(--text-2);width:30px;text-align:right;padding-top:0}
+.tl{display:flex;flex-direction:column}
+.tlrow{display:flex;gap:12px;padding:9px 0;border-top:1px solid var(--edge-soft);font-size:11.5px}
+.tlrow:first-of-type{border-top:0}
+.tlrow .td{font-family:var(--mono);font-size:9px;color:var(--text-4);width:78px;flex:none;padding-top:2px;letter-spacing:.04em}
+.tlrow .tt{color:var(--text-3);line-height:1.55}
+.tlrow .tt b{color:var(--text-1);font-weight:600}
+.act .cta{width:100%;justify-content:center;margin:4px 0 12px}
+.act p{font-size:11.5px;line-height:1.65;color:var(--text-3)}
+.act .plocked{display:flex;gap:8px;align-items:center;margin-top:12px;padding:10px 12px;border-radius:var(--r-md);
+  background:var(--surface-2);border:1px solid var(--edge);font-size:10.5px;color:var(--text-4)}
+.facts .f{display:flex;justify-content:space-between;gap:10px;padding:8px 0;font-size:12px;border-top:1px solid var(--edge-soft)}
+.facts .f:first-of-type{border-top:0}
+.facts .f .k{color:var(--text-4)}
+.facts .f .v{font-weight:500;text-align:right}
+.fb .row{display:flex;gap:8px;margin:4px 0 10px}
+.fb .pill{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;font-size:12px;font-weight:600;
+  padding:9px 0;border-radius:var(--r-md);border:1px solid var(--edge-strong);background:var(--surface-1);color:var(--text-3);
+  transition:all .3s var(--spring)}
+.fb .pill:hover{border-color:var(--green-pale-ink);color:var(--green-pale-ink);background:var(--green-pale)}
+.fb .pill.no:hover{border-color:var(--accent-ink);color:var(--accent-ink);background:var(--accent-wash)}
+.fb p{font-size:10.5px;color:var(--text-4);line-height:1.5}
+
+/* 10. forms ------------------------------------------------------------------ */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--text-4)}
+.field input,.field select,.field textarea{background:var(--surface-1);border:1px solid var(--edge-strong);border-radius:var(--r-md);padding:9px 13px;font:inherit;color:var(--text-1)}
+.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--accent-ink);outline-offset:2px}
+/* custom select chrome: draw our own chevron so closed selects match the system.
+   (appearance is set per @supports branch below — beware specificity: an
+   appearance:none here would override the base-select opt-in.) */
+.field select,.fchip select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238d8d86' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-size:12px 12px}
+.field select{background-position:right 12px center;padding-right:32px}
+.fchip select{background-position:right 4px center;padding-right:20px}
+.fchip.set select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fdfdfc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")}
+/* customizable <select> (Chromium 135+): style the OPEN dropdown to match the system. */
+@supports (appearance:base-select){
+  .field select,.fchip select,select{appearance:base-select}
+  select::picker(select){appearance:base-select;background:var(--surface-1);border:1px solid var(--edge);
+    border-radius:var(--r-lg);margin-block:6px;padding:5px;box-shadow:0 18px 44px rgba(var(--warm-sh),.16)}
+  select::picker-icon{display:none} /* we draw our own chevron via background-image */
+  select option{font:inherit;font-size:12.5px;color:var(--text-1);padding:8px 12px;border-radius:var(--r-sm)}
+  select option:hover,select option:focus{background:var(--surface-3)}
+  select option:checked{font-weight:600}
+  select option::checkmark{color:var(--accent-ink)}
+}
+@supports not (appearance:base-select){
+  .field select,.fchip select{appearance:none;-webkit-appearance:none} /* native popup stays; closed control still ours */
+}
+
+/* 11. states ------------------------------------------------------------------ */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:64px 24px;text-align:center;color:var(--text-3)}
+.empty .i{width:28px;height:28px;color:var(--text-4)}
+.empty p{font-size:13px;max-width:44ch;line-height:1.6}
+.empty .acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+/* toast carries the .panel material by explicit copy (it can't rely on also having .panel) */
+.toast,.flash{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:70;padding:10px 18px;border-radius:var(--r-lg);
+  font-size:12.5px;color:var(--text-1);transition:opacity .4s var(--spring);
+  background:var(--panel-bg);
+  border:1px solid var(--panel-edge);
+  box-shadow:inset 0 1px 0 var(--lift-2),0 1px 2px rgba(var(--warm-sh),.04),0 20px 48px rgba(var(--warm-sh),.09);
+  backdrop-filter:blur(22px) saturate(1.35);-webkit-backdrop-filter:blur(22px) saturate(1.35)}
+.toast.hide,.flash.hide{opacity:0;pointer-events:none}
+.toast.err,.flash.err{background:var(--accent-wash);color:var(--accent-ink);border-color:var(--accent-edge)}
+
+/* 11b. gate (chrome-free centered card pages) ---------------------------------- */
+.gate{position:relative;z-index:1;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px}
+.gate .card{width:100%;max-width:420px;padding:36px 34px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.orb{width:44px;height:44px;border-radius:50%;margin-bottom:20px;
+  background:radial-gradient(circle at 32% 28%,#ff7a5e,var(--accent) 46%,#8c2f24 100%);
+  box-shadow:0 6px 16px rgba(var(--red-rgb),.3)}
+.alert{width:100%;font-size:12.5px;line-height:1.5;padding:10px 14px;border-radius:var(--r-md);margin-bottom:16px;text-align:left}
+.alert.err{background:var(--accent-wash);color:var(--accent-ink);border:1px solid var(--accent-edge)}
+.alert.info{background:var(--surface-3);color:var(--text-3);border:1px solid var(--edge)}
+.alert.ok{background:var(--green-pale);color:var(--green-pale-ink);border:1px solid var(--green-pale-bd)}
+
+/* 11c. job progress stepper (track/harvest status pages) ------------------------ */
+/* 线性推进：贯穿的轨 + 按进度填充的高度（两条绝对定位的细线，压在各步圆点之下），
+   让"我在第几步"一眼可读。轨的左偏移 3.5px = 圆点(8px)中心；上下内缩到首/末点心。 */
+.steps{list-style:none;display:flex;flex-direction:column;position:relative}
+.steps .srail,.steps .sfill{position:absolute;left:3.5px;width:1px;border-radius:var(--r-sm)}
+.steps .srail{top:17px;bottom:17px;background:var(--edge)}
+.steps .sfill{top:17px;background:linear-gradient(180deg,var(--green-pale-ink),var(--accent));
+  transition:height .8s cubic-bezier(.4,0,.2,1);max-height:calc(100% - 34px)}
+.step{display:flex;align-items:flex-start;gap:12px;padding:9px 0;border-top:1px solid var(--edge-soft);font-size:12px;color:var(--text-3);line-height:1.5;position:relative}
+.step:first-child{border-top:0}
+.step .sdot{position:relative;z-index:1;width:8px;height:8px;border-radius:50%;background:var(--mark-faint);flex:none;margin-top:4px}
+.step.done{color:var(--text-2)}
+.step.done .sdot{background:var(--green-pale-ink)}
+.step.now{color:var(--text-1);font-weight:600}
+.step.now .sdot{background:var(--accent)}
+/* pulse ring is compositor-only: transform/opacity on a pseudo-element — never animate box-shadow */
+.step.now .sdot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1.5px solid var(--accent);
+  animation:stepPulse 1.6s ease-out infinite}
+@keyframes stepPulse{from{transform:scale(.55);opacity:.9}to{transform:scale(1.35);opacity:0}}
+@media (prefers-reduced-motion:reduce){.step.now .sdot::after{animation:none;opacity:0}}
+
+/* 11d. job status card (track/harvest/browser-use status pages) ----------------- */
+.jwrap{display:flex;justify-content:center;padding:26px 0}
+.jcard{width:100%;max-width:640px;padding:30px 32px;display:flex;flex-direction:column;gap:16px}
+.jhead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.jhead h1{font-size:19px;font-weight:700;letter-spacing:-.02em;margin-top:6px}
+.jco{font-family:var(--mono);font-size:11px;color:var(--text-2);letter-spacing:.02em;overflow-wrap:anywhere}
+.jmsg{font-size:12.5px;color:var(--text-3);line-height:1.6;overflow-wrap:anywhere}
+.jnext h2{font-size:15px;font-weight:700;letter-spacing:-.015em;margin-bottom:6px}
+.jnext .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+
+/* 11e. ops surfaces (logs / diagnostics: metric strips, live log grid) ----------- */
+.ops{display:flex;flex-direction:column;gap:16px;padding-bottom:10px}
+.ops h2{font-size:15px;font-weight:700;letter-spacing:-.015em}
+.ophead{padding:18px 24px;border-radius:var(--r-lg)}
+.ophead h1{font-size:19px;font-weight:700;letter-spacing:-.02em;margin-top:6px}
+.ophead p{font-size:12px;color:var(--text-3);margin-top:4px;max-width:80ch;line-height:1.5}
+/* metric strip: solid chips with a big number + label; keeps [data-status] hooks */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.metric{padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.metric .muted{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--text-4)}
+.metric strong{font-size:26px;font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--text-1);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+/* live activity log: a 4-column grid inside a scroll guard */
+.loggrid{display:grid;grid-template-columns:auto auto auto 1fr;gap:1px 16px;font-size:11.5px;align-items:start}
+.loggrid .head{font-family:var(--mono);font-size:8.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--text-4);padding-bottom:6px;border-bottom:1px solid var(--edge);margin-bottom:4px}
+.loggrid > div{padding:4px 0;overflow-wrap:anywhere;color:var(--text-2);line-height:1.5}
+.loggrid .level-error,.loggrid .level-critical{color:var(--accent-ink);font-weight:600}
+.loggrid .level-warning{color:var(--accent-deep)}
+
+/* 12. motion ------------------------------------------------------------------ */
+.rv{animation:rise .8s var(--spring) both}
+.rv:nth-child(1){animation-delay:.02s}.rv:nth-child(2){animation-delay:.08s}
+.rv:nth-child(3){animation-delay:.14s}.rv:nth-child(4){animation-delay:.2s}
+.deck .rv:nth-child(1){animation-delay:.06s}.deck .rv:nth-child(2){animation-delay:.11s}
+.deck .rv:nth-child(3){animation-delay:.16s}.deck .rv:nth-child(4){animation-delay:.21s}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .rv{animation:none}
+  /* honor the design spec: reduced-motion renders end-states — neutralize all animation + hover/active transition movement */
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+/* entry animations play once per session (base.html head script sets .rv-off on later loads) —
+   repeat visits crossfade via view transitions instead of re-rising every navigation */
+.rv-off .rv{animation:none}
+
+/* 12b. cross-document view transitions — smooth page-to-page crossfade; the rail is paired across pages and held static */
+@view-transition{navigation:auto}
+.railwrap{view-transition-name:sfrail}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.18s}
+/* hold the rail truly static across full-document transitions: show ONLY the new snapshot
+   (animation:none on both would stack old+new at full opacity — double-exposure artifact) */
+::view-transition-old(sfrail){animation:none;opacity:0}
+::view-transition-new(sfrail){animation:none;opacity:1}
+@media (prefers-reduced-motion:reduce){
+  @view-transition{navigation:none}
+}
+
+/* 13. fallback ------------------------------------------------------------------ */
+@supports not (backdrop-filter: blur(1px)) {
+  .panel{background:var(--panel-solid)}
+  .toast,.flash{background:var(--panel-solid)}
+}
+
+/* 14. responsive ------------------------------------------------------------------ */
+@media (max-width: 900px){
+  .stage{flex-direction:column;padding:16px}
+  .rail{flex-direction:row;width:100%;height:56px;border-radius:var(--r-lg)}
+  .railwrap{flex-direction:row;position:static;height:auto;align-self:stretch}
+  .rail .puck{display:none}
+  .deck{flex-wrap:wrap}
+  .dcols{flex-direction:column}
+  .dside{width:100%}
+}

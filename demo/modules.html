@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<!-- class="js" 是产品自己的约定（signalforge.css:441-442）：它剥掉激活标签的静态红底让 tpuck
+     独占高亮，并把标签文字提到 puck 之上。漏掉它，激活标签的字会被 puck 盖住。 -->
+<html lang="en" class="js" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SignalForge modules</title>
+<!--
+  产品界面的真实复刻，不是仿制。
+  · 样式表是产品自己的 sf/signalforge.css + sf/extensions.css，原样取自
+    SignalForge-frontend@feature/OEM-488-onboarding-tour
+  · DOM 结构照 SignalsView.tsx / detail.tsx / Contacts.tsx / shared.tsx 复刻
+  真的是结构、样式、交互；假的只有数据。
+  跑在 iframe 里 —— 产品 CSS 有 200KB 全局选择器，与官网 landing.css 大面积撞名。
+  解说与步骤药丸不在这里，在父页面：产品归产品的设计系统，营销归营销的。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sf/signalforge.css">
+<link rel="stylesheet" href="sf/extensions.css">
+<style>
+  /* 不覆盖 body 背景 —— signalforge.css:242 已经给了 var(--surface-page)，
+     覆盖掉会让面板和页面变成同一个色，整屏发平。 */
+  html,body{margin:0;height:100%;overflow:hidden}
+  .mod{position:absolute;inset:0;padding:22px 24px;opacity:0;pointer-events:none;
+    display:flex;align-items:flex-start;justify-content:center;
+    transform:translateY(10px);transition:opacity .5s var(--spring),transform .5s var(--spring)}
+  /* .main 提供模块之间 16px 的竖向节奏，与产品一致。
+     .main 是 flex column，默认会把最后一个面板拉满剩余高度 —— 演示里那是一大片空白，
+     所以让每个子块按内容高度收敛。 */
+  .mod > .main > *{flex:0 0 auto}
+  /* 产品里 .stage 把主栏限在 1560px 且详情页是双栏，评分条不会拉成一整屏那么长。
+     演示是单模块全宽，所以自己收一个上限，否则 24/25 那根条会横跨 1500px。 */
+  .mod > .main{width:100%;max-width:1080px}
+  /* 两极开关真实的宿主是 .tbar —— .tabs.seg 的样式带 .tbar 祖先限定。
+     这里只保留承载开关所需的最小 tbar，不放 workspace 芯片和头像。 */
+  .tbar.bare{padding:7px 9px;align-self:flex-start}
+  .mod.on{opacity:1;pointer-events:auto;transform:none}
+  /* 模拟光标：演示里"产品被用给你看"的那只手 */
+  .simcur{position:absolute;z-index:60;width:16px;height:23px;left:0;top:0;opacity:0;
+    transition:opacity .3s, transform .85s cubic-bezier(.32,.72,0,1);
+    filter:drop-shadow(0 3px 5px rgba(0,0,0,.28));pointer-events:none}
+  .simcur.on{opacity:1}
+  .simcur.press{transform-origin:2px 2px}
+  .simcur .rip{position:absolute;left:-9px;top:-9px;width:34px;height:34px;border-radius:50%;
+    border:2px solid var(--accent);opacity:0}
+  .simcur.tap .rip{animation:tap .5s var(--spring)}
+  @keyframes tap{0%{opacity:.9;transform:scale(.25)}100%{opacity:0;transform:scale(1)}}
+.mbwhy{margin:10px 2px 0;font-size:11.5px;line-height:1.6;color:var(--text-3);
+    padding:9px 11px;border-radius:var(--r-md);background:var(--surface-3);
+    box-shadow:inset 0 1px 2px var(--press-2)}
+  .mbrow.sel{background:var(--surface-1);box-shadow:inset 0 1px 0 var(--lift-2),0 4px 12px var(--press-2)}
+  .vnote{font-size:11px;color:var(--green-pale-ink);align-self:center;margin-left:4px}
+  /* 「为什么是这个人」是这一幕最该读到的东西，产品那列的固定宽 + nowrap 会把它截掉。
+     演示里让它换行、并多给一点宽度。 */
+  #m-reach .c-cttitle{width:32%}
+  #m-reach tbody td:nth-child(2) .loc span{white-space:normal}
+  #m-reach tbody td:nth-child(2) .loc{white-space:normal;overflow:visible}
+  /* 窄屏下少渲染几列（见 renderList 的 visibleCols）。
+     用 CSS 藏 td 没用 —— 表是 table-layout:fixed 配 colgroup，<col> 照样占着宽度。 */
+  /* 列不全时表格自适应宽度（见 renderList）—— 产品的 col 固定宽在这里会溢出 */
+  #m-rank table.fluid{table-layout:auto;width:100%}
+  #m-rank table.fluid .sg,#m-rank table.fluid .cn{overflow:visible}
+  #m-rank table.fluid .sg span,#m-rank table.fluid .cn span{white-space:normal}
+  #m-rank table.fluid th,#m-rank table.fluid td{padding-left:9px;padding-right:9px}
+  @media (max-width:640px){
+    .mod{padding:14px}
+    #m-reach thead th:nth-child(2), #m-reach tbody td:nth-child(2){display:none}
+    .dhead .sub{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .mod,.simcur{transition:none}
+    .simcur{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ 幕 1 · RANK ── 排序列表模块（照 SignalsView.tsx / TendersView.tsx） ═══ -->
+<section class="mod" id="m-rank">
+  <div class="main">
+    <header class="tbar panel bare">
+      <nav class="tabs seg" id="poles" aria-label="Pole">
+        <span class="tpuck" id="tpuck" aria-hidden="true"></span>
+        <a href="#" id="poleT">Gov tenders</a>
+        <a href="#" id="poleS" class="on" aria-current="page">Buying signals</a>
+      </nav>
+    </header>
+    <div class="panel tbl">
+      <div class="scroll">
+        <table>
+          <colgroup id="cg"></colgroup>
+          <thead id="thd"></thead>
+          <tbody id="tbd"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 幕 2 · EXPLAIN ── 评分归因模块（照 detail.tsx 的 DetailHeader + WBar） ═══ -->
+<section class="mod" id="m-explain">
+  <div class="main">
+  <div class="dhead panel">
+    <div class="co-mark">HA</div>
+    <div class="who">
+      <h1>Halden Automotive Group</h1>
+      <div class="sub">Breaks ground on new stamping facility <span class="tag">Signal</span> <span class="tag">News</span> Detected Jul 19, 2026</div>
+    </div>
+    <div class="sp"></div>
+    <!-- 大号 91 撤掉：下面 MetricBreakdown 的 91 / 100 与它相隔不到 100px 说同一件事，
+         而那一处还带着 "/ 100" 的分母，是更完整的说法。 -->
+  </div>
+  <!-- 产品已经把 .wbar 换成 MetricBreakdown（client/src/components/MetricBreakdown.tsx）：
+       总分显式写成 91 / 100，并点出最强项与 Weakest link；各维度各有自己的满分，
+       不再暗示它们相加等于总分 —— 那正是先前 24+23+18≠91 读起来别扭的原因。 -->
+  <div class="dpanel panel" id="wbarPanel">
+    <div class="kick">Match analysis</div>
+    <div class="mbwrap">
+      <div class="mbtop">
+        <div>
+          <div class="mbscore"><b>91</b><span>/ 100</span></div>
+          <p class="mbverdict">Strongest on <b>market relevance</b>.</p>
+        </div>
+        <div class="mbweak">
+          <span class="kick">Weakest link</span>
+          <span class="mbweakv">Buyer access</span>
+        </div>
+      </div>
+      <div class="mbreak" id="mbreak"></div>
+      <p class="mbwhy" id="mbwhy" hidden></p>
+    </div>
+  </div>
+  <!-- 判定：照 SignalDetail.tsx 的 DPanel kick="Feedback" + .row > .pill / .pill.no -->
+  <div class="dpanel panel fb">
+    <div class="kick">Feedback</div>
+    <div class="row">
+      <button class="pill" id="vRel" type="button" aria-pressed="false">Relevant</button>
+      <button class="pill no" id="vNot" type="button" aria-pressed="false">Not relevant</button>
+      <span class="vnote" id="vNote"></span>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ═══ 幕 3 · REACH ── 联系人解锁模块（照 Contacts.tsx 的表 + 计费三段） ═══ -->
+<section class="mod" id="m-reach">
+  <div class="main">
+  <div class="panel dpanel ctpanel">
+    <div class="ctwrap">
+      <table class="cttable">
+        <thead>
+          <tr>
+            <th class="c-ctname">Name</th>
+            <th class="c-cttitle">Why them</th>
+            <th class="fcol">Email</th>
+            <th class="fcol">Phone</th>
+          </tr>
+        </thead>
+        <tbody id="ctb"></tbody>
+      </table>
+      <div class="ctfoot" id="ctfoot">Finding people is free. Only revealing a detail spends, one click at a time.</div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<div class="simcur" id="cur" aria-hidden="true">
+  <span class="rip"></span>
+  <svg viewBox="0 0 16 23" width="16" height="23"><path d="M1.2 1.2l12.6 9.3-5.7.9 3.2 6.5-2.7 1.3-3.2-6.5-3.5 4z" fill="#fff" stroke="#21201c" stroke-width="1.5" stroke-linejoin="round"/></svg>
+</div>
+
+<script>
+/* ── 数据：全部虚构 ───────────────────────────────────────────────────────────
+   公司、机构、标号、联系人全是编的。此前用的是 Magna / Hydro-Québec / Suncor /
+   US Army Corps of Engineers 这类真实机构，配上编造的事件和分数 —— 那等于伪造真实
+   企业的记录，不该出现在公开页面上。
+   城市保留真实的（城市不会因此被安上不实主张）；信号来源写的是产品真实的来源类别
+   （News / SEC EDGAR / Careers / Industry），那是在陈述产品覆盖什么，不是编造某条记录。
+   字段与产品 SignalListItem / TenderListItem 对齐。 */
+const SIGNALS = [
+  {s:92, co:"Cascadia Grid Authority",  loc:"Portland, OR",  h:"$2.1B grid modernization program announced",      t:"Modernization",      fb:"undecided",    src:"News",      d:"JUL 21"},
+  {s:91, co:"Halden Automotive Group",  loc:"London, ON",    h:"Breaks ground on new stamping facility",          t:"Facility expansion", fb:"relevant",     src:"News",      d:"JUL 19"},
+  {s:85, co:"Ravensbourne Machining",   loc:"Guelph, ON",    h:"Expands machining capacity at its Guelph plant",  t:"Capacity expansion", fb:"undecided",    src:"News",      d:"JUL 17"},
+  {s:83, co:"Fairmount Aerospace",      loc:"Cincinnati, OH",h:"Air compressor maintenance contract renewed",     t:"Maintenance cycle",  fb:"undecided",    src:"Industry",  d:"JUL 15"},
+  {s:81, co:"Meridian Energy Partners", loc:"Houston, TX",   h:"Annual filing notes compressor station upgrades", t:"Filing",             fb:"undecided",    src:"SEC EDGAR", d:"JUL 12"},
+  {s:68, co:"Kestrel Petrochemical",    loc:"Sarnia, ON",    h:"Hiring plant reliability engineers, 14 roles",    t:"Hiring growth",      fb:"not_relevant", src:"Careers",   d:"JUL 05"},
+];
+const TENDERS = [
+  {s:88, co:"HVAC Replacement — Federal Building Complex",   loc:"FB-4127-2026 · Canada", h:"Federal Buildings Authority",       t:"$1.2M CAD", fb:"pursuing",  src:"Federal",    d:"JUL 27"},
+  {s:84, co:"Rotating Equipment Maintenance",                loc:"DL-2026-0041 · USA",    h:"National Defence Logistics Office", t:"$2.7M USD", fb:"undecided", src:"Federal",    d:"AUG 12"},
+  {s:79, co:"Industrial Air Compressors, standing offer",    loc:"RW-SO-4471 · USA",      h:"State of Ridgeway Purchasing",      t:"$480K USD", fb:"undecided", src:"State",      d:"AUG 02"},
+  {s:76, co:"Compressed air system, wastewater plant",       loc:"WV-2026-0883 · USA",    h:"Westvale Water Authority",          t:"$1.4M USD", fb:"undecided", src:"Municipal",  d:"AUG 19"},
+  {s:70, co:"Boiler and chiller replacement, regional site", loc:"SH-RFP-2261 · Canada",  h:"Southhaven Health Region",          t:"$3.1M CAD", fb:"undecided", src:"Provincial", d:"SEP 04"},
+  {s:61, co:"HVAC and air treatment, school district",       loc:"NL-2026-118 · Canada",  h:"Northlake District Board",          t:"$610K CAD", fb:"declined",  src:"Provincial", d:"JUL 24"},
+];
+/* 三个维度与逐行理由的句式取自已批准的 mockup signal-contacts-inline.html，
+   其中的公司指涉已换成虚构主体。就这三行 —— 那份 mockup 只有这三个维度。 */
+const WROWS = [
+  {lb:"Market relevance", pct:96, v:"24/25", why:"New stamping lines need press automation and die-handling equipment — direct fit with your product line."},
+  {lb:"Timing",           pct:92, v:"23/25", why:"Groundbreaking phase — equipment sourcing decisions are being made in the next two quarters."},
+  {lb:"Buyer access",     pct:90, v:"18/20", why:"Ontario site with named plant leadership — decision-makers are identifiable and reachable."},
+];
+/* 联系人：只出现职位，不出现具名个人；公司为虚构主体；邮箱电话全部打码。 */
+const PEOPLE = [
+  {ini:"VP", role:"VP Operations",                       co:"Halden Body & Chassis",   why:"Owns capex approval for new-plant equipment programs — the budget for exactly what this signal is about.", best:true},
+  {ini:"PM", role:"Plant Manager",                       co:"Halden London Stamping",  why:"Named site lead in the groundbreaking announcement.",                                                       best:false},
+  {ini:"DM", role:"Director, Manufacturing Engineering", co:"Halden Automotive Group", why:"Specs press-line automation for body-in-white programs.",                                                   best:false},
+  {ini:"PL", role:"Procurement Lead, Capital Equipment", co:"Halden Automotive Group", why:"Runs the RFQ process for equipment packages of this size.",                                                 best:false},
+  {ini:"MS", role:"Maintenance Superintendent",          co:"Halden London Stamping",  why:"Owns the service contract that follows installation.",                                                      best:false},
+  {ini:"CP", role:"Controller, Capital Projects",        co:"Halden Automotive Group", why:"Signs off once the technical review clears.",                                                               best:false},
+];
+
+const COLS = {
+  signals:["c-match","c-sigco","c-sighead","c-sigtype","c-sigr2","c-sigsrc","c-sigpub"],
+  tenders:["c-match","c-tender","c-agency","c-value","c-decision","c-closes","c-prog"],
+};
+const HEAD = {
+  signals:[["Score",1],["Company",0],["Signal",0],["Type",0],["Feedback",0],["Source",0],["Published",1]],
+  tenders:[["Match",1],["Tender",0],["Agency",0],["Value",0],["Decision",0],["Source",0],["Closes",1]],
+};
+
+const initials = n => { const p=n.split(" — ")[0].trim().split(/\s+/).filter(w=>/[\p{L}\p{N}]/u.test(w));
+  return p.length===1 ? p[0].slice(0,2).toUpperCase() : p.slice(0,2).map(w=>w[0].toUpperCase()).join(""); };
+const tier = n => n>=80?"s1":n>=60?"s2":"s3";
+/* 两极的判定词汇不同，产品里也是分开的：detail.tsx 注释写明「signal 说 Relevant /
+   Not relevant，tender 说 Pursuing / Declined」。之前两极共用信号那套，是我的疏漏。 */
+const FB_LABEL = {relevant:"Relevant", not_relevant:"Not relevant", pursuing:"Pursuing", declined:"Declined"};
+const fbTag = f => (f==="relevant"||f==="pursuing") ? `<span class="tag good">${FB_LABEL[f]}</span>`
+              : (f==="not_relevant"||f==="declined") ? `<span class="tag">${FB_LABEL[f]}</span>`
+              : '<span class="tag status">Undecided</span>';
+
+let pole = "signals";
+/* 窄屏保留哪几列。产品在窄屏是让这张宽表横向滚动，但自动播放的演示里没人会去拨，
+   所以这里按宽度裁 —— 分数、公司、标题是这一幕的论点，其余是细节。
+   colgroup 必须一起裁：table-layout:fixed 下 <col> 不跟着 td 隐藏。 */
+function visibleCols(){
+  const w = innerWidth;
+  return w <= 640 ? 3 : w <= 880 ? 5 : 7;
+}
+function renderList(){
+  const rows = pole==="signals" ? SIGNALS : TENDERS;
+  const n = visibleCols();
+  // 列不全时连 colgroup 一起撤掉：那些 col 类带的是产品的固定像素宽，
+  // 留着的话 3 列照样合计 557px，照样溢出。撤掉并转 table-layout:auto 才真的收得住。
+  // 恒定流式：产品的 col 固定像素宽是给"带左栏的完整应用"调的，演示容器窄一截，
+  // 7 列照那套宽度必然溢出（实测右侧 SOURCE / PUBLISHED 被切）。这里一律让表自适应。
+  cg.innerHTML = "";
+  cg.closest("table").classList.add("fluid");
+  thd.innerHTML = "<tr>" + HEAD[pole].slice(0, n).map(([l,r])=>`<th${r?' class="r"':''}>${l}</th>`).join("") + "</tr>";
+  tbd.innerHTML = rows.map(r=>{
+    const k = Math.max(0, Math.min(1,(r.s-50)/50));
+    return `<tr class="lrow" style="--dep:${(0.02+k*0.32).toFixed(3)};--ext:${Math.round(16+k*64)}%">
+      <td><span class="mscore ${tier(r.s)}">${r.s}</span></td>
+      <td><div class="cowrap"><div class="co-mark">${initials(r.co)}</div><div class="cnwrap">
+        <div class="cn"><span>${r.co}</span></div><div class="loc">${r.loc}</div></div></div></td>
+      <td><div class="sg"><span>${r.h}</span></div></td>
+      <td><span class="tag"><span class="tgsc"><span>${r.t}</span></span></span></td>
+      <td>${fbTag(r.fb)}</td>
+      <td><span class="dt">${r.src}</span></td>
+      <td class="r"><span class="dt">${r.d}</span></td>
+    </tr>`;
+  }).join("");
+  // 裁掉超出的单元格，与 colgroup 对齐
+  [...tbd.rows, ...thd.rows].forEach(tr=>{ while(tr.cells.length > n) tr.deleteCell(-1); });
+}
+function movePuck(){
+  const on = document.querySelector("#poles a.on");
+  if(!on || !on.offsetWidth) return;
+  tpuck.style.width = on.offsetWidth+"px";
+  tpuck.style.transform = `translateX(${on.offsetLeft}px)`;
+}
+function setPole(p){
+  if(p===pole) return;
+  pole = p;
+  poleS.classList.toggle("on", p==="signals");
+  poleT.classList.toggle("on", p==="tenders");
+  movePuck(); renderList();
+}
+poleT.onclick = e => { e.preventDefault(); setPole("tenders"); };
+poleS.onclick = e => { e.preventDefault(); setPole("signals"); };
+
+/* 产品里 .wrow .why 是常显的（signalforge.css:687）—— 每一行本来就带着它的理由，
+   这正是这个组件存在的意义。之前我做成"点击展开 + 聚焦环"，是自己发明的交互，
+   而且和这一行的原生 flex 布局打架（环把 24/25 切掉、小字和橙框叠在一起）。撤掉。 */
+function renderWbar(){
+  const weakest = WROWS.reduce((a,b)=> b.pct < a.pct ? b : a);
+  mbreak.innerHTML = WROWS.map((r,i)=>`
+    <button type="button" class="mbrow${r===weakest?' low':''}" data-i="${i}" title="View scoring reason">
+      <span class="mbname">${r.lb}</span>
+      <span class="mbbar" aria-hidden="true"><i style="width:${r.pct}%"></i></span>
+      <span class="mbval">${r.v}</span>
+      <span class="mbgo" aria-hidden="true">›</span>
+    </button>`).join("");
+  mbwhy.hidden = true;
+  mbreak.querySelectorAll(".mbrow").forEach(b=>b.addEventListener("click", ()=>showWhy(+b.dataset.i)));
+}
+/* 产品里点一行是开 Dialog 弹层；演示框只有 484px 高，弹层会盖住整幕，
+   所以这里把同一段 rationale 就地显示在列表下方。内容一字未改，只换了容器。 */
+function showWhy(i){
+  const r = WROWS[i];
+  mbwhy.textContent = r.lb + " — " + r.why;
+  mbwhy.hidden = false;
+  mbreak.querySelectorAll(".mbrow").forEach((b,k)=>b.classList.toggle("sel", k===i));
+}
+
+/* 这一幕的交互改用产品真有的判定按钮。产品自己的引导里写着：
+   「Relevant 和 Not relevant 是评分学习的方式 —— 这一页上你能做的最有价值的一件事」。 */
+function setVerdict(v){
+  vRel.classList.toggle("on", v==="relevant");
+  vNot.classList.toggle("on", v==="not_relevant");
+  vRel.setAttribute("aria-pressed", String(v==="relevant"));
+  vNot.setAttribute("aria-pressed", String(v==="not_relevant"));
+  vNote.textContent = v ? "Recorded. The next round of matching weighs this." : "";
+}
+vRel.onclick = () => setVerdict("relevant");
+vNot.onclick = () => setVerdict("not_relevant");
+
+/* 联系人：找到=免费 → 点一次解锁邮箱 → 再点解锁电话。值全部打码。 */
+const LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+let reach = 0;
+function renderReach(){
+  // 分组行是产品真有的：Contacts 表按信号分组，产品引导第一步就叫「One bar, one signal」
+  const grp = `<tr class="grp"><td colspan="4"><span class="kick grplink">Halden Automotive Group · Breaks ground on new stamping facility</span></td></tr>`;
+  ctb.innerHTML = grp + PEOPLE.map(p=>`
+    <tr${p.best?' class="bestrow"':''}>
+      <td><div class="ctwho"><div class="co-mark">${p.ini}</div><div class="ctid">
+        <div class="ctnm"><div class="cn"><span>${p.role}</span></div>${p.best?'<span class="bm">Best match</span>':''}</div>
+        <div class="loc"><span>${p.co}</span></div></div></div></td>
+      <td><div class="loc"><span>${p.why}</span></div></td>
+      <td>${reach>=1 ? '<span class="vchip"><span class="vv">d•••••@•••••••.com</span></span>'
+                     : `<span class="tag status">${LOCK} Locked</span>`}</td>
+      <td>${reach>=2 ? '<span class="vchip"><span class="vv">+1 ••• ••• ••••</span></span>'
+                     : `<span class="tag status">${LOCK} Locked</span>`}</td>
+    </tr>`).join("");
+  ctfoot.textContent = reach===0 ? "Finding people is free. Only revealing a detail spends, one click at a time."
+    : reach===1 ? "Email unlocked and stored. Phone never unlocks before email — the product enforces that order."
+    : "Never charged twice. Repeated clicks return the saved value instead of spending again.";
+}
+
+/* ── 模拟光标 ───────────────────────────────────────────────────────────── */
+function moveCur(el, dx=0, dy=0){
+  if(!el) return Promise.resolve();
+  const r = el.getBoundingClientRect();
+  cur.classList.add("on");
+  cur.style.transform = `translate(${Math.round(r.left + r.width/2 + dx)}px, ${Math.round(r.top + r.height/2 + dy)}px)`;
+  return new Promise(res=>setTimeout(res, 900));
+}
+function tap(){
+  cur.classList.remove("tap"); void cur.offsetWidth; cur.classList.add("tap");
+  return new Promise(res=>setTimeout(res, 320));
+}
+const hideCur = () => cur.classList.remove("on");
+const wait = ms => new Promise(r=>setTimeout(r, ms));
+
+/* ── 幕：每一幕自己演一遍，可被打断 ───────────────────────────────────────── */
+let token = 0;
+const alive = t => t === token;
+
+async function playRank(t){
+  setPole("signals");
+  await wait(700); if(!alive(t))return;
+  await moveCur(poleT); if(!alive(t))return;
+  await tap(); if(!alive(t))return;
+  setPole("tenders");
+  await wait(1600); if(!alive(t))return;
+  await moveCur(poleS); if(!alive(t))return;
+  await tap(); if(!alive(t))return;
+  setPole("signals");
+  await wait(900); if(!alive(t))return;
+  hideCur();
+}
+async function playExplain(t){
+  renderWbar(); setVerdict(null);
+  await wait(900); if(!alive(t))return;
+  const weak = mbreak.querySelector(".mbrow.low");            // 先点最弱那一项，露出它的理由
+  await moveCur(weak); if(!alive(t))return;
+  await tap(); if(!alive(t))return;
+  weak.click();
+  await wait(2200); if(!alive(t))return;
+  await moveCur(vRel); if(!alive(t))return;                    // 再落到判定
+  await tap(); if(!alive(t))return;
+  setVerdict("relevant");
+  await wait(1500); if(!alive(t))return;
+  hideCur();
+}
+async function playReach(t){
+  reach = 0; renderReach();
+  await wait(800); if(!alive(t))return;
+  for(const step of [1,2]){
+    const cell = ctb.querySelector(`tr td:nth-child(${step+2}) .tag`);
+    await moveCur(cell); if(!alive(t))return;
+    await tap(); if(!alive(t))return;
+    reach = step; renderReach();
+    await wait(1700); if(!alive(t))return;
+  }
+  hideCur();
+}
+
+const SCENES = {
+  rank:    { el:"m-rank",    play:playRank },
+  explain: { el:"m-explain", play:playExplain },
+  reach:   { el:"m-reach",   play:playReach },
+};
+let current = null;
+
+function show(id){
+  if(id === current) return;
+  current = id;
+  token++;
+  const t = token;
+  hideCur();
+  Object.values(SCENES).forEach(s=>document.getElementById(s.el).classList.remove("on"));
+  const sc = SCENES[id]; if(!sc) return;
+  document.getElementById(sc.el).classList.add("on");
+  if(id === "rank") requestAnimationFrame(movePuck);
+  sc.play(t);
+}
+
+
+renderList(); renderWbar(); renderReach();
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(movePuck);
+addEventListener("resize", ()=>{ movePuck(); renderList(); });
+
+addEventListener("message", e=>{
+  const d = e.data || {};
+  if(d.sfScene) show(d.sfScene);
+});
+show("rank");
+parent !== window && parent.postMessage({sfReady:true}, "*");
+</script>
+</body>
+</html>
