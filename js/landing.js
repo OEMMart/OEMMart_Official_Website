@@ -72,6 +72,24 @@
     document.addEventListener('keydown', e =>{ if(e.key === 'Escape') setOpen(false); });
   }
 
+  /* 锚点平滑滚动。这段以前是 CSS 的 html{scroll-behavior:smooth}，但那条规则会把
+     ScrollTrigger 在 refresh() 里的「先同步归零再量 pin」变成异步，量出来的 start/end
+     会整体偏掉一个当时的滚动量（详见 landing.css 里同名注释）。
+     scrollIntoView 的 behavior:'smooth' 是逐次行为、不设 CSS 属性，ScrollTrigger 的
+     同步归零照常瞬时生效，滚动手感不变。 */
+  document.addEventListener('click', e =>{
+    const a = e.target.closest && e.target.closest('a[href^="#"]');
+    if(!a || a.getAttribute('target') === '_blank') return;
+    const hash = a.getAttribute('href');
+    // 用 getElementById 而不是 querySelector：后者遇到不合法的选择器会抛，把整个点击处理带走
+    const target = hash === '#' ? null : document.getElementById(decodeURIComponent(hash.slice(1)));
+    if(hash !== '#' && !target) return;                       // 指向不存在的锚点就交回给浏览器
+    e.preventDefault();
+    const behavior = reduce ? 'auto' : 'smooth';
+    if(target){ target.scrollIntoView({behavior, block:'start'}); history.pushState(null, '', hash); }
+    else scrollTo({top:0, left:0, behavior});                  // 站上还有几个占位的 href="#"，保持原来的回顶行为
+  });
+
   // reveal
   const io = new IntersectionObserver(es=>{
     es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('vis'); io.unobserve(e.target);} });

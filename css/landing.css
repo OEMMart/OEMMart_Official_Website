@@ -462,9 +462,13 @@ body.static .copy.after{visibility:visible}
 body.static .copy.after > *{opacity:1 !important;transform:none !important}
 body.static .nav{--nav-ink:#111420;--nav-bg:rgba(252,252,250,.72)}
 
-/* ===== 单页平滑滚动（导航锚点） ===== */
-html{scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* ===== 单页平滑滚动（导航锚点） =====
+   平滑只能由 JS 逐次发起，不能写成 html{scroll-behavior:smooth}。
+   那条规则把「赋值 scrollTop」变成一段动画，而 ScrollTrigger 每次 refresh() 都要先把
+   滚动同步归零、量完 pin 的起止点再滚回去。归零一旦变成异步，量到的 start/end 就整体
+   偏掉一整个当时的滚动量 —— 症状是「滚到中间刷新，再滚回顶部，hero 卡在末帧不回退」。
+   GSAP 官方把这条列为 ScrollTrigger 常见错误：https://gsap.com/resources/st-mistakes/
+   逐次调用的 behavior:'smooth'（见 landing.js）不设这个 CSS 属性，因此不受影响。 */
 #product,#about,#contact{scroll-margin-top:92px}
 
 /* ===== About ===== */
