@@ -23,7 +23,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="css/landing.css?v=51">
+  <link rel="stylesheet" href="css/landing.css?v=52">
   <script>
     // Apollo visitor tracking (ported from previous site)
     function initApollo() {
@@ -44,7 +44,7 @@
   <nav class="nav">
     <a href="#"><img class="logoimg" src="images/oemmart-20logo-20no-20inc.png" alt="OEMMart"></a>
     <div class="links"><a href="#product">Product</a><a href="#about">About</a><a href="#contact">Contact</a></div>
-    <a class="btn red" href="#contact"><span>Book a demo</span><span class="ic">→</span></a>
+    <a class="btn red" href="https://signalforge.oemmart.com/register"><span>Start free trial</span><span class="ic">→</span></a>
     <button class="navtoggle" id="navtoggle" type="button" aria-expanded="false" aria-controls="navmenu"
       aria-label="Menu"><span class="bars"><i></i><i></i><i></i></span></button>
   </nav>
@@ -130,7 +130,7 @@
       <p>Find the deals, score your fit, draft the response, see where your market is heading. One AI, every morning.
       </p>
       <div class="ctas">
-        <a class="btn red" href="#contact"><span>Book a demo</span><span class="ic">→</span></a>
+        <a class="btn red" href="https://signalforge.oemmart.com/register"><span>Start free trial</span><span class="ic">→</span></a>
         <a class="btn dark plain" href="#product">See it work</a>
       </div>
     </div>
@@ -479,18 +479,18 @@
     </div>
   </section>
 
-  <!-- ============ CTA + 联系流程（生产版接 HubSpot: portalId 341778708 / formId 90f0e3b8-f6d7-4d19-a872-c69098bc6d91） ============ -->
+  <!-- ============ SignalForge self-service trial ============ -->
   <section class="cta" id="contact">
     <div class="glow"></div>
     <h2 class="rv">Find your next <em>breakthrough.</em></h2>
-    <p class="rv">A 30-minute demo on your own product line. No slides.</p>
+    <p class="rv">Get started with a free trial of SignalForge, built around what your company sells.</p>
     <div class="cwrap shell rv">
-      <div class="core cform">
-        <div id="hs-form-target" class="hs-target">
-          <div class="hs-form-frame" data-region="na3" data-form-id="90f0e3b8-f6d7-4d19-a872-c69098bc6d91"
-            data-portal-id="341778708"></div>
-          <div class="hs-loading">Loading form…</div>
-        </div>
+      <div class="core trial-card">
+        <div class="trial-eyebrow">SIGNALFORGE · FREE TRIAL</div>
+        <h3>See the opportunities that fit.</h3>
+        <p>Apply in SignalForge with your company details and optional product catalogue. Confirm your email, then we'll review your request.</p>
+        <a class="btn red" href="https://signalforge.oemmart.com/register"><span>Start free trial</span><span class="ic">→</span></a>
+        <div class="trial-note">Once approved, you can choose when to start your trial in SignalForge.</div>
       </div>
     </div>
     <p class="cphone rv">Prefer to talk? <a href="tel:+19257704587">+1 (925) 770-4587</a></p>
@@ -507,7 +507,7 @@
         <div class="sf-h">Explore</div>
         <a href="#product">Product</a>
         <a href="#about">About</a>
-        <a href="#contact">Book a demo</a>
+        <a href="https://signalforge.oemmart.com/register">Start free trial</a>
       </nav>
       <div class="sf-col">
         <div class="sf-h">Contact</div>
@@ -542,25 +542,6 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script src="js/landing.js?v=51"></script>
-  <!-- HubSpot embed form (portal 341778708, region na3, new forms tool).
-     Handles reCAPTCHA, file upload and consent natively. Renders in an iframe. -->
-  <script src="https://js-na3.hsforms.net/forms/embed/341778708.js" defer></script>
-  <script>
-    (function () {
-      // 表单渲染成功后移除 loading 占位
-      var target = document.getElementById('hs-form-target');
-      if (!target) return;
-      var obs = new MutationObserver(function () {
-        if (target.querySelector('iframe, form')) {
-          var l = target.querySelector('.hs-loading');
-          if (l) l.remove();
-          target.classList.add('ready');
-          obs.disconnect();
-        }
-      });
-      obs.observe(target, { childList: true, subtree: true });
-    })();
-  </script>
 </body>
 
 </html>
