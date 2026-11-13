@@ -25,3 +25,18 @@ legal effective date.
 Use `python tools/update-policy-dates.py --check` to verify dates without
 changing files. The script rejects shallow checkouts so a cosmetic commit
 cannot be mistaken for the first policy revision.
+
+## Reading typography
+
+The opening uses the document's existing words in a single lead followed by
+supporting context. There is no introductory card or added overview heading.
+The Inter family stays consistent with the marketing site: a 20px/28px medium
+lead, 16px/26px regular text, and 14px/21px supporting note. On a phone, the lead
+reduces to 18px. The article has a maximum measure of 70ch and a shared alignment
+for its introduction and numbered sections. Paragraphs use 14px space after;
+sections use a larger, consistent interval.
+
+These choices apply the hierarchy in the [GOV.UK paragraph guidance](https://design-system.service.gov.uk/styles/paragraphs/),
+the measure and paragraph relationships in [Practical Typography](https://practicaltypography.com/line-length.html),
+and the type-scale approach in [Carbon](https://carbondesignsystem.com/elements/typography/overview/).
+The numerical sizes are tailored to OEMMart's existing typeface and layout.
