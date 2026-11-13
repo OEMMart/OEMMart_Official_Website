@@ -34,9 +34,12 @@ body.policy-page{background:var(--sand-2)}
 .policy-toc a[aria-current="location"]{color:var(--ink);border-left-color:var(--red);background:var(--sand-3)}
 .policy-document{min-width:0;font-size:16px;line-height:1.8;color:var(--ink);overflow-wrap:break-word}
 .policy-document p{margin-bottom:20px}
-.policy-intro{padding-bottom:8px}
-.policy-intro>p:first-child{font-size:18px;line-height:1.75;letter-spacing:-.012em}
-.policy-note{font-size:14px;line-height:1.75;color:var(--muted);padding-left:20px;border-left:2px solid var(--sand-6);margin-top:24px}
+.policy-intro{padding:28px 32px;background:var(--sand-3);border:1px solid var(--sand-5);border-radius:var(--r-md);margin-bottom:48px}
+.policy-intro-heading{font-size:13px;font-weight:600;line-height:1.5;color:var(--muted);margin-bottom:20px}
+.policy-intro>p{font-size:16px;line-height:1.8;letter-spacing:0;margin-bottom:20px}
+.policy-intro>p:last-child{margin-bottom:0}
+.policy-intro>.policy-note,.policy-intro>.policy-intro-notice{font-size:14px;line-height:1.75;color:var(--muted);border-top:1px solid var(--sand-6);padding-top:20px;margin-top:24px}
+.policy-intro+.policy-section{margin-top:0;border-top:0;padding-top:0}
 .policy-section{border-top:1px solid var(--line);padding-top:32px;margin-top:32px;scroll-margin-top:108px}
 .policy-section h2{display:flex;align-items:baseline;gap:16px;font-size:24px;font-weight:600;line-height:1.35;letter-spacing:-.025em;color:var(--ink);margin-bottom:24px;text-wrap:pretty}
 .policy-section .section-number{font-family:var(--mono);font-size:13px;font-weight:400;letter-spacing:0;color:var(--red-deep);flex-shrink:0}
@@ -73,7 +76,9 @@ body.policy-page{background:var(--sand-2)}
  .policy-toc nav{max-height:320px}
  .policy-toc a{min-height:44px;padding-top:11px;padding-bottom:11px}
  .policy-document{line-height:1.8}
- .policy-intro>p:first-child{font-size:17px}
+ .policy-intro{padding:24px;margin-bottom:40px}
+ .policy-intro-heading{margin-bottom:16px}
+ .policy-intro>p{font-size:16px}
  .policy-section{padding-top:24px;margin-top:32px}
  .policy-section h2{font-size:22px;gap:12px;margin-bottom:20px}
  .policy-section h3{font-size:17px}
@@ -98,5 +103,6 @@ body.policy-page{background:var(--sand-2)}
  body.policy-page{background:#fff}
  .policy-hero{padding:0 0 20px}.policy-hero h1{font-size:32px}
  .policy-layout{display:block;padding:0}.policy-document{font-size:11pt;color:#000}
+ .policy-intro{background:none;border:1px solid #ccc;padding:16px;margin-bottom:24px}
  .policy-section{break-inside:auto}.policy-section h2,.policy-section h3{break-after:avoid}
 }

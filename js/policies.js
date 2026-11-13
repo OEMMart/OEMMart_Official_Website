@@ -28,9 +28,9 @@
   const sections = [...document.querySelectorAll('.policy-section')];
   let queued = false;
   const updateSection = () => {
-    const current = sections.filter(section => section.getBoundingClientRect().top <= 155).at(-1) || sections[0];
+    const current = sections.filter(section => section.getBoundingClientRect().top <= 155).at(-1);
     links.forEach(link => {
-      if (link.hash === `#${current.id}`) link.setAttribute('aria-current', 'location');
+      if (current && link.hash === `#${current.id}`) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
     });
     queued = false;
