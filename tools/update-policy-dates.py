@@ -84,7 +84,8 @@ def main():
         updated = content_date(relative, original)
         display = f'{updated:%B} {updated.day}, {updated.year}'
         replacement = f'<time data-policy-updated datetime="{updated.isoformat()}">{display}</time>'
-        html, matches = re.subn(r'<time\b(?=[^>]*\bdata-policy-updated)[^>]*>.*?</time>', replacement, original)
+        html, matches = re.subn(r'<time\b(?=[^>]*\bdata-policy-updated)[^>]*>.*?</time>',
+                                replacement, original, flags=re.DOTALL)
         if matches != 1:
             raise SystemExit(f'{relative}: expected exactly one data-policy-updated time element.')
         if html != original:

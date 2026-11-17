@@ -28,8 +28,11 @@ changing files. The script rejects shallow checkouts so a cosmetic commit
 cannot be mistaken for the first policy revision.
 
 Run `python -B -m unittest discover -s tests -v` for the Git-history regression
-checks, including heading-only edits, independent policy dates, and cosmetic
-changes that preserve the content date.
+checks, including all 33 current section headings, independent policy dates,
+UTC+08:00 rollover, uncommitted edits, merge history, malformed date markers,
+multiline date markup, shallow checkouts, and cosmetic changes that preserve
+the content date. The read-only `Validate policy pages` PR workflow runs these
+checks and verifies the publish-time date generation on Ubuntu.
 
 ## Reading typography
 
