@@ -27,7 +27,7 @@ class PolicyText(HTMLParser):
     def handle_starttag(self, tag, attrs):
         if tag == 'article':
             self.article = True
-        if tag == 'h1' or (self.article and tag in ('p', 'li', 'h3')):
+        if tag == 'h1' or (self.article and tag in ('p', 'li', 'h2', 'h3')):
             self.tag, self.buffer = tag, []
         if tag == 'br' and self.tag:
             self.buffer.append(' ')
