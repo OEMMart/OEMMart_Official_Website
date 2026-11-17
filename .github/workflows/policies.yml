@@ -1,0 +1,29 @@
+name: Validate policy pages
+
+on:
+  pull_request:
+    paths:
+      - 'policies/**'
+      - 'tools/update-policy-dates.py'
+      - 'tests/test_policy_dates.py'
+      - '.github/workflows/policies.yml'
+      - '.github/workflows/static.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  policy-dates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Test policy date behavior
+        run: python3 -B -m unittest discover -s tests -v
+      - name: Verify publish-time date generation
+        run: |
+          python3 tools/update-policy-dates.py
+          python3 tools/update-policy-dates.py --check
