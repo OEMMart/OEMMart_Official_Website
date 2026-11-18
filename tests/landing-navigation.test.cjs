@@ -57,6 +57,8 @@ async function fixture(t, options = {}) {
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
+  page.on('crash', () => errors.push('Browser page crashed'));
+  page.on('close', () => t.diagnostic(`Closed page: ${page.url()}`));
   t.after(() => assert.deepEqual(errors, [], 'No page JavaScript errors'));
   await page.goto(origin + '/', { waitUntil: 'load' });
   await page.evaluate(() => document.fonts.ready);
@@ -66,6 +68,26 @@ async function fixture(t, options = {}) {
     await page.waitForFunction(() => window.ScrollTrigger?.getAll().some(st => st.trigger?.id === 'stage'));
   }
   return { page, context };
+}
+
+async function position(page) {
+  return page.evaluate(() => ({
+    y: scrollY, hash: location.hash, restoration: history.scrollRestoration,
+    focus: document.activeElement?.id || document.activeElement?.tagName,
+    triggers: window.ScrollTrigger?.getAll().map(st => ({ start: st.start, end: st.end, progress: st.progress }))
+  }));
+}
+
+async function settledScroll(page) {
+  let previous = await page.evaluate(() => scrollY);
+  for (let i = 0, stable = 0; i < 30; i++) {
+    await page.waitForTimeout(100);
+    const current = await page.evaluate(() => scrollY);
+    stable = Math.abs(current - previous) < 1 ? stable + 1 : 0;
+    if (stable >= 3) return current;
+    previous = current;
+  }
+  assert.fail('Scrolling did not settle: ' + JSON.stringify(await position(page)));
 }
 
 async function scroll(page, y) {
@@ -117,8 +139,12 @@ for (const scenario of [
     const { page } = await fixture(t, { viewport: scenario.viewport });
     await scroll(page, scenario.y);
     await page.reload({ waitUntil: 'load' });
-    await page.waitForTimeout(600);
-    assert.ok(Math.abs(await page.evaluate(() => scrollY) - scenario.y) < 2, 'Restored scroll position');
+    try {
+      await page.waitForFunction(y => Math.abs(scrollY - y) < 2, scenario.y, { timeout: 5000 });
+    } catch (_) {
+      assert.fail('Restored scroll position: ' + JSON.stringify(await position(page)));
+    }
+    await settledScroll(page);
     await scroll(page, 0);
     await assertOpeningFrame(page, scenario.end);
   });
@@ -148,6 +174,7 @@ for (const [name, viewport] of [['desktop', desktop], ['mobile', mobile]]) {
     const { page } = await fixture(t, { viewport });
     for (const id of ['product', 'about', 'contact']) {
       await navigate(page, id, name === 'mobile');
+      t.diagnostic(`${name} ${id}: ${JSON.stringify(await position(page))}`);
       assert.equal(await page.locator('#navtoggle').getAttribute('aria-expanded'), 'false');
     }
     await page.goBack();
@@ -214,14 +241,22 @@ test('Enter then Tab continues inside Product and cleans up temporary tabindex',
 test('logo clears the fragment, records history, restores top focus and avoids duplicate entries', async t => {
   const { page } = await fixture(t);
   await navigate(page, 'product');
+  const productY = await settledScroll(page);
   const historyBefore = await page.evaluate(() => history.length);
   await page.locator('.nav > a[href="#"]').click();
   await page.waitForFunction(() => scrollY === 0 && location.hash === '' && document.activeElement === document.body);
+  await settledScroll(page);
   assert.equal(await page.evaluate(() => history.length), historyBefore + 1);
   await page.goBack();
-  await page.waitForFunction(() => location.hash === '#product' && scrollY > 1000);
+  await page.waitForFunction(y => location.hash === '#product' && Math.abs(scrollY - y) < 2, productY);
+  await settledScroll(page);
+  t.diagnostic('Logo history back: ' + JSON.stringify(await position(page)));
   await page.goForward();
-  await page.waitForFunction(() => location.hash === '' && scrollY === 0);
+  try {
+    await page.waitForFunction(() => location.hash === '' && scrollY === 0, null, { timeout: 5000 });
+  } catch (_) {
+    assert.fail('Logo history forward: ' + JSON.stringify(await position(page)));
+  }
   await page.locator('.nav > a[href="#"]').click();
   assert.equal(await page.evaluate(() => history.length), historyBefore + 1);
   await page.keyboard.press('Tab');
