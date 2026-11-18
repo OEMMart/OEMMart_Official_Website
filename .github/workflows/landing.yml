@@ -1,0 +1,42 @@
+name: Validate landing navigation
+
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'css/landing.css'
+      - 'js/landing.js'
+      - 'tests/landing-navigation.test.cjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/landing.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-regressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: mcr.microsoft.com/playwright:v1.61.1-noble
+      options: --ipc=host
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    env:
+      LANDING_TEST_BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v4
+      # Firefox refuses to start if the session directory belongs to another user.
+      - name: Match browser session directory ownership
+        run: chown root:root /github/home
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run test:browser
