@@ -1,0 +1,12 @@
+{
+  "name": "oemmart-official-website",
+  "private": true,
+  "scripts": {
+    "check": "node --check js/landing.js",
+    "test:browser": "node --test tests/landing-navigation.test.cjs"
+  },
+  "devDependencies": {
+    "gsap": "3.12.5",
+    "playwright": "1.61.1"
+  }
+}

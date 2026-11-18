@@ -339,69 +339,17 @@ body.static .sheet .w{opacity:1}
 .qattr .lk{margin-left:auto;font-size:13.5px;font-weight:600;color:var(--ink);border-bottom:1.5px solid var(--red);padding-bottom:1px;white-space:nowrap}
 .qattr .lk:hover{color:var(--red-deep)}
 
-/* ===== 联系表单（CTA 内） ===== */
-.cwrap{max-width:580px;margin:52px auto 0;text-align:left}
-.cform{padding:42px 46px;position:relative}
-.cform .fld{margin-bottom:18px}
-.cform label{display:block;font-size:13.5px;font-weight:600;margin-bottom:7px;color:var(--ink)}
-.cform label small{color:var(--soft);font-weight:500}
-.cform input,.cform textarea{width:100%;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;font:inherit;font-size:15px;color:var(--ink);background:var(--sand-1);transition:border-color .3s,box-shadow .3s}
-.cform input:focus,.cform textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(var(--red-rgb),.13)}
-.cform input.err{border-color:var(--red-deep);background:var(--red-pale)}
-.cform textarea{min-height:92px;resize:vertical}
-.cform .frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.drop{display:block;border:1.5px dashed var(--sand-7);border-radius:var(--r-sm);padding:16px 18px;font-size:13.5px;line-height:1.55;color:var(--muted);cursor:pointer;background:var(--sand-2);transition:border-color .3s,background .3s}
-.drop:hover{border-color:var(--red);background:var(--red-pale)}
-.drop b{color:var(--ink)}
-.drop.hasfiles{border-style:solid;border-color:var(--red);background:var(--red-pale)}
-.drop input{display:none}
-.chk{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--muted);font-weight:500;margin:2px 0 16px;cursor:pointer}
-.chk input{width:16px;height:16px;margin-top:1px;accent-color:var(--red);flex-shrink:0}
-.priv{margin-top:14px;font-size:12px;color:var(--muted);line-height:1.55;text-align:center}
-.priv a{color:var(--muted);text-decoration:underline}
-.cform .btn{width:100%;justify-content:center;margin-top:8px;font-size:16px}
-.cdone{display:none;text-align:center;padding:34px 8px 22px}
-.cdone .cdone-h{font-size:30px;font-weight:900;letter-spacing:-.03em}
-.cdone p{margin-top:10px;font-size:15.5px;color:var(--muted);line-height:1.6}
-.cform.sent form{display:none}
-.cform.sent .cdone{display:block}
+/* ===== SignalForge trial entry ===== */
+.cwrap{max-width:620px;margin:52px auto 0;text-align:left}
+.trial-card{padding:42px 46px;position:relative}
+.trial-eyebrow{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--red-deep)}
+.trial-card h3{font-size:clamp(25px,3vw,34px);line-height:1.15;letter-spacing:-.035em;margin:14px 0 0}
+.cta .trial-card p{font-size:15px;max-width:none;margin:14px 0 24px;line-height:1.65}
+.trial-card .btn{display:inline-flex;justify-content:space-between;width:100%}
+.trial-note{font-size:12.5px;color:var(--soft);line-height:1.5;margin-top:14px;text-align:center}
 .cphone{margin-top:24px;font-size:14.5px;color:var(--muted);position:relative}
 .cphone a{font-weight:700;color:var(--ink);border-bottom:1.5px solid var(--red);padding-bottom:1px}
 .cphone a:hover{color:var(--red-deep)}
-
-/* ===== HubSpot 嵌入表单（新版 forms 工具，iframe 渲染） =====
-   注意：表单在 iframe 沙盒内，内部样式由 HubSpot 后台控制，外部 CSS 无法穿透。
-   以下 .hs-input / .hs-button 等规则仅在 HubSpot 某些配置以内联方式渲染时才生效（回退用）。 */
-.hs-target{min-height:120px}
-#hs-form-target .hs-form-frame{width:100%}
-#hs-form-target iframe{width:100%!important;max-width:100%;border:0;display:block;margin:0 auto}
-.hs-target .hs-loading{color:var(--soft);font-size:14px;padding:24px 0;text-align:center}
-#hs-form-target, #hs-form-target *{font-family:'Inter',-apple-system,'Segoe UI',sans-serif}
-#hs-form-target .hs-form{display:flex;flex-direction:column;gap:16px}
-#hs-form-target fieldset{max-width:none;border:0;margin:0;padding:0}
-#hs-form-target .hs-form-field{margin:0;width:100%!important;float:none!important}
-#hs-form-target .hs-form-field>label{display:block;font-size:13.5px;font-weight:600;margin-bottom:7px;color:var(--ink)}
-#hs-form-target .hs-form-required{color:var(--red);margin-left:2px}
-#hs-form-target .hs-field-desc{font-size:12.5px;color:var(--soft);margin:0 0 6px}
-#hs-form-target .input{margin:0!important}
-#hs-form-target .hs-input:not([type=checkbox]):not([type=radio]):not([type=file]){width:100%!important;box-sizing:border-box;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;font-size:15px;color:var(--ink);background:#fff;transition:border-color .3s,box-shadow .3s}
-#hs-form-target textarea.hs-input{min-height:92px;resize:vertical}
-#hs-form-target .hs-input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(var(--red-rgb),.13)}
-#hs-form-target select.hs-input{appearance:none;-webkit-appearance:none}
-#hs-form-target .hs-fieldtype-file .hs-input{border:1.5px dashed var(--sand-7);border-radius:var(--r-sm);padding:14px;background:var(--sand-2);font-size:13.5px;color:var(--muted)}
-#hs-form-target .hs-form-booleancheckbox-display,#hs-form-target .legal-consent-container,#hs-form-target .hs-form-radio-display{font-size:13px;color:var(--muted);line-height:1.55}
-#hs-form-target .hs-form-booleancheckbox-display input,#hs-form-target .inputs-list input[type=checkbox]{width:16px;height:16px;accent-color:var(--red);margin-right:8px;vertical-align:-3px}
-#hs-form-target ul.inputs-list{list-style:none;margin:0;padding:0}
-#hs-form-target .hs-error-msgs{list-style:none;margin:6px 0 0;padding:0}
-#hs-form-target .hs-error-msg,#hs-form-target label.hs-error-msg{color:var(--red-deep);font-size:12.5px}
-#hs-form-target .hs-input.invalid,#hs-form-target .hs-input.error{border-color:var(--red-deep);background:var(--red-pale)}
-#hs-form-target .hs-submit .actions{margin:6px 0 0;padding:0}
-#hs-form-target .hs-button.primary{display:block;width:100%;background:var(--red);color:#fff;font-weight:600;font-size:16px;border:0;border-radius:var(--r-pill);padding:14px 22px;cursor:pointer;transition:transform .5s var(--spring),background .4s}
-#hs-form-target .hs-button.primary:hover{background:var(--red-deep)}
-#hs-form-target .hs-button.primary:active{transform:scale(.98)}
-#hs-form-target .submitted-message{text-align:center;padding:22px 8px;font-size:16px;font-weight:600;color:var(--ink);line-height:1.55}
-#hs-form-target .hs_recaptcha{margin-top:2px}
-#hs-form-target .legal-consent-container p{margin:0 0 8px;font-size:12px;color:var(--soft);line-height:1.5}
 
 /* ===== CTA ===== */
 .cta{position:relative;padding:140px 40px;text-align:center;overflow:hidden}
@@ -444,9 +392,8 @@ body.static .sheet .w{opacity:1}
   .qcard{padding:44px 28px 36px}
   .qcard::before{left:16px;top:52px;font-size:100px}
   .qattr{flex-wrap:wrap}
-  .cform{padding:30px 22px}
+  .trial-card{padding:30px 22px}
   .cwrap{margin-top:40px}
-  .cform .frow{grid-template-columns:1fr}
   .pricing .duo{grid-template-columns:1fr}
   .pipe{height:240px}
   .pipe .core-orb,.pipe .ring{width:96px;height:96px}
