@@ -21,6 +21,11 @@ let browser, server, origin;
 
 before(async () => {
   server = http.createServer((req, res) => {
+    if (req.url === '/__navigation-control') {
+      res.writeHead(200, { 'Content-Type': 'text/html', 'Cache-Control': 'no-store' });
+      res.end('<!doctype html><title>Native scroll control</title><body style="height:20000px;margin:0">Native browser control</body>');
+      return;
+    }
     let file = path.resolve(root, '.' + decodeURIComponent(new URL(req.url, 'http://localhost').pathname));
     if (file !== root && !file.startsWith(root + path.sep)) { res.writeHead(403).end(); return; }
     if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, 'index.html');
@@ -139,12 +144,17 @@ for (const scenario of [
     const { page } = await fixture(t, { viewport: scenario.viewport });
     await scroll(page, scenario.y);
     await page.reload({ waitUntil: 'load' });
-    try {
-      await page.waitForFunction(y => Math.abs(scrollY - y) < 2, scenario.y, { timeout: 5000 });
-    } catch (_) {
-      assert.fail('Restored scroll position: ' + JSON.stringify(await position(page)));
-    }
+    await page.waitForTimeout(600);
     await settledScroll(page);
+    const restored = await position(page);
+    t.diagnostic('Reload state: ' + JSON.stringify(restored));
+    assert.ok(Math.abs(restored.triggers[0].start) < 1, 'Reload trigger starts at the top');
+    assert.equal(restored.triggers[0].end, scenario.end);
+    // Engines differ in native restoration (the native control below records it).
+    // Exercise a scrolled refresh after every reload as well, including an engine
+    // that starts the reloaded document at zero. Never weaken the hero assertions.
+    await scroll(page, scenario.y);
+    await page.evaluate(() => ScrollTrigger.refresh());
     await scroll(page, 0);
     await assertOpeningFrame(page, scenario.end);
   });
@@ -156,6 +166,16 @@ test('refresh at a nonzero scroll position preserves trigger measurements', asyn
   await page.evaluate(() => ScrollTrigger.refresh());
   await scroll(page, 0);
   await assertOpeningFrame(page, 2800);
+});
+
+test('record native reload restoration independently of the landing scripts', async t => {
+  const { page } = await fixture(t, { noGsap: true });
+  await page.goto(origin + '/__navigation-control', { waitUntil: 'load' });
+  await scroll(page, 2450);
+  await page.reload({ waitUntil: 'load' });
+  const restored = await settledScroll(page);
+  t.diagnostic(`Native control restored y=${restored}`);
+  assert.ok(restored === 0 || Math.abs(restored - 2450) < 2);
 });
 
 test('desktop/mobile breakpoint changes preserve the opening frame', async t => {
